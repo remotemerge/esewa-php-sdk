@@ -3,7 +3,9 @@
 
   <php>
     <!-- specify the variables -->
-    <!--<server name="TOKEN" value=""/>-->
+    <server name="ESEWA_REFERENCE_ID" value=""/>
+    <server name="ESEWA_PRODUCT_ID" value=""/>
+    <server name="ESEWA_AMOUNT" value=""/>
   </php>
 
   <testsuites>
