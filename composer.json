@@ -21,8 +21,10 @@
   ],
   "require": {
     "php": ">=7.2",
+    "ext-SimpleXML": "*",
     "ext-curl": "*",
     "ext-json": "*",
+    "ext-libxml": "*",
     "ext-openssl": "*",
     "guzzlehttp/guzzle": "^6.5",
     "vlucas/phpdotenv": "^4.1"
