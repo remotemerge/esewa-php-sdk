@@ -1,0 +1,54 @@
+{
+  "name": "cixware/esewa-php-sdk",
+  "type": "library",
+  "description": "eSewa payment gateway integration in PHP.",
+  "homepage": "https://developer.esewa.com.np",
+  "license": "Apache-2.0",
+  "authors": [
+    {
+      "name": "Cixware Team",
+      "email": "support@cixware.io",
+      "homepage": "https://cixware.io"
+    }
+  ],
+  "keywords": [
+    "api",
+    "esewa",
+    "gateway",
+    "nepal",
+    "payment",
+    "php"
+  ],
+  "require": {
+    "php": ">=7.2",
+    "ext-curl": "*",
+    "ext-json": "*",
+    "ext-openssl": "*",
+    "guzzlehttp/guzzle": "^6.5",
+    "vlucas/phpdotenv": "^4.1"
+  },
+  "require-dev": {
+    "phpunit/phpunit": "^8.5"
+  },
+  "config": {
+    "discard-changes": true,
+    "optimize-autoloader": true,
+    "preferred-install": "dist",
+    "sort-packages": true
+  },
+  "extra": {},
+  "autoload": {
+    "psr-4": {
+      "Cixware\\Esewa\\": "src/"
+    },
+    "classmap": []
+  },
+  "autoload-dev": {
+    "psr-4": {
+      "Tests\\": "tests/"
+    }
+  },
+  "minimum-stability": "stable",
+  "prefer-stable": true,
+  "scripts": {}
+}
