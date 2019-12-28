@@ -33,7 +33,7 @@ trait Configure
         if (!isset($configs['failure_url']) || !filter_var($configs['failure_url'], FILTER_VALIDATE_URL)) {
             throw new EsewaException('The failure_url must be a valid URL.');
         }
-        putenv('ESEWA_FAILURE_URL=' . $configs['success_url']);
+        putenv('ESEWA_FAILURE_URL=' . $configs['failure_url']);
 
         // production mode
         if ($this->isProduction) {
