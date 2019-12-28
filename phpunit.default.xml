@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<phpunit bootstrap="./tests/bootstrap.php" colors="true">
+
+  <php>
+    <!-- specify the variables -->
+    <!--<server name="TOKEN" value=""/>-->
+  </php>
+
+  <testsuites>
+    <testsuite name="unit">
+      <directory suffix="Test.php">tests/Unit</directory>
+      <exclude>tests/Feature</exclude>
+    </testsuite>
+    <testsuite name="feature">
+      <directory suffix="Test.php">tests/Feature</directory>
+      <exclude>tests/Unit</exclude>
+    </testsuite>
+  </testsuites>
+
+  <filter>
+    <whitelist>
+      <directory suffix=".php">src</directory>
+    </whitelist>
+  </filter>
+</phpunit>
