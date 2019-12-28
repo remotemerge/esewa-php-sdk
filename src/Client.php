@@ -7,7 +7,7 @@ use Cixware\Esewa\Helpers\Configure;
 use Cixware\Esewa\Payment\Payment;
 use Dotenv\Dotenv;
 
-final class EsewaClient
+final class Client
 {
     use Configure;
 
