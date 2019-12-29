@@ -9,7 +9,7 @@
     <input name="pdc" type="hidden" value="<?php echo $attach->deliveryAmount; ?>">
     <input name="tAmt" type="hidden" value="<?php echo $attach->totalAmount; ?>">
     <input name="pid" type="hidden" value="<?php echo $attach->productId; ?>">
-    <input type="submit" value="Submit">
+    <!--<input type="submit" value="Submit">-->
 </form>
 <!-- auto submit the form -->
 <script type="text/javascript">document.getElementById('esewa_form').submit();</script>
