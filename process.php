@@ -1,6 +1,6 @@
 <?php
 // include the composer autoloader
-require __DIR__ . './vendor/autoload.php';
+require __DIR__ . '/vendor/autoload.php';
 
 use Cixware\Esewa\Client;
 
