@@ -10,8 +10,4 @@ if [ ! -f "$ENV_FILE" ]; then
     cp ./.env.default ./.env
 fi
 
-if [ ! -f "$PHPUNIT_FILE" ]; then
-    cp ./phpunit.default.xml ./phpunit.xml
-fi
-
 php -S localhost:8090

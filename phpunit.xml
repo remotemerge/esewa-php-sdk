@@ -3,9 +3,9 @@
 
   <php>
     <!-- specify the variables -->
-    <server name="ESEWA_REFERENCE_ID" value=""/>
-    <server name="ESEWA_PRODUCT_ID" value=""/>
-    <server name="ESEWA_AMOUNT" value=""/>
+    <server name="ESEWA_REFERENCE_ID" value="00007MK"/>
+    <server name="ESEWA_PRODUCT_ID" value="SMS101"/>
+    <server name="ESEWA_AMOUNT" value="100"/>
   </php>
 
   <testsuites>
