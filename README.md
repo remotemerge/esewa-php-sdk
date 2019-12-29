@@ -75,13 +75,13 @@ The method accepts 3 parameters.
 3. `tAmt` Total payment amount (including Tax/VAT and other charges.)
 
 # Contribution
-We in [Cixware] love :heart_eyes: Open Source Software :heart_eyes: and welcome the community for contribution. Please follow the guidelines.
+We in [Cixware] :heart: Open Source Software and welcome the community for contribution. Please follow the guidelines.
 * Fork and create new branch. Make pull/merge request in `develop` branch. The requests in `master` branch will be discarded.
 * Your code must follow [PSR] standards.
 * Your code must pass the tests.
 * You must document and write clean code.
 
-Thanks for your contribution and support :pray: :smile:
+Thanks for your contribution and support :relaxed:.
 
 [eSewa]: https://esewa.com.np
 [eSewa Documentation]: https://developer.esewa.com.np
