@@ -81,7 +81,7 @@ We in [Cixware] :heart: Open Source Software and welcome the community for contr
 * Your code must pass the tests.
 * You must document and write clean code.
 
-Thanks for your contribution and support :relaxed:.
+Thanks for your contribution and support :relaxed:
 
 [eSewa]: https://esewa.com.np
 [eSewa Documentation]: https://developer.esewa.com.np
