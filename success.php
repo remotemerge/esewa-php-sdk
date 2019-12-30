@@ -4,12 +4,13 @@ require __DIR__ . '/vendor/autoload.php';
 
 use Cixware\Esewa\Client;
 
-$baseUrl = 'http://localhost:8090/';
-
-$esewa = new Client([
-    'success_url' => $baseUrl . 'success.php',
-    'failure_url' => $baseUrl . 'failed.php',
-]);
+try {
+    $esewa = new Client([
+        'is_production' => false,
+    ]);
+} catch (Exception $e) {
+    exit($e->getCode() . ' -> ' . $e->getMessage());
+}
 
 // placeholder fields
 $productId = $referenceId = $amount = null;
