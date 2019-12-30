@@ -2,6 +2,7 @@
 
 namespace Cixware\Esewa\Payment;
 
+use Cixware\Esewa\Exception\EsewaException;
 use Cixware\Esewa\Helpers\Configure;
 use GuzzleHttp\Client;
 use stdClass;
@@ -42,10 +43,21 @@ class Payment implements CreateInterface, VerifyInterface
      * @param float $taxAmount
      * @param float $serviceAmount
      * @param float $deliveryAmount
+     * @throws EsewaException
      * ---------------------------------------------------
      */
     public function create(string $productId, float $amount, float $taxAmount, float $serviceAmount = 0, float $deliveryAmount = 0): void
     {
+        // check success url
+        if (filter_var(getenv('ESEWA_SUCCESS_URL'), FILTER_VALIDATE_URL)) {
+            throw new EsewaException('The success_url is required and must be a valid URL.');
+        }
+
+        // check failure url
+        if (filter_var(getenv('ESEWA_FAILURE_URL'), FILTER_VALIDATE_URL)) {
+            throw new EsewaException('The failure_url is required and must be a valid URL.');
+        }
+
         // create form params
         $attach = new stdClass();
         $attach->url = getenv('ESEWA_BASE_URL') . 'main';
