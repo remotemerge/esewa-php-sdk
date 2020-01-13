@@ -58,21 +58,6 @@ jobs:
         - mkdir -p ./composer-test/test-74 && cd ./composer-test/test-74
         - composer init --no-interaction
         - composer require cixware/esewa-php-sdk
-    - stage: install-test-nightly
-      name: "Test in PHP nightly"
-      os: linux
-      dist: bionic
-      language: php
-      php: nightly
-      before_script:
-        - php --version
-      script:
-        - composer self-update
-        - rm -rf ./composer-test/test-nightly
-        - mkdir -p ./composer-test/test-nightly && cd ./composer-test/test-nightly
-        - composer init --no-interaction
-        - composer require cixware/esewa-php-sdk
-
 branches:
   only:
     - master
