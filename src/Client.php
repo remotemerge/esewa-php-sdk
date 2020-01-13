@@ -27,7 +27,11 @@ final class Client
 
         // load default env variables
         $envFile = file_exists($rootPath . '.env') ? '.env' : '.env.default';
-        $dotenv = Dotenv::createImmutable($rootPath, $envFile);
+        if (method_exists(Dotenv::class, 'createImmutable')) {
+            $dotenv = Dotenv::createImmutable($rootPath, $envFile);
+        } else {
+            $dotenv = Dotenv::create($rootPath, $envFile);
+        }
         $dotenv->load();
 
         // init the configs
