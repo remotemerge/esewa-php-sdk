@@ -8,17 +8,13 @@ insert_final_newline = true
 indent_style = space
 indent_size = 4
 trim_trailing_whitespace = true
-max_line_length = 120
+max_line_length = 80
 
-# config for ts, js, html and css files
-[*.{css, js, jsx, scss, ts, tsx, vue}]
+# shell script
+[*.sh]
 indent_size = 2
 
 # config for Markdown
 [*.md]
 trim_trailing_whitespace = false
 insert_final_newline = false
-
-# config for JSON and YAML
-[*.{json, xml, yml}]
-indent_size = 2

@@ -1,120 +1,106 @@
 # Auto detect
-* text=auto eol=lf
+* text=auto
 
 # Source code
 *.bash text eol=lf
 *.bat text eol=crlf
 *.cmd text eol=crlf
-*.coffee text eol=lf
-*.css text eol=lf
-*.htm text diff=html eol=lf
-*.html text diff=html eol=lf
-*.inc text eol=lf
-*.ini text eol=lf
-*.js text eol=lf
-*.json text eol=lf
-*.jsx text eol=lf
-*.less text eol=lf
-*.ls text eol=lf
-*.map text -diff eol=lf
-*.od text eol=lf
-*.onlydata text eol=lf
-*.php text diff=php eol=lf
-*.pl text eol=lf
+*.coffee text
+*.css text
+*.htm text diff=html
+*.html text diff=html
+*.inc text
+*.ini text
+*.js text
+*.json text
+*.jsx text
+*.less text
+*.ls text
+*.map text -diff
+*.od text
+*.onlydata text
+*.php text diff=php
+*.pl text
 *.ps1 text eol=crlf
-*.py text diff=python eol=lf
-*.rb text diff=ruby eol=lf
-*.sass text eol=lf
-*.scm text eol=lf
-*.scss text diff=css eol=lf
+*.py text diff=python
+*.rb text diff=ruby
+*.sass text
+*.scm text
+*.scss text diff=css
 *.sh text eol=lf
-*.sql text eol=lf
-*.styl text eol=lf
-*.tag text eol=lf
-*.ts text eol=lf
-*.tsx text eol=lf
-*.xml text eol=lf
-*.xhtml text diff=html eol=lf
+*.sql text
+*.styl text
+*.tag text
+*.ts text
+*.tsx text
+*.xml text
+*.xhtml text diff=html
 
 # Docker
-*.dockerignore text eol=lf
-Dockerfile text eol=lf
+Dockerfile text
 
 # Documentation
-*.ipynb text eol=lf
-*.markdown text eol=lf
-*.md text eol=lf
-*.mdwn text eol=lf
-*.mdown text eol=lf
-*.mkd text eol=lf
-*.mkdn text eol=lf
-*.mdtxt text eol=lf
-*.mdtext text eol=lf
-*.txt text eol=lf
-AUTHORS text eol=lf
-CHANGELOG text eol=lf
-CHANGES text eol=lf
-CONTRIBUTING text eol=lf
-COPYING text eol=lf
-copyright text eol=lf
-*COPYRIGHT* text eol=lf
-INSTALL text eol=lf
-license text eol=lf
-LICENSE text eol=lf
-NEWS text eol=lf
-readme text eol=lf
-*README* text eol=lf
+*.ipynb text
+*.markdown text
+*.md text
+*.mdwn text
+*.mdown text
+*.mkd text
+*.mkdn text
+*.mdtxt text
+*.mdtext text
+*.txt text
+AUTHORS text
+CHANGELOG text
+CHANGES text
+CONTRIBUTING text
+COPYING text
+copyright text
+*COPYRIGHT* text
+INSTALL text
+license text
+LICENSE text
+NEWS text
+readme text
+*README* text
 
 # Templates
-*.dot text eol=lf
-*.ejs text eol=lf
-*.haml text eol=lf
-*.handlebars text eol=lf
-*.hbs text eol=lf
-*.hbt text eol=lf
-*.jade text eol=lf
-*.latte text eol=lf
-*.mustache text eol=lf
-*.njk text eol=lf
-*.phtml text eol=lf
-*.tmpl text eol=lf
-*.tpl text eol=lf
-*.twig text eol=lf
-*.vue text eol=lf
-
-# Linters
-.csslintrc text eol=lf
-.eslintrc text eol=lf
-.htmlhintrc text eol=lf
-.jscsrc text eol=lf
-.jshintrc text eol=lf
-.jshintignore text eol=lf
-.stylelintrc text eol=lf
+*.dot text
+*.ejs text
+*.haml text
+*.handlebars text
+*.hbs text
+*.hbt text
+*.jade text
+*.latte text
+*.mustache text
+*.njk text
+*.phtml text
+*.tmpl text
+*.tpl text
+*.twig text
+*.vue text
 
 # Configs
-*.bowerrc text eol=lf
-*.cnf text eol=lf
-*.conf text eol=lf
-*.config text eol=lf
-.babelrc text eol=lf
-.browserslistrc text eol=lf
-.editorconfig text eol=lf
-.env text eol=lf
-.gitattributes text eol=lf
-.gitconfig text eol=lf
-.htaccess text eol=lf
-*.lock text -diff eol=lf
-package-lock.json text -diff eol=lf
-*.npmignore text eol=lf
-*.yaml text eol=lf
-*.yml text eol=lf
-browserslist text eol=lf
-Makefile text eol=lf
-makefile text eol=lf
+*.cnf text
+*.conf text
+*.config text
+.editorconfig text
+.env text
+.gitattributes text
+.gitconfig text
+.htaccess text
+*.lock text -diff
+package-lock.json text -diff
+*.toml text
+*.yaml text
+*.yml text
+browserslist text
+Makefile text
+makefile text
 
 # Heroku
-Procfile text eol=lf
-.slugignore text eol=lf
+Procfile text
 
 # Graphics
 *.ai binary
@@ -133,13 +119,10 @@ Procfile text eol=lf
 *.png binary
 *.psb binary
 *.psd binary
-
 # SVG treated as an asset (binary) by default.
-*.svg text eol=lf
-
+*.svg text
 # If you want to treat it as binary,
 # use the following line instead.
-
 # *.svg binary
 *.svgz binary
 *.tif binary
@@ -193,3 +176,9 @@ Procfile text eol=lf
 # Executables
 *.exe binary
 *.pyc binary
+
+# RC files (like .babelrc or .eslintrc)
+*.*rc text
+
+# Ignore files (like .npmignore or .gitignore)
+*.*ignore text
