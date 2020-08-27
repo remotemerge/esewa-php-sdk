@@ -16,7 +16,7 @@ class VerificationTest extends ParentTestCase
     {
         $referenceId = getenv('ESEWA_REFERENCE_ID');
         $productId = getenv('ESEWA_PRODUCT_ID');
-        $esewaAmount = getenv('ESEWA_AMOUNT');
+        $esewaAmount = getenv('ESEWA_PAID_AMOUNT');
 
         $response = $this->client->payment->verify($referenceId, $productId, $esewaAmount);
         self::assertTrue($response->verified);
