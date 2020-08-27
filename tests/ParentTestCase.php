@@ -4,6 +4,7 @@ namespace Tests;
 
 use Cixware\Esewa\Client;
 use Cixware\Esewa\Exception\EsewaException;
+use Dotenv\Dotenv;
 use PHPUnit\Framework\TestCase;
 
 class ParentTestCase extends TestCase
@@ -27,6 +28,10 @@ class ParentTestCase extends TestCase
 
         // default timezone
         date_default_timezone_set('UTC');
+
+        // load env
+        $dotenv = Dotenv::createImmutable(dirname(__DIR__));
+        $dotenv->load();
 
         // init client
         $this->client = new Client([
