@@ -4,17 +4,18 @@ require dirname(__DIR__) . '/vendor/autoload.php';
 
 use Cixware\Esewa\Client;
 
-$baseUrl = 'http://localhost:8090/demo/';
+$schema = isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] === 'on' ? 'https' : 'http';
+$demoUrl = $schema . '://' . $_SERVER['HTTP_HOST'];
 
 try {
     $esewa = new Client([
         'is_production' => false,
-        'success_url' => $baseUrl . 'success.php',
-        'failure_url' => $baseUrl . 'failed.php',
+        'success_url' => $demoUrl . 'success.php',
+        'failure_url' => $demoUrl . 'failed.php',
     ]);
 
     $hash = hash('SHA256', time());
-    $esewa->payment->create(substr($hash, 0, 16), 100, 10);
+    $esewa->process(substr($hash, 0, 16), 100, 10);
 } catch (Exception $e) {
     exit($e->getCode() . ' -> ' . $e->getMessage());
 }
