@@ -3,10 +3,10 @@
   "type": "library",
   "description": "eSewa payment gateway integration in PHP.",
   "homepage": "https://developer.esewa.com.np",
-  "license": "Apache-2.0",
+  "license": "MIT",
   "authors": [
     {
-      "name": "Cixware Team",
+      "name": "Cixware",
       "email": "support@cixware.io",
       "homepage": "https://cixware.io"
     }
@@ -50,7 +50,7 @@
       "Tests\\": "tests/"
     }
   },
-  "minimum-stability": "stable",
+  "minimum-stability": "dev",
   "prefer-stable": true,
   "scripts": {}
 }
