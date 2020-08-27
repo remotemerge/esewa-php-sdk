@@ -33,6 +33,9 @@ class ParentTestCase extends TestCase
         $dotenv = Dotenv::createImmutable(dirname(__DIR__));
         $dotenv->load();
 
+        // required fields
+        $dotenv->required(['ESEWA_REFERENCE_ID', 'ESEWA_PRODUCT_ID', 'ESEWA_PAID_AMOUNT']);
+
         // init client
         $this->client = new Client([
             'success_url' => self::$baseUrl . 'success.php',
