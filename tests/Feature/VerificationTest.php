@@ -6,15 +6,19 @@ use Tests\ParentTestCase;
 
 class VerificationTest extends ParentTestCase
 {
-    public function test_with_valid_data(): void
-    {
-        $response = $this->client->payment->verify($_SERVER['ESEWA_REFERENCE_ID'] ?? '', $_SERVER['ESEWA_PRODUCT_ID'] ?? '', $_SERVER['ESEWA_AMOUNT'] ?? '');
-        $this->assertTrue($response->verified);
-    }
-
     public function test_with_invalid_data(): void
     {
         $response = $this->client->payment->verify('Apple', 'Google', 105);
-        $this->assertFalse($response->verified);
+        self::assertFalse($response->verified);
+    }
+
+    public function test_with_valid_data(): void
+    {
+        $referenceId = getenv('ESEWA_REFERENCE_ID');
+        $productId = getenv('ESEWA_PRODUCT_ID');
+        $esewaAmount = getenv('ESEWA_AMOUNT');
+
+        $response = $this->client->payment->verify($referenceId, $productId, $esewaAmount);
+        self::assertTrue($response->verified);
     }
 }
