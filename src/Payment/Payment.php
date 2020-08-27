@@ -24,7 +24,7 @@ trait Payment
         // create form params
         $attach = new stdClass();
 
-        $attach->url = self::$baseUrl . '/main';
+        $attach->url = self::$baseUrl . '/epay/main';
         $attach->successUrl = self::$successUrl;
         $attach->failureUrl = self::$failureUrl;
 
@@ -66,7 +66,7 @@ trait Payment
         ];
 
         // init request
-        $request = self::$client->post('/transrec', [
+        $request = self::$client->post('/epay/transrec', [
             'form_params' => $params,
         ]);
 
