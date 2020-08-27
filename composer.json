@@ -29,8 +29,7 @@
     "guzzlehttp/guzzle": "^7.0"
   },
   "require-dev": {
-    "phpunit/phpunit": "^9.3",
-    "vlucas/phpdotenv": "^5.1"
+    "phpunit/phpunit": "^9.3"
   },
   "config": {
     "discard-changes": true,
