@@ -10,6 +10,10 @@ indent_size = 4
 trim_trailing_whitespace = true
 max_line_length = 80
 
+# config for JSON and YAML
+[*.{json, xml, yml}]
+indent_size = 2
+
 # shell script
 [*.sh]
 indent_size = 2
