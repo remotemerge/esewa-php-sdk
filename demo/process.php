@@ -10,8 +10,8 @@ $demoUrl = $schema . '://' . $_SERVER['HTTP_HOST'];
 try {
     $esewa = new Client([
         'is_production' => false,
-        'success_url' => $demoUrl . 'success.php',
-        'failure_url' => $demoUrl . 'failed.php',
+        'success_url' => $demoUrl . '/demo/success.php',
+        'failure_url' => $demoUrl . '/demo/failed.php',
     ]);
 
     $hash = hash('SHA256', time());
