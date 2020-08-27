@@ -3,10 +3,14 @@
 namespace Cixware\Esewa;
 
 use Cixware\Esewa\Helpers\Configure;
+use Cixware\Esewa\Payment\CreateInterface;
+use Cixware\Esewa\Payment\Payment;
+use Cixware\Esewa\Payment\VerifyInterface;
 
-final class Client
+final class Client implements CreateInterface, VerifyInterface
 {
     use Configure;
+    use Payment;
 
     /**
      * @var \GuzzleHttp\Client
