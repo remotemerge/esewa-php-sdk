@@ -2,6 +2,8 @@
 
 [![@cixware on Twitter](https://img.shields.io/badge/Twitter-%40cixware-blue.svg?style=flat&logo=twitter)](https://twitter.com/cixware)
 [![@cixware on Facebook](https://img.shields.io/badge/Facebok-%40cixware-blue.svg?style=flat&logo=facebook)](https://www.facebook.com/cixware)
+![PHP Version](https://img.shields.io/packagist/php-v/cixware/esewa-php-sdk)
+![Build](https://img.shields.io/github/workflow/status/cixware/esewa-php-sdk/Install?logo=github)
 [![Downloads](https://img.shields.io/packagist/dt/cixware/esewa-php-sdk.svg?style=flat&label=Downloads)](https://packagist.org/packages/cixware/esewa-php-sdk)
 ![License](https://img.shields.io/github/license/cixware/esewa-php-sdk)
 
