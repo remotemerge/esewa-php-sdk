@@ -1,0 +1,41 @@
+name: Install
+
+# run on
+on:
+  release:
+    types: [created]
+    branches: [master]
+  schedule:
+    # run every hour
+    - cron:  '0 * * * *'
+
+jobs:
+  test:
+    # Current OS
+    runs-on: ${{ matrix.os }}
+    strategy:
+      matrix:
+        # OS list
+        os: [ubuntu-16.04, ubuntu-18.04, ubuntu-20.04]
+        # Supported PHP versions
+        php: ['7.2', '7.3', '7.4']
+    steps:
+      # action for repository checkout
+      - uses: actions/checkout@v2
+
+      - name: Install PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: ${{ matrix.php }}
+
+      - name: Update Composer
+        run: sudo composer self-update
+
+      - name: Version Info
+        run: php --version && composer --version
+
+      - name: Init Composer
+        run: composer init --no-interaction --stability=dev
+
+      - name: Install Package
+        run: composer require cixware/esewa-php-sdk

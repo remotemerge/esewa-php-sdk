@@ -1,13 +1,13 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<phpunit bootstrap="./vendor/autoload.php" colors="true">
-
-  <php>
-    <!-- specify the variables -->
-    <server name="ESEWA_REFERENCE_ID" value="00007MK"/>
-    <server name="ESEWA_PRODUCT_ID" value="SMS101"/>
-    <server name="ESEWA_AMOUNT" value="100"/>
-  </php>
-
+<phpunit xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:noNamespaceSchemaLocation="https://schema.phpunit.de/9.3/phpunit.xsd"
+         bootstrap="./vendor/autoload.php"
+         colors="true">
+  <coverage>
+    <include>
+      <directory suffix=".php">src</directory>
+    </include>
+  </coverage>
   <testsuites>
     <testsuite name="unit">
       <directory suffix="Test.php">tests/Unit</directory>
@@ -18,10 +18,4 @@
       <exclude>tests/Unit</exclude>
     </testsuite>
   </testsuites>
-
-  <filter>
-    <whitelist>
-      <directory suffix=".php">src</directory>
-    </whitelist>
-  </filter>
 </phpunit>

@@ -3,10 +3,10 @@
   "type": "library",
   "description": "eSewa payment gateway integration in PHP.",
   "homepage": "https://developer.esewa.com.np",
-  "license": "Apache-2.0",
+  "license": "MIT",
   "authors": [
     {
-      "name": "Cixware Team",
+      "name": "Cixware",
       "email": "support@cixware.io",
       "homepage": "https://cixware.io"
     }
@@ -26,11 +26,11 @@
     "ext-json": "*",
     "ext-libxml": "*",
     "ext-openssl": "*",
-    "guzzlehttp/guzzle": "^6.5",
-    "vlucas/phpdotenv": "^3.6 || ^4.1"
+    "guzzlehttp/guzzle": "^7.0"
   },
   "require-dev": {
-    "phpunit/phpunit": "^8.5"
+    "phpunit/phpunit": "^9.3",
+    "vlucas/phpdotenv": "^5.1"
   },
   "config": {
     "discard-changes": true,
@@ -50,7 +50,7 @@
       "Tests\\": "tests/"
     }
   },
-  "minimum-stability": "stable",
+  "minimum-stability": "dev",
   "prefer-stable": true,
   "scripts": {}
 }

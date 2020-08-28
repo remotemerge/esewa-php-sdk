@@ -1,5 +1,11 @@
+## ignore vendor directories
+/vendor
+/node_modules
+
 ### JetBrains template
-/.idea/
+/.idea/*
+!/.idea/dictionaries/
+!/.idea/dictionaries/*.xml
 
 ### VisualStudioCode template
 /.vscode/
@@ -9,16 +15,6 @@
 /nbbuild/
 /nbdist/
 /.nb-gradle/
-
-### Composer ###
-composer.phar
-/vendor/
-
-## ignore build directories
-/dist/
-/build/
-/bundle/
-/output/
 
 ### Windows template
 Thumbs.db
@@ -38,17 +34,20 @@ ehthumbs_vista.db
 .Trash-*
 .nfs*
 
-### editor files
+### Editor files
 *.suo
 *.ntvs*
 *.njsproj
 *.sln
 *.sw?
 
-# ignore config file
-/.init.sh
-/.env
+### Lock files
+composer.phar
+package-lock.json
+yarn.lock
 
-# ignore cache files and directories
-/*.cache
-/composer-test
+### Generated files
+.env
+*.cache
+*.log
+*.key
