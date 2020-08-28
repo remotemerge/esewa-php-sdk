@@ -35,7 +35,7 @@ jobs:
         run: php --version && composer --version
 
       - name: Init Composer
-        run: composer init --no-interaction --stability=dev
+        run: composer init --no-interaction --stability=stable
 
       - name: Install Package
         run: composer require cixware/esewa-php-sdk
