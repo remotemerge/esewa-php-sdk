@@ -14,9 +14,9 @@ class ParentTestCase extends TestCase
     private static $baseUrl = 'http://localhost:8090/demo/';
 
     /**
-     * @var Client $client
+     * @var Client $esewa
      */
-    protected $client;
+    protected $esewa;
 
     protected function setUp(): void
     {
@@ -33,7 +33,7 @@ class ParentTestCase extends TestCase
         $dotenv->required(['ESEWA_REFERENCE_ID', 'ESEWA_PRODUCT_ID', 'ESEWA_PAID_AMOUNT']);
 
         // init client
-        $this->client = new Client([
+        $this->esewa = new Client([
             'success_url' => self::$baseUrl . 'success.php',
             'failure_url' => self::$baseUrl . 'failed.php',
         ]);
