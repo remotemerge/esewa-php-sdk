@@ -3,7 +3,6 @@
 namespace Tests;
 
 use Cixware\Esewa\Client;
-use Cixware\Esewa\Exception\EsewaException;
 use Dotenv\Dotenv;
 use PHPUnit\Framework\TestCase;
 
@@ -19,9 +18,6 @@ class ParentTestCase extends TestCase
      */
     protected $client;
 
-    /**
-     * @throws EsewaException
-     */
     protected function setUp(): void
     {
         parent::setUp();
