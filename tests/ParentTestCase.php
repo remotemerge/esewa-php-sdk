@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types=1);
 
 namespace Tests;
 
@@ -8,15 +8,12 @@ use PHPUnit\Framework\TestCase;
 
 class ParentTestCase extends TestCase
 {
-    /**
-     * @var string $baseUrl
-     */
-    private static $baseUrl = 'http://localhost:8090/demo/';
+    private static string $baseUrl = 'http://localhost:8090/demo/';
 
     /**
      * @var Client $esewa
      */
-    protected $esewa;
+    protected Client $esewa;
 
     protected function setUp(): void
     {
