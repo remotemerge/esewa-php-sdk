@@ -1,4 +1,6 @@
-<?php isset($attach) || exit('Failed to populate the form!'); ?>
+<?php declare(strict_types=1);
+
+isset($attach) || exit('Failed to populate the form!'); ?>
 
 <!-- attach the params -->
 <form method="POST" action="<?php echo $attach->url; ?>" id="esewa_form">

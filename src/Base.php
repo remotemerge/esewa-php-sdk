@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types=1);
 
 namespace Cixware\Esewa;
 
@@ -7,36 +7,33 @@ abstract class Base
     /**
      * @var bool $isProduction
      */
-    protected static $isProduction = false;
+    protected static bool $isProduction = false;
 
     /**
      * @var string $baseUrl
      */
-    protected static $baseUrl = 'https://uat.esewa.com.np';
+    protected static string $baseUrl = 'https://uat.esewa.com.np';
 
     /**
      * @var string $successUrl
      */
-    protected static $successUrl;
+    protected static string $successUrl;
 
     /**
      * @var string $failureUrl
      */
-    protected static $failureUrl;
+    protected static string $failureUrl;
 
     /**
      * @var string $merchantCode
      */
-    protected static $merchantCode = 'epay_payment';
+    protected static string $merchantCode = 'epay_payment';
 
     /**
      * @var \GuzzleHttp\Client
      */
-    protected static $client;
+    protected static \GuzzleHttp\Client $client;
 
-    /**
-     * @param array $configs
-     */
     protected function init(array $configs): void
     {
         // set app environment
@@ -60,7 +57,7 @@ abstract class Base
             self::$baseUrl = 'https://esewa.com.np';
 
             // set merchant code
-            if (!isset($configs['merchant_code']) || empty($configs['merchant_code'])) {
+            if (empty($configs['merchant_code'])) {
                 self::$merchantCode = $configs['merchant_code'];
             }
         }

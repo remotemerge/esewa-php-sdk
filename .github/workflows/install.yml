@@ -4,10 +4,10 @@ name: Install
 on:
   release:
     types: [created]
-    branches: [master]
+    branches: [main]
   schedule:
-    # run every hour
-    - cron:  '0 * * * *'
+    # run every six hour
+    - cron:  '15 */6 * * *'
 
 jobs:
   test:
@@ -16,9 +16,9 @@ jobs:
     strategy:
       matrix:
         # OS list
-        os: [ubuntu-16.04, ubuntu-18.04, ubuntu-20.04]
+        os: [ubuntu-18.04, ubuntu-20.04, ubuntu-22.04]
         # Supported PHP versions
-        php: ['7.2', '7.3', '7.4']
+        php: ['7.4', '8.0', '8.1']
     steps:
       # action for repository checkout
       - uses: actions/checkout@v2

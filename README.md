@@ -11,7 +11,7 @@ The **eSewa SDK for PHP** makes it easy for developers to access [eSewa] payment
 
 # Getting Started
 1. **Sign up for eSewa** – Before you begin, you need to sign up and retrieve your credentials from [eSewa].
-2. **Minimum requirements** – To run the SDK, your system will need to meet the minimum requirements, including having **PHP >= 7.2**. We highly recommend having it compiled with the cURL extension and cURL compiled with a TLS backend (e.g., NSS or OpenSSL). We do not support outdated PHP versions.
+2. **Minimum requirements** – To run the SDK, your system will need to meet the minimum requirements, including having **PHP >= 7.4**. We highly recommend having it compiled with the cURL extension and cURL compiled with a TLS backend (e.g., NSS or OpenSSL). We do not support outdated PHP versions.
 
 # Installation
 **Install the SDK** – Using [Composer] is the recommended way to install the eSewa SDK for PHP. The SDK is available via [Packagist] under the [`cixware/esewa-php-sdk`][install-packagist] package.
