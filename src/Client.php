@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types=1);
 
 namespace Cixware\Esewa;
 
@@ -8,9 +8,6 @@ final class Client extends Base
 {
     use Payment;
 
-    /**
-     * @param array $configs
-     */
     public function __construct(array $configs)
     {
         // init configs
