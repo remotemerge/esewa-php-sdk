@@ -1,4 +1,5 @@
-<?php
+<?php declare(strict_types=1);
+
 // init autoloader
 require dirname(__DIR__) . '/vendor/autoload.php';
 
@@ -14,8 +15,8 @@ try {
         'failure_url' => $demoUrl . '/demo/failed.php',
     ]);
 
-    $hash = hash('SHA256', time());
+    $hash = hash('SHA256', bin2hex(random_bytes(8)));
     $esewa->process(substr($hash, 0, 16), 100, 10);
-} catch (Exception $e) {
-    exit($e->getCode() . ' -> ' . $e->getMessage());
+} catch (Exception $exception) {
+    dd($exception->getCode(), $exception->getMessage());
 }

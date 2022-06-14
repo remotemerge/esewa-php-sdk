@@ -1,4 +1,5 @@
-<?php
+<?php declare(strict_types=1);
+
 // init autoloader
 require dirname(__DIR__) . '/vendor/autoload.php';
 
@@ -8,33 +9,20 @@ try {
     $esewa = new Client([
         'is_production' => false,
     ]);
-} catch (Exception $e) {
-    exit($e->getCode() . ' -> ' . $e->getMessage());
+} catch (Exception $exception) {
+    exit($exception->getCode() . ' -> ' . $exception->getMessage());
 }
 
 // placeholder fields
-$productId = $referenceId = $amount = null;
-
-// check reference field
-if (isset($_GET['refId'])) {
-    $referenceId = $_GET['refId'];
-}
-
-// check product field
-if (isset($_GET['oid'])) {
-    $productId = $_GET['oid'];
-}
-
-// check amount field
-if (isset($_GET['amt'])) {
-    $amount = $_GET['amt'];
-}
+$productId = $_GET['oid'] ?? null;
+$referenceId = $_GET['refId'] ?? null;
+$amount = $_GET['amt'] ?? null;
 
 if ($referenceId !== null || $productId !== null || $amount !== null) {
-    $status = $esewa->payment->verify($referenceId, $productId, $amount);
+    $status = $esewa->verify($referenceId, $productId, (float)$amount);
     if (isset($status->verified) && $status->verified) {
-        print_r($status);
-        exit('<h1>The payment is verified.</h1>');
+        dd($status, 'The payment is verified.');
     }
+} else {
+    dd('The payment is not verified.');
 }
-exit('<h1>The payment is not verified.</h1>');
