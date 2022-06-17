@@ -1,6 +1,6 @@
 {
   "name": "cixware/esewa-php-sdk",
-  "version": "2.0",
+  "version": "2.1",
   "type": "library",
   "description": "eSewa payment gateway integration in PHP.",
   "homepage": "https://developer.esewa.com.np",
