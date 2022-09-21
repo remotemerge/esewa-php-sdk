@@ -12,7 +12,7 @@ abstract class Base
 
     protected static string $failureUrl;
 
-    protected static string $merchantCode = 'epay_payment';
+    protected static string $merchantCode = 'EPAYTEST';
 
     protected static \GuzzleHttp\Client $client;
 
