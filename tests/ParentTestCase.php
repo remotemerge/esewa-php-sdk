@@ -10,9 +10,6 @@ class ParentTestCase extends TestCase
 {
     private static string $baseUrl = 'http://localhost:8090/demo/';
 
-    /**
-     * @var Client $esewa
-     */
     protected Client $esewa;
 
     protected function setUp(): void

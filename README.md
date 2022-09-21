@@ -78,6 +78,8 @@ The method accepts 3 parameters.
 2. `oid` Product ID used on payment request.
 3. `tAmt` Total payment amount (including Tax/VAT and other charges.)
 
+**Note:** You can extract `refId` from the success response of the `process` method.
+
 # Contribution
 We in [Cixware] :heart: Open Source Software and welcome the community for contribution. Please follow the guidelines.
 * Your code must follow [PSR] standards.
