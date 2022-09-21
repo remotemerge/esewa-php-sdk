@@ -4,34 +4,16 @@ namespace Cixware\Esewa;
 
 abstract class Base
 {
-    /**
-     * @var bool $isProduction
-     */
     protected static bool $isProduction = false;
 
-    /**
-     * @var string $baseUrl
-     */
     protected static string $baseUrl = 'https://uat.esewa.com.np';
 
-    /**
-     * @var string $successUrl
-     */
     protected static string $successUrl;
 
-    /**
-     * @var string $failureUrl
-     */
     protected static string $failureUrl;
 
-    /**
-     * @var string $merchantCode
-     */
     protected static string $merchantCode = 'epay_payment';
 
-    /**
-     * @var \GuzzleHttp\Client
-     */
     protected static \GuzzleHttp\Client $client;
 
     protected function init(array $configs): void
