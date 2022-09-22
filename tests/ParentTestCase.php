@@ -3,13 +3,12 @@
 namespace Tests;
 
 use Cixware\Esewa\Client;
+use Cixware\Esewa\Config;
 use Dotenv\Dotenv;
 use PHPUnit\Framework\TestCase;
 
 class ParentTestCase extends TestCase
 {
-    private static string $baseUrl = 'http://localhost:8090/demo/';
-
     protected Client $esewa;
 
     protected function setUp(): void
@@ -26,10 +25,12 @@ class ParentTestCase extends TestCase
         // required fields
         $dotenv->required(['ESEWA_REFERENCE_ID', 'ESEWA_PRODUCT_ID', 'ESEWA_PAID_AMOUNT']);
 
-        // init client
-        $this->esewa = new Client([
-            'success_url' => self::$baseUrl . 'success.php',
-            'failure_url' => self::$baseUrl . 'failed.php',
-        ]);
+        // format params
+        $demoUrl = 'http://localhost:8090/demo/';
+        $successUrl = $demoUrl . 'success.php';
+        $failureUrl = $demoUrl . 'failed.php';
+
+        $config = new Config($successUrl, $failureUrl);
+        $this->esewa = new Client($config);
     }
 }
