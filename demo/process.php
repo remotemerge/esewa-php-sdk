@@ -11,13 +11,9 @@ $successUrl = 'http://localhost:8090/demo/success.php';
 $failureUrl = 'http://localhost:8090/demo/failed.php';
 
 $config = new Config($successUrl, $failureUrl);
+$esewa = new Client($config);
 
-try {
-    $esewa = new Client($config);
+// generate random product ID
+$productId = hash('SHA256', bin2hex(random_bytes(8)));
 
-    // generate random product ID
-    $productId = hash('SHA256', bin2hex(random_bytes(8)));
-    $esewa->process(substr($productId, 0, 16), 100, 10);
-} catch (Exception $exception) {
-    exit($exception->getMessage());
-}
+$esewa->process(substr($productId, 0, 16), 100, 10);
