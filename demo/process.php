@@ -1,22 +1,20 @@
 <?php declare(strict_types=1);
 
+use Cixware\Esewa\Client;
+use Cixware\Esewa\Config;
+
 // init autoloader
 require dirname(__DIR__) . '/vendor/autoload.php';
 
-use Cixware\Esewa\Client;
+// format params
+$demoUrl = 'http://localhost:8090/demo/';
+$successUrl = $demoUrl . 'success.php';
+$failureUrl = $demoUrl . 'failed.php';
 
-$schema = isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] === 'on' ? 'https' : 'http';
-$demoUrl = $schema . '://' . $_SERVER['HTTP_HOST'];
+$config = new Config($successUrl, $failureUrl);
+$esewa = new Client($config);
 
-try {
-    $esewa = new Client([
-        'is_production' => false,
-        'success_url' => $demoUrl . '/demo/success.php',
-        'failure_url' => $demoUrl . '/demo/failed.php',
-    ]);
+// generate random product ID
+$productId = hash('SHA256', bin2hex(random_bytes(8)));
 
-    $hash = hash('SHA256', bin2hex(random_bytes(8)));
-    $esewa->process(substr($hash, 0, 16), 100, 10);
-} catch (Exception $exception) {
-    dd($exception->getCode(), $exception->getMessage());
-}
+$esewa->process(substr($productId, 0, 16), 100, 10);

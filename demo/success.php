@@ -4,25 +4,29 @@
 require dirname(__DIR__) . '/vendor/autoload.php';
 
 use Cixware\Esewa\Client;
+use Cixware\Esewa\Config;
+use GuzzleHttp\Exception\GuzzleException;
 
-try {
-    $esewa = new Client([
-        'is_production' => false,
-    ]);
-} catch (Exception $exception) {
-    exit($exception->getCode() . ' -> ' . $exception->getMessage());
-}
+// format params
+$demoUrl = 'http://localhost:8090/demo/';
+$successUrl = $demoUrl . 'success.php';
+$failureUrl = $demoUrl . 'failed.php';
+
+$config = new Config($successUrl, $failureUrl);
+$esewa = new Client($config);
 
 // placeholder fields
 $productId = $_GET['oid'] ?? null;
 $referenceId = $_GET['refId'] ?? null;
 $amount = $_GET['amt'] ?? null;
 
-if ($referenceId !== null || $productId !== null || $amount !== null) {
+try {
     $status = $esewa->verify($referenceId, $productId, (float)$amount);
-    if (isset($status->verified) && $status->verified) {
-        dd($status, 'The payment is verified.');
+    if ($status) {
+        exit('The payment is verified.');
     }
-} else {
-    dd('The payment is not verified.');
+
+    exit('The payment is not verified.');
+} catch (GuzzleException|JsonException $e) {
+    exit($e->getMessage());
 }

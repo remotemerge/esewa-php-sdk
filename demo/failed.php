@@ -3,4 +3,4 @@
 // init autoloader
 require dirname(__DIR__) . '/vendor/autoload.php';
 
-dd($_REQUEST);
+exit(print_r($_REQUEST, true));
