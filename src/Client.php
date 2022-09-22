@@ -24,7 +24,7 @@ final class Client
         $formInputs = [
             'scd' => $this->config->merchantCode,
             'su' => $this->config->successUrl,
-            'fu' => $this->config->failureUrl,
+            'fu' => $this->config->failureUrl . '?' . http_build_query(['pid' => $productId]),
             'pid' => $productId,
             'amt' => $amount,
             'txAmt' => $taxAmount,
