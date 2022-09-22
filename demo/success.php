@@ -8,8 +8,9 @@ use Cixware\Esewa\Config;
 use GuzzleHttp\Exception\GuzzleException;
 
 // format params
-$successUrl = 'http://localhost:8090/demo/success.php';
-$failureUrl = 'http://localhost:8090/demo/failed.php';
+$demoUrl = 'http://localhost:8090/demo/';
+$successUrl = $demoUrl . 'success.php';
+$failureUrl = $demoUrl . 'failed.php';
 
 $config = new Config($successUrl, $failureUrl);
 $esewa = new Client($config);
