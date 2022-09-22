@@ -60,7 +60,7 @@ $config = new Config($successUrl, $failureUrl, 'b4e...e8c753...2c6e8b', 'product
 $esewa = new Client($config);
 ```
 
-Here `b4e...e8c753...2c6e8b` is merchant code retried from eSewa.
+Here `b4e...e8c753...2c6e8b` is merchant code retrieved from eSewa.
 
 ### Make Payment
 
@@ -108,7 +108,7 @@ We in [Cixware] :heart: Open Source Software and welcome the community for contr
 * Your code must follow [PSR] standards.
 * Your code must pass the tests.
 * You must document and write clean code.
-* Make PR in `master` branch.
+* Make PR in `main` branch.
 
 Thanks for your contribution and support :relaxed:
 
