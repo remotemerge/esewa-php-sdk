@@ -16,26 +16,26 @@ jobs:
     strategy:
       matrix:
         # OS list
-        os: [ubuntu-18.04, ubuntu-20.04, ubuntu-22.04]
+        os: [ubuntu-latest]
         # Supported PHP versions
         php: ['7.4', '8.0', '8.1']
     steps:
-      # action for repository checkout
-      - uses: actions/checkout@v2
+      # repository checkout
+      - uses: actions/checkout@v3
 
-      - name: Install PHP
+      - name: "Install PHP"
         uses: shivammathur/setup-php@v2
         with:
           php-version: ${{ matrix.php }}
 
-      - name: Update Composer
+      - name: "Update composer"
         run: sudo composer self-update
 
-      - name: Version Info
+      - name: "Version info"
         run: php --version && composer --version
 
-      - name: Init Composer
+      - name: "Init composer"
         run: composer init --no-interaction --stability=stable
 
-      - name: Install Package
+      - name: "Install dependencies"
         run: composer require cixware/esewa-php-sdk
