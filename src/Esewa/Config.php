@@ -2,7 +2,7 @@
 
 namespace Cixware\Payment\Esewa;
 
-final class Configure
+final class Config
 {
     /**
      * API url for development
