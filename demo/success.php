@@ -21,7 +21,7 @@ $amount = $_GET['amt'] ?? null;
 
 try {
     $status = $esewa->verify($referenceId, $productId, (float)$amount);
-    if (isset($status->verified) && $status->verified) {
+    if ($status) {
         exit('The payment is verified.');
     }
 
