@@ -1,6 +1,6 @@
 <?php declare(strict_types=1);
 
-namespace Cixware\Payment\Esewa;
+namespace Cixware\Esewa;
 
 use GuzzleHttp\Exception\GuzzleException;
 use JsonException;
@@ -35,9 +35,11 @@ final class Client
 
         // generate form from attributes
         $htmlForm = '<form method="POST" action="' . ($this->config->apiUrl . '/epay/main') . '" id="esewa-form">';
+
         foreach ($formInputs as $name => $value):
             $htmlForm .= '<input name="' . $name . '" type="hidden" value="' . $value . '">';
         endforeach;
+
         $htmlForm .= '</form><script type="text/javascript">document.getElementById("esewa-form").submit();</script>';
 
         // output the form

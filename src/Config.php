@@ -1,6 +1,6 @@
 <?php declare(strict_types=1);
 
-namespace Cixware\Payment\Esewa;
+namespace Cixware\Esewa;
 
 final class Config
 {
