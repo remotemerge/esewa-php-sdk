@@ -47,9 +47,8 @@
   "extra": {},
   "autoload": {
     "psr-4": {
-      "Cixware\\Esewa\\": "src/"
-    },
-    "classmap": []
+      "Cixware\\Payment\\Esewa\\": "src/Esewa"
+    }
   },
   "autoload-dev": {
     "psr-4": {
@@ -57,6 +56,5 @@
     }
   },
   "minimum-stability": "stable",
-  "prefer-stable": true,
-  "scripts": {}
+  "prefer-stable": true
 }
