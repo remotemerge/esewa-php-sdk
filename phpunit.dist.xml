@@ -9,4 +9,9 @@
       <exclude>tests/Unit</exclude>
     </testsuite>
   </testsuites>
+  <php>
+    <env name="ESEWA_REFERENCE_ID" value=""/>
+    <env name="ESEWA_PRODUCT_ID" value=""/>
+    <env name="ESEWA_PAID_AMOUNT" value=""/>
+  </php>
 </phpunit>
