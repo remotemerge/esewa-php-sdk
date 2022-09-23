@@ -12,6 +12,7 @@ $finder = PhpCsFixer\Finder::create()
 // init config
 $config = new PhpCsFixer\Config();
 $config->setUsingCache(false)
+    ->setIndent('    ')
     ->setRiskyAllowed(true);
 
 // set rules
