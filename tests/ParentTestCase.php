@@ -4,7 +4,6 @@ namespace Tests;
 
 use Cixware\Esewa\Client;
 use Cixware\Esewa\Config;
-use Dotenv\Dotenv;
 use PHPUnit\Framework\TestCase;
 
 class ParentTestCase extends TestCase
@@ -17,13 +16,6 @@ class ParentTestCase extends TestCase
 
         // default timezone
         date_default_timezone_set('UTC');
-
-        // load env
-        $dotenv = Dotenv::createImmutable(dirname(__DIR__));
-        $dotenv->load();
-
-        // required fields
-        $dotenv->required(['ESEWA_REFERENCE_ID', 'ESEWA_PRODUCT_ID', 'ESEWA_PAID_AMOUNT']);
 
         // format params
         $demoUrl = 'http://localhost:8090/demo/';
