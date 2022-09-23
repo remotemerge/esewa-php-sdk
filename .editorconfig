@@ -1,24 +1,20 @@
 root = true
 
-# config for all files
+# global
 [*]
 charset = utf-8
 end_of_line = lf
 insert_final_newline = true
 indent_style = space
-indent_size = 4
+indent_size = 2
 trim_trailing_whitespace = true
 max_line_length = 120
 
-# config for JSON and YAML
-[*.{json, xml, yml}]
-indent_size = 2
+# php
+[*.php]
+indent_size = 4
 
-# shell script
-[*.sh]
-indent_size = 2
-
-# config for Markdown
+# markdown
 [*.md]
 trim_trailing_whitespace = false
 insert_final_newline = false
