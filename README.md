@@ -3,12 +3,12 @@
 [![@cixware on Twitter](https://img.shields.io/badge/Twitter-%40cixware-blue.svg?style=flat&logo=twitter)](https://twitter.com/cixware)
 [![@cixware on Facebook](https://img.shields.io/badge/Facebok-%40cixware-blue.svg?style=flat&logo=facebook)](https://www.facebook.com/cixware)
 ![PHP Version](https://img.shields.io/packagist/php-v/cixware/esewa-php-sdk)
-![Build](https://img.shields.io/github/workflow/status/cixware/esewa-php-sdk/Install?logo=github)
+![Build](https://img.shields.io/github/actions/workflow/status/cixware/esewa-php-sdk/install.yml?branch=main&logo=github)
 [![Downloads](https://img.shields.io/packagist/dt/cixware/esewa-php-sdk.svg?style=flat&label=Downloads)](https://packagist.org/packages/cixware/esewa-php-sdk)
 ![License](https://img.shields.io/github/license/cixware/esewa-php-sdk)
 
-The **eSewa SDK for PHP** makes it easy for developers to access [eSewa] payment service in their PHP code. This repo
-and the package are developed and maintained by [Cixware]. You can find more details in [eSewa Documentation] site.
+We in [Cixware] develop and maintain the **eSewa SDK for PHP**, making it easy for developers to integrate the eSewa
+payment service into their PHP code. Find more details on the [eSewa Documentation] website.
 
 # Getting Started
 
@@ -28,12 +28,12 @@ composer require cixware/esewa-php-sdk
 
 ## Getting Help
 
-We use the GitHub issues for tracking bugs and feature requests and address them as quickly as possible.
+We track bugs and feature requests using GitHub issues and prioritize addressing them ASAP.
 
-* Call or Email [eSewa] for account and payment related queries.
-* If it turns out that you may have found a bug,
-  please [open an issue](https://github.com/cixware/esewa-php-sdk/issues/new).
-* For further development and integration in your application contact [Cixware].
+* For account and payment related concerns, please reach [eSewa] by calling or emailing them.
+* If you believe you have found a bug, please [open an issue](https://github.com/cixware/esewa-php-sdk/issues/new) on
+  GitHub.
+* For assistance with integrating eSewa into your application, don't hesitate to contact [Cixware].
 
 ## Quick Examples
 
@@ -64,8 +64,9 @@ Here `b4e...e8c753...2c6e8b` is merchant code retrieved from eSewa.
 
 ### Make Payment
 
-This will redirect the user to eSewa dashboard for payment processing. Once the payment is successful, it will redirect
-to your success URL. If the payment fails, it will redirect to your failure URL.
+When the user initiates the payment process, the package redirects the user to an eSewa site for payment processing. The
+eSewa system will redirect the user to your specified success URL if the payment is successful and to the failure URL if
+the payment fails.
 
 ```php
 $esewa->process('P101W201', 100, 15, 80, 50);
@@ -83,8 +84,8 @@ The `tAmt` total amount is auto calculated based on the parameters.
 
 ### Verify Payment
 
-Transaction verification process provide you filter that identify potentially fraudulent transactions and screen against
-data such as the value of transaction amount etc.
+The verification process identifies potentially fraudulent transactions and checks them against data such as transaction
+amount and other parameters from the previous payment process.
 
 ```php
 $status = $esewa->verify('R101', 'P101W201', 245);
@@ -103,20 +104,19 @@ The method accepts 3 parameters.
 
 # Contribution
 
-We in [Cixware] :heart: Open Source Software and welcome the community for contribution. Please follow the guidelines.
+We at [Cixware] highly value and appreciate the contributions of the Open Source community. To ensure a smooth and
+efficient process, please stick to the following guidelines when submitting code:
 
-* Your code must follow [PSR] standards.
-* Your code must pass the tests.
-* You must document and write clean code.
-* Make PR in `main` branch.
+- Ensure that your code adheres to [PSR] standards.
+- All submitted code must pass relevant tests.
+- Proper documentation and clean code practices are a must.
+- Please make pull requests to the `main` branch.
 
-Thanks for your contribution and support :relaxed:
+Thank you for your support and contributions. We look forward to reviewing your code.
 
 [eSewa]: https://esewa.com.np
 
 [eSewa Documentation]: https://developer.esewa.com.np
-
-[eSewa Contact]: https://blog.esewa.com.np/contact-us/
 
 [Cixware]: https://cixware.io
 
