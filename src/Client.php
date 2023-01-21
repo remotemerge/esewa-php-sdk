@@ -73,7 +73,7 @@ final class Client
                 'rid' => $referenceId,
                 'pid' => $productId,
                 'amt' => $amount,
-            ]
+            ],
         ]);
 
         // grab response and parse the XML

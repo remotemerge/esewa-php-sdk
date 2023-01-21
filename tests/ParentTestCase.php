@@ -10,6 +10,11 @@ class ParentTestCase extends TestCase
 {
     protected Client $esewa;
 
+    /**
+     * @var string
+     */
+    private const DEMO_URL = 'http://localhost:8090/demo/';
+
     protected function setUp(): void
     {
         parent::setUp();
@@ -17,10 +22,9 @@ class ParentTestCase extends TestCase
         // default timezone
         date_default_timezone_set('UTC');
 
-        // format params
-        $demoUrl = 'http://localhost:8090/demo/';
-        $successUrl = $demoUrl . 'success.php';
-        $failureUrl = $demoUrl . 'failed.php';
+        // format urls
+        $successUrl = self::DEMO_URL . 'success.php';
+        $failureUrl = self::DEMO_URL . 'failed.php';
 
         $config = new Config($successUrl, $failureUrl);
         $this->esewa = new Client($config);
