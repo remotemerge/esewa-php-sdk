@@ -6,7 +6,7 @@ use GuzzleHttp\Exception\GuzzleException;
 use JsonException;
 use Tests\ParentTestCase;
 
-class VerificationTest extends ParentTestCase
+final class VerificationTest extends ParentTestCase
 {
     /**
      * @throws GuzzleException
