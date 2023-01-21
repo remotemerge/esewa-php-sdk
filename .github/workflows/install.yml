@@ -5,12 +5,9 @@ on:
   release:
     types: [created]
     branches: [main]
-  schedule:
-    # run every six hour
-    - cron:  '15 */6 * * *'
 
 jobs:
-  test:
+  Test:
     # Current OS
     runs-on: ${{ matrix.os }}
     strategy:
@@ -18,7 +15,7 @@ jobs:
         # OS list
         os: [ubuntu-latest]
         # Supported PHP versions
-        php: ['7.4', '8.0', '8.1']
+        php: ['7.4', '8.0', '8.1', '8.2']
     steps:
       - name: "Install PHP"
         uses: shivammathur/setup-php@v2
