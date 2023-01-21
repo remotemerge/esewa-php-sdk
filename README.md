@@ -7,7 +7,7 @@
 [![Downloads](https://img.shields.io/packagist/dt/cixware/esewa-php-sdk.svg?style=flat&label=Downloads)](https://packagist.org/packages/cixware/esewa-php-sdk)
 ![License](https://img.shields.io/github/license/cixware/esewa-php-sdk)
 
-We in [Cixware] develop and maintain the **eSewa SDK for PHP**, making it easy for developers to integrate the eSewa
+We at [Cixware] develop and maintain the **eSewa SDK for PHP**, making it easy for developers to integrate the eSewa
 payment service into their PHP code. Find more details on the [eSewa Documentation] website.
 
 # Getting Started
@@ -104,7 +104,7 @@ The method accepts 3 parameters.
 
 # Contribution
 
-We at [Cixware] highly value and appreciate the contributions of the Open Source community. To ensure a smooth and
+We highly value and appreciate the contributions of the Open Source community. To ensure a smooth and
 efficient process, please stick to the following guidelines when submitting code:
 
 - Ensure that your code adheres to [PSR] standards.
