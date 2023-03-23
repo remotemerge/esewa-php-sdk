@@ -24,7 +24,7 @@ final class Config
      */
     public string $failureUrl;
 
-    public function __construct(string $successUrl, string $failureUrl, ?string $merchantCode)
+    public function __construct(string $successUrl, string $failureUrl, ?string $merchantCode = null)
     {
         $this->successUrl = $successUrl;
         $this->failureUrl = $failureUrl;
