@@ -31,7 +31,7 @@ final class Config
         $this->merchantCode = $merchantCode ?? 'EPAYTEST';
 
         // set API url for production mode
-        if (strtoupper($merchantCode) !== 'EPAYTEST') {
+        if (strtoupper($this->merchantCode) !== 'EPAYTEST') {
             $this->apiUrl = 'https://esewa.com.np';
         }
     }
