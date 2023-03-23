@@ -27,8 +27,7 @@
   ],
   "require": {
     "php": ">=7.4",
-    "ext-json": "*",
-    "ext-xml": "*",
+    "ext-simplexml": "*",
     "guzzlehttp/guzzle": "^7.5"
   },
   "require-dev": {
