@@ -3,7 +3,6 @@
 namespace Cixware\Esewa;
 
 use GuzzleHttp\Exception\GuzzleException;
-use JsonException;
 
 final class Client
 {
@@ -47,7 +46,6 @@ final class Client
 
     /**
      * This method verifies the payment using the reference ID.
-     * @throws JsonException
      * @throws GuzzleException
      */
     public function verify(string $referenceId, string $productId, float $amount): bool
@@ -79,19 +77,17 @@ final class Client
         $response = $this->parseXml($request->getBody()->getContents());
 
         // check for "success" or "failure" status
-        return isset($response->response_code) && strtolower(trim($response->response_code)) === 'success';
+        return strtolower($response) === 'success';
     }
 
     /**
      * This method parse XML string and return the object.
-     * @throws JsonException
      */
-    private function parseXml(string $str): object
+    private function parseXml(string $xmlStr): string
     {
-        $parser = xml_parser_create();
-        xml_parse_into_struct($parser, $str, $vals);
-        xml_parser_free($parser);
-
-        return json_decode(json_encode($vals), false, 512, JSON_THROW_ON_ERROR);
+        // Load the XML string
+        $xml = simplexml_load_string($xmlStr);
+        // extract the value
+        return trim((string)$xml->response_code);
     }
 }
