@@ -18,4 +18,4 @@ $esewa = new Client($config);
 $productId = substr(bin2hex(random_bytes(8)), 0, 16);
 
 // Process the payment
-$esewa->process($productId, 100.0, 10.0);
+$esewa->process($productId, 100, 10);
