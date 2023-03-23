@@ -24,14 +24,14 @@ final class Config
      */
     public string $failureUrl;
 
-    public function __construct(string $successUrl, string $failureUrl, string $merchantCode = 'EPAYTEST', string $environment = 'development')
+    public function __construct(string $successUrl, string $failureUrl, ?string $merchantCode)
     {
         $this->successUrl = $successUrl;
         $this->failureUrl = $failureUrl;
-        $this->merchantCode = $merchantCode;
+        $this->merchantCode = $merchantCode ?? 'EPAYTEST';
 
         // set API url for production
-        if ($environment === 'production') {
+        if (strtoupper($merchantCode) !== 'EPAYTEST') {
             $this->apiUrl = 'https://esewa.com.np';
         }
     }
