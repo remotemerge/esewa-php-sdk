@@ -24,6 +24,6 @@ try {
     // Verify the payment and output the result
     $status = $esewa->verify($referenceId, $productId, (float)$amount);
     exit($status ? 'The payment is verified.' : 'The payment is not verified.');
-} catch (GuzzleException|JsonException $e) {
+} catch (GuzzleException $e) {
     exit($e->getMessage());
 }
