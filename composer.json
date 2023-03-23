@@ -13,14 +13,12 @@
     }
   ],
   "keywords": [
+    "php",
     "api",
     "esewa",
-    "fonepay",
-    "gateway",
-    "khalti",
-    "nepal",
     "payment",
-    "php"
+    "gateway",
+    "nepal"
   ],
   "require": {
     "php": ">=7.4",
