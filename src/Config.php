@@ -5,7 +5,7 @@ namespace Cixware\Esewa;
 final class Config
 {
     /**
-     * API url for development
+     * The API url for development mode
      */
     public string $apiUrl = 'https://uat.esewa.com.np';
 
@@ -15,12 +15,12 @@ final class Config
     public string $merchantCode;
 
     /**
-     * The callback url for successful transaction
+     * The callback URL for successful eSewa payments
      */
     public string $successUrl;
 
     /**
-     * The callback url for failed transaction
+     * The callback URL for failed eSewa payments
      */
     public string $failureUrl;
 
@@ -30,7 +30,7 @@ final class Config
         $this->failureUrl = $failureUrl;
         $this->merchantCode = $merchantCode ?? 'EPAYTEST';
 
-        // set API url for production
+        // set API url for production mode
         if (strtoupper($merchantCode) !== 'EPAYTEST') {
             $this->apiUrl = 'https://esewa.com.np';
         }
