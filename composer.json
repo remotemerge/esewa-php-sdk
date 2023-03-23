@@ -3,13 +3,18 @@
   "version": "2.4.0",
   "type": "library",
   "description": "eSewa payment gateway integration in PHP.",
-  "homepage": "https://developer.esewa.com.np",
+  "homepage": "https://github.com/cixware/esewa-php-sdk",
   "license": "MIT",
   "authors": [
     {
       "name": "Cixware",
       "email": "support@cixware.io",
       "homepage": "https://cixware.io"
+    },
+    {
+      "name": "Madan Sapkota",
+      "email": "contact+github@madansapkota.com",
+      "homepage": "https://madansapkota.com"
     }
   ],
   "keywords": [
@@ -22,11 +27,8 @@
   ],
   "require": {
     "php": ">=7.4",
-    "ext-curl": "*",
     "ext-json": "*",
-    "ext-libxml": "*",
-    "ext-openssl": "*",
-    "ext-simplexml": "*",
+    "ext-xml": "*",
     "guzzlehttp/guzzle": "^7.5"
   },
   "require-dev": {
