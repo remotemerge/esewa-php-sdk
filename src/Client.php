@@ -4,7 +4,6 @@ namespace Cixware\Esewa;
 
 use GuzzleHttp\Exception\GuzzleException;
 use JsonException;
-use SimpleXMLElement;
 
 final class Client
 {
@@ -18,7 +17,7 @@ final class Client
     /**
      * This method creates the form in runtime and post the data to eSewa server.
      */
-    public function process(string $productId, float $amount, float $taxAmount, float $serviceAmount = 0, float $deliveryAmount = 0): void
+    public function process(string $productId, float $amount, float $taxAmount, float $serviceAmount = 0.0, float $deliveryAmount = 0.0): void
     {
         // format form attributes
         $formInputs = [
@@ -37,7 +36,7 @@ final class Client
         $htmlForm = '<form method="POST" action="' . ($this->config->apiUrl . '/epay/main') . '" id="esewa-form">';
 
         foreach ($formInputs as $name => $value):
-            $htmlForm .= '<input name="' . $name . '" type="hidden" value="' . $value . '">';
+            $htmlForm .= sprintf('<input name="%s" type="hidden" value="%s">', $name, $value);
         endforeach;
 
         $htmlForm .= '</form><script type="text/javascript">document.getElementById("esewa-form").submit();</script>';
@@ -89,7 +88,10 @@ final class Client
      */
     private function parseXml(string $str): object
     {
-        $xml = simplexml_load_string($str, SimpleXMLElement::class, LIBXML_NOCDATA);
-        return json_decode(json_encode((array)$xml, JSON_THROW_ON_ERROR), false, 512, JSON_THROW_ON_ERROR);
+        $parser = xml_parser_create();
+        xml_parse_into_struct($parser, $str, $vals);
+        xml_parser_free($parser);
+
+        return json_decode(json_encode($vals), false, 512, JSON_THROW_ON_ERROR);
     }
 }
