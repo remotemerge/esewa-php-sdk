@@ -13,8 +13,7 @@ payment service into their PHP code. Find more details on the [eSewa Documentati
 ## Getting Started
 
 1. **Sign up for eSewa** – Before you begin, you need to sign up and retrieve your credentials from [eSewa].
-2. **Minimum requirements** – To run the SDK, your system will need to meet the minimum requirements, including having *
-   *PHP >= 7.4**. We highly recommend having it compiled with the cURL extension and cURL compiled with a TLS backend (
+2. **Minimum requirements** – To run the SDK, your system will need to meet the minimum requirements, including having **PHP >= 7.4**. We highly recommend having it compiled with the cURL extension and cURL compiled with a TLS backend (
    e.g., NSS or OpenSSL).
 
 ## Installation
@@ -84,6 +83,7 @@ process(string $pid, float $amt, float $txAmt = 0, float $psc = 0, float $pdc = 
 5. `pdc` The delivery charge (if applicable); default to `0`.
 
 ### OTP for Payment
+
 When using the eSewa payment gateway in production mode, an OTP (One-Time Password) code is sent to the customer's mobile number to verify the transaction. In development mode, the OTP code is a fixed six-digit number, `123456`, for testing purposes.
 
 ### Verify Payment
