@@ -10,14 +10,14 @@
 We at [Cixware] develop and maintain the **eSewa SDK for PHP**, making it easy for developers to integrate the eSewa
 payment service into their PHP code. Find more details on the [eSewa Documentation] website.
 
-# Getting Started
+## Getting Started
 
 1. **Sign up for eSewa** – Before you begin, you need to sign up and retrieve your credentials from [eSewa].
-2. **Minimum requirements** – To run the SDK, your system will need to meet the minimum requirements, including
-   having **PHP >= 7.4**. We highly recommend having it compiled with the cURL extension and cURL compiled with a TLS
-   backend (e.g., NSS or OpenSSL). We do not support outdated PHP versions.
+2. **Minimum requirements** – To run the SDK, your system will need to meet the minimum requirements, including having *
+   *PHP >= 7.4**. We highly recommend having it compiled with the cURL extension and cURL compiled with a TLS backend (
+   e.g., NSS or OpenSSL).
 
-# Installation
+## Installation
 
 **Install the SDK** – Using [Composer] is the recommended way to install the eSewa SDK for PHP. The SDK is available
 via [Packagist] under the [`cixware/esewa-php-sdk`][install-packagist] package.
@@ -37,26 +37,25 @@ We track bugs and feature requests using GitHub issues and prioritize addressing
 
 ## Quick Examples
 
-### Create a eSewa client
+### Create an eSewa client
 
 ```php
-// init composer autoloader.
+// Init composer autoloader.
 require 'vendor/autoload.php';
 
-use Cixware\Esewa\Client;
-use Cixware\Esewa\Config;
+use Cixware\Esewa\Client;use Cixware\Esewa\Config;
 
-// set success and failure callback urls
+// Set success and failure callback URLs.
 $successUrl = 'https://example.com/success.php';
 $failureUrl = 'https://example.com/failed.php';
 
-// config for development
+// Config for development.
 $config = new Config($successUrl, $failureUrl);
 
-// config for production
-$config = new Config($successUrl, $failureUrl, 'b4e...e8c753...2c6e8b', 'production');
+// Config for production.
+$config = new Config($successUrl, $failureUrl, 'b4e...e8c753...2c6e8b');
 
-// initialize eSewa client
+// Initialize eSewa client.
 $esewa = new Client($config);
 ```
 
@@ -82,15 +81,22 @@ The method accepts 5 parameters.
 
 The `tAmt` total amount is auto calculated based on the parameters.
 
+### OTP for Payment
+When using the eSewa payment gateway in production mode, an OTP (One-Time Password) code is sent to the customer's mobile number to verify the transaction. In development mode, the OTP code is a fixed six-digit number, `123456`, for testing purposes.
+
+```php
+
+```php
+
 ### Verify Payment
 
 The verification process identifies potentially fraudulent transactions and checks them against data such as transaction
-amount and other parameters from the previous payment process.
+amount and other parameters.
 
 ```php
 $status = $esewa->verify('R101', 'P101W201', 245);
 if ($status) {
-    // verification successful
+    // Verification successful.
 }
 ```
 
@@ -104,8 +110,8 @@ The method accepts 3 parameters.
 
 # Contribution
 
-We highly value and appreciate the contributions of the Open Source community. To ensure a smooth and
-efficient process, please stick to the following guidelines when submitting code:
+We highly value and appreciate the contributions of the Open Source community. To ensure a smooth and efficient process,
+please stick to the following guidelines when submitting code:
 
 - Ensure that your code adheres to [PSR] standards.
 - All submitted code must pass relevant tests.

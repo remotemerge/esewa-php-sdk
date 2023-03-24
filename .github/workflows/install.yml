@@ -22,13 +22,10 @@ jobs:
         with:
           php-version: ${{ matrix.php }}
 
-      - name: "Update composer"
-        run: sudo composer self-update
-
-      - name: "Version info"
+      - name: "Display version information"
         run: php --version && composer --version
 
-      - name: "Init composer"
+      - name: "Initialize composer"
         run: composer init --no-interaction --stability=stable
 
       - name: "Install dependencies"

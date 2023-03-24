@@ -3,8 +3,6 @@
 namespace Cixware\Esewa;
 
 use GuzzleHttp\Exception\GuzzleException;
-use JsonException;
-use SimpleXMLElement;
 
 final class Client
 {
@@ -18,7 +16,7 @@ final class Client
     /**
      * This method creates the form in runtime and post the data to eSewa server.
      */
-    public function process(string $productId, float $amount, float $taxAmount, float $serviceAmount = 0, float $deliveryAmount = 0): void
+    public function process(string $productId, float $amount, float $taxAmount, float $serviceAmount = 0.0, float $deliveryAmount = 0.0): void
     {
         // format form attributes
         $formInputs = [
@@ -37,7 +35,7 @@ final class Client
         $htmlForm = '<form method="POST" action="' . ($this->config->apiUrl . '/epay/main') . '" id="esewa-form">';
 
         foreach ($formInputs as $name => $value):
-            $htmlForm .= '<input name="' . $name . '" type="hidden" value="' . $value . '">';
+            $htmlForm .= sprintf('<input name="%s" type="hidden" value="%s">', $name, $value);
         endforeach;
 
         $htmlForm .= '</form><script type="text/javascript">document.getElementById("esewa-form").submit();</script>';
@@ -48,7 +46,6 @@ final class Client
 
     /**
      * This method verifies the payment using the reference ID.
-     * @throws JsonException
      * @throws GuzzleException
      */
     public function verify(string $referenceId, string $productId, float $amount): bool
@@ -80,16 +77,17 @@ final class Client
         $response = $this->parseXml($request->getBody()->getContents());
 
         // check for "success" or "failure" status
-        return isset($response->response_code) && strtolower(trim($response->response_code)) === 'success';
+        return strtolower($response) === 'success';
     }
 
     /**
      * This method parse XML string and return the object.
-     * @throws JsonException
      */
-    private function parseXml(string $str): object
+    private function parseXml(string $xmlStr): string
     {
-        $xml = simplexml_load_string($str, SimpleXMLElement::class, LIBXML_NOCDATA);
-        return json_decode(json_encode((array)$xml, JSON_THROW_ON_ERROR), false, 512, JSON_THROW_ON_ERROR);
+        // Load the XML string
+        $xml = simplexml_load_string($xmlStr);
+        // extract the value
+        return trim((string)$xml->response_code);
     }
 }
