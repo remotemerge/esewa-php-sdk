@@ -1,31 +1,33 @@
+# The workflow to install the package on different OS and PHP versions
 name: Install
 
-# run on
+# Trigger the workflow on new releases
 on:
   release:
-    types: [created]
-    branches: [main]
+    types: [ created ]
+    branches: [ main ]
 
 jobs:
-  Test:
-    # Current OS
+  php-test:
+    # Run on the latest OS versions
     runs-on: ${{ matrix.os }}
     strategy:
       matrix:
-        # OS list
-        os: [ubuntu-latest]
-        # Supported PHP versions
-        php: ['7.4', '8.0', '8.1', '8.2']
+        # Define the OS and PHP versions to test
+        os: [ ubuntu-latest, windows-latest, macos-latest ]
+        php: [ '7.4', '8.0', '8.1', '8.2', '8.3' ]
+
     steps:
       - name: "Install PHP"
         uses: shivammathur/setup-php@v2
         with:
           php-version: ${{ matrix.php }}
+          extensions: curl, simplexml
 
-      - name: "Display version information"
+      - name: "Display PHP and Composer version information"
         run: php --version && composer --version
 
-      - name: "Initialize composer"
+      - name: "Initialize Composer"
         run: composer init --no-interaction --stability=stable
 
       - name: "Install dependencies"
