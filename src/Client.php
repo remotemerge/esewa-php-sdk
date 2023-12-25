@@ -2,7 +2,7 @@
 
 namespace Cixware\Esewa;
 
-use GuzzleHttp\Exception\GuzzleException;
+use Exception;
 
 final class Client
 {
@@ -46,38 +46,54 @@ final class Client
 
     /**
      * This method verifies the payment using the reference ID.
-     * @throws GuzzleException
+     * @throws Exception
      */
     public function verify(string $referenceId, string $productId, float $amount): bool
     {
-        // init Guzzle client
-        $client = new \GuzzleHttp\Client([
-            'base_uri' => $this->config->apiUrl,
-            'http_errors' => false,
-            'headers' => [
-                'User-Agent' => $_SERVER['HTTP_USER_AGENT'] ?? '',
-                'Accept' => 'application/xml',
-            ],
-            'allow_redirects' => [
-                'protocols' => ['https'],
-            ],
+        // Initialize a cURL handle
+        $ch = curl_init();
+
+        // Set cURL options
+        curl_setopt($ch, CURLOPT_URL, $this->config->apiUrl . '/epay/transrec');
+        curl_setopt($ch, CURLOPT_POST, true);
+        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+        curl_setopt($ch, CURLOPT_FOLLOWLOCATION, true);
+        curl_setopt($ch, CURLOPT_MAXREDIRS, 20);
+        curl_setopt($ch, CURLOPT_PROTOCOLS, CURLPROTO_HTTPS);
+        curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, 2);
+        curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, true);
+
+        // Set HTTP headers
+        curl_setopt($ch, CURLOPT_HTTPHEADER, [
+            'Content-Type: application/x-www-form-urlencoded',
+            'Accept: application/xml',
         ]);
 
-        // init verification request
-        $request = $client->post('/epay/transrec', [
-            'form_params' => [
-                'scd' => $this->config->merchantCode,
-                'rid' => $referenceId,
-                'pid' => $productId,
-                'amt' => $amount,
-            ],
-        ]);
+        // Set the request data
+        curl_setopt($ch, CURLOPT_POSTFIELDS, http_build_query([
+            'scd' => $this->config->merchantCode,
+            'rid' => $referenceId,
+            'pid' => $productId,
+            'amt' => $amount,
+        ]));
 
-        // grab response and parse the XML
-        $response = $this->parseXml($request->getBody()->getContents());
+        // Send the request
+        $response = curl_exec($ch);
+
+        // Check for errors
+        if (curl_errno($ch)) {
+            // Handle errors here
+            throw new Exception(curl_error($ch));
+        }
+
+        // Close the cURL handle
+        curl_close($ch);
+
+        // Parse the XML response
+        $status = $this->parseXml($response);
 
         // check for "success" or "failure" status
-        return strtolower($response) === 'success';
+        return strtolower($status) === 'success';
     }
 
     /**
