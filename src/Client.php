@@ -81,7 +81,7 @@ final class Client
         $response = curl_exec($ch);
 
         // Check for errors
-        if (curl_errno($ch)) {
+        if (curl_errno($ch) !== 0) {
             // Handle errors here
             throw new Exception(curl_error($ch));
         }
