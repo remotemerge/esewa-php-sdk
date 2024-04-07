@@ -1,4 +1,6 @@
-<?php declare(strict_types=1);
+<?php
+
+declare(strict_types=1);
 
 namespace Cixware\Esewa;
 
@@ -104,6 +106,6 @@ final class Client
         // Load the XML string
         $xml = simplexml_load_string($xmlStr);
         // extract the value
-        return trim((string)$xml->response_code);
+        return trim((string) $xml->response_code);
     }
 }
