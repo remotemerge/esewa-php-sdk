@@ -1,4 +1,6 @@
-<?php declare(strict_types=1);
+<?php
+
+declare(strict_types=1);
 
 namespace Tests\Feature;
 
@@ -24,7 +26,7 @@ final class VerificationTest extends ParentTestCase
         // read values
         $referenceId = $_ENV['ESEWA_REFERENCE_ID'];
         $productId = $_ENV['ESEWA_PRODUCT_ID'];
-        $esewaAmount = (float)$_ENV['ESEWA_PAID_AMOUNT'];
+        $esewaAmount = (float) $_ENV['ESEWA_PAID_AMOUNT'];
 
         $response = $this->esewa->verify($referenceId, $productId, $esewaAmount);
         self::assertTrue($response);

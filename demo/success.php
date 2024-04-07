@@ -1,8 +1,9 @@
-<?php declare(strict_types=1);
+<?php
+
+declare(strict_types=1);
 
 use Cixware\Esewa\Client;
 use Cixware\Esewa\Config;
-use GuzzleHttp\Exception\GuzzleException;
 
 // Require the autoloader
 require dirname(__DIR__) . '/vendor/autoload.php';
@@ -22,8 +23,8 @@ $amount = $_GET['amt'] ?? null;
 
 try {
     // Verify the payment and output the result
-    $status = $esewa->verify($referenceId, $productId, (float)$amount);
+    $status = $esewa->verify($referenceId, $productId, (float) $amount);
     exit($status ? 'The payment is verified.' : 'The payment is not verified.');
-} catch (GuzzleException $guzzleException) {
-    exit($guzzleException->getMessage());
+} catch (Exception $exception) {
+    exit($exception->getMessage());
 }
