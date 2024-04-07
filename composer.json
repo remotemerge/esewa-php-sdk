@@ -1,6 +1,6 @@
 {
   "name": "cixware/esewa-php-sdk",
-  "version": "2.6.0",
+  "version": "2.6.1",
   "type": "library",
   "description": "eSewa payment gateway integration in PHP.",
   "homepage": "https://github.com/cixware/esewa-php-sdk",
@@ -31,10 +31,12 @@
     "ext-simplexml": "*"
   },
   "require-dev": {
-    "ext-json": "*",
     "friendsofphp/php-cs-fixer": "^3.52.1",
     "phpunit/phpunit": "^9.6.19",
     "rector/rector": "^1.0.4"
+  },
+  "suggest": {
+    "cixware/esewa-php-sdk": "This package is no longer maintained. Please use remotemerge/esewa-php-sdk instead."
   },
   "config": {
     "discard-changes": true,
