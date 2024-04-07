@@ -2,13 +2,13 @@
 
 namespace Tests\Feature;
 
-use GuzzleHttp\Exception\GuzzleException;
+use Exception;
 use Tests\ParentTestCase;
 
 final class VerificationTest extends ParentTestCase
 {
     /**
-     * @throws GuzzleException
+     * @throws Exception
      */
     public function test_with_invalid_data(): void
     {
@@ -17,7 +17,7 @@ final class VerificationTest extends ParentTestCase
     }
 
     /**
-     * @throws GuzzleException
+     * @throws Exception
      */
     public function test_with_valid_data(): void
     {
