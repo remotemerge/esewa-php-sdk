@@ -36,7 +36,7 @@
     "rector/rector": "^1.0.4"
   },
   "suggest": {
-    "cixware/esewa-php-sdk": "This package is no longer maintained. Please use remotemerge/esewa-php-sdk instead."
+    "remotemerge/esewa-php-sdk": "The package cixware/esewa-php-sdk is abandoned and no longer maintained. Consider using remotemerge/esewa-php-sdk instead."
   },
   "config": {
     "discard-changes": true,
