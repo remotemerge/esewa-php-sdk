@@ -13,12 +13,13 @@
     }
   ],
   "keywords": [
-    "php",
-    "api",
-    "esewa",
-    "payment",
-    "gateway",
-    "nepal"
+    "PHP",
+    "API",
+    "Token",
+    "eSewa",
+    "Payment",
+    "Gateway",
+    "Nepal"
   ],
   "require": {
     "php": ">=7.4",
