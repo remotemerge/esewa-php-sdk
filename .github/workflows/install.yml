@@ -4,7 +4,7 @@ name: Install
 # Trigger the workflow on new releases
 on:
   release:
-    types: [ created ]
+    types: [ published ]
     branches: [ main ]
 
 jobs:
@@ -31,4 +31,4 @@ jobs:
         run: composer init --no-interaction --stability=stable
 
       - name: "Install dependencies"
-        run: composer require cixware/esewa-php-sdk
+        run: composer require remotemerge/esewa-php-sdk
