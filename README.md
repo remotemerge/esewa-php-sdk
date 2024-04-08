@@ -112,15 +112,14 @@ verify(string $refId, string $oid, float $tAmt)
 
 # Contribution
 
-We highly value and appreciate the contributions of the Open Source community. To ensure a smooth and efficient process,
-please stick to the following guidelines when submitting code:
+The contributions of the Open Source community are highly valued and appreciated. To ensure a smooth and efficient process, please adhere to the following guidelines when submitting code:
 
-- Ensure that your code adheres to [PSR] standards.
+- Ensure that the code adheres to [PSR] standards.
 - All submitted code must pass relevant tests.
-- Proper documentation and clean code practices are a must.
+- Proper documentation and clean code practices are essential.
 - Please make pull requests to the `main` branch.
 
-Thank you for your support and contributions. We look forward to reviewing your code.
+Thank you for your support and contributions. Looking forward to reviewing your code.
 
 [eSewa]: https://esewa.com.np
 
