@@ -4,8 +4,8 @@ declare(strict_types=1);
 
 namespace Tests;
 
-use Cixware\Esewa\Client;
-use Cixware\Esewa\Config;
+use RemoteMerge\Esewa\Client;
+use RemoteMerge\Esewa\Config;
 use PHPUnit\Framework\TestCase;
 
 class ParentTestCase extends TestCase

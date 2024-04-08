@@ -2,8 +2,8 @@
 
 declare(strict_types=1);
 
-use Cixware\Esewa\Client;
-use Cixware\Esewa\Config;
+use RemoteMerge\Esewa\Client;
+use RemoteMerge\Esewa\Config;
 
 // Require the autoloader
 require dirname(__DIR__) . '/vendor/autoload.php';

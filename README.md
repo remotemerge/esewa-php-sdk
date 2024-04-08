@@ -1,38 +1,34 @@
 # eSewa SDK for PHP
 
-[![@cixware on Twitter](https://img.shields.io/badge/Twitter-%40cixware-blue.svg?style=flat&logo=twitter)](https://twitter.com/cixware)
-[![@cixware on Facebook](https://img.shields.io/badge/Facebok-%40cixware-blue.svg?style=flat&logo=facebook)](https://www.facebook.com/cixware)
-![PHP Version](https://img.shields.io/packagist/php-v/cixware/esewa-php-sdk)
-![Build](https://img.shields.io/github/actions/workflow/status/cixware/esewa-php-sdk/install.yml?branch=main&logo=github)
-[![Downloads](https://img.shields.io/packagist/dt/cixware/esewa-php-sdk.svg?style=flat&label=Downloads)](https://packagist.org/packages/cixware/esewa-php-sdk)
-![License](https://img.shields.io/github/license/cixware/esewa-php-sdk)
+[![X (formerly Twitter)](https://img.shields.io/badge/-@sapkotamadan-white?style=flat&logo=x&label=(formerly%20Twitter))](https://twitter.com/sapkotamadan)
+[![Facebook](https://img.shields.io/badge/Facebook-NextSapkotaMadan-blue?style=flat&logo=facebook)](https://www.facebook.com/NextSapkotaMadan)
+![PHP Version](https://img.shields.io/packagist/php-v/remotemerge/esewa-php-sdk)
+![Build](https://img.shields.io/github/actions/workflow/status/remotemerge/esewa-php-sdk/install.yml?branch=main&style=flat&logo=github)
+[![Downloads](https://img.shields.io/packagist/dt/remotemerge/esewa-php-sdk.svg?style=flat&label=Downloads)](https://packagist.org/packages/remotemerge/esewa-php-sdk)
+![License](https://img.shields.io/github/license/remotemerge/esewa-php-sdk)
 
-We at [Cixware] develop and maintain the **eSewa SDK for PHP**, making it easy for developers to integrate the eSewa
-payment service into their PHP code. Find more details on the [eSewa Documentation] website.
+The **eSewa SDK for PHP** is developed and maintained by [remotemerge] and the community, simplifying the integration of the eSewa payment service into PHP code. For more details, refer to the [eSewa Documentation] website.
 
 ## Getting Started
 
 1. **Sign up for eSewa** – Before you begin, you need to sign up and retrieve your credentials from [eSewa].
-2. **Minimum requirements** – To run the SDK, your system will need to meet the minimum requirements, including having **PHP >= 7.4**. We highly recommend having it compiled with the cURL extension and cURL compiled with a TLS backend (
-   e.g., NSS or OpenSSL).
+2. **Minimum requirements** – To run the SDK, your system will need to meet the minimum requirements, including having **PHP >= 7.4**. We highly recommend having it compiled with the cURL extension and cURL compiled with a TLS backend (e.g., NSS or OpenSSL).
 
 ## Installation
 
-**Install the SDK** – Using [Composer] is the recommended way to install the eSewa SDK for PHP. The SDK is available
-via [Packagist] under the [`cixware/esewa-php-sdk`][install-packagist] package.
+**Install the SDK** – Using Composer is the recommended way to install the eSewa SDK for PHP. The SDK is available via Packagist under the [`remotemerge/esewa-php-sdk`][install-package] package.
 
 ```
-composer require cixware/esewa-php-sdk
+composer require remotemerge/esewa-php-sdk
 ```
 
 ## Getting Help
 
-We track bugs and feature requests using GitHub issues and prioritize addressing them ASAP.
+Bugs and feature requests are tracked using GitHub issues, and prioritization is given to addressing them as soon as possible.
 
-* For account and payment related concerns, please reach [eSewa] by calling or emailing them.
-* If you believe you have found a bug, please [open an issue](https://github.com/cixware/esewa-php-sdk/issues/new) on
-  GitHub.
-* For assistance with integrating eSewa into your application, don't hesitate to contact [Cixware].
+* For account and payment related concerns, please contact [eSewa] directly by calling or emailing them.
+* If a bug is identified, please [open an issue](https://github.com/remotemerge/esewa-php-sdk/issues/new) on GitHub.
+* For assistance with integrating eSewa into your application, feel free to reach out to the support team.
 
 ## Quick Examples
 
@@ -42,7 +38,8 @@ We track bugs and feature requests using GitHub issues and prioritize addressing
 // Init composer autoloader.
 require 'vendor/autoload.php';
 
-use Cixware\Esewa\Client;use Cixware\Esewa\Config;
+use RemoteMerge\Esewa\Client;
+use RemoteMerge\Esewa\Config;
 
 // Set success and failure callback URLs.
 $successUrl = 'https://example.com/success.php';
@@ -110,28 +107,23 @@ verify(string $refId, string $oid, float $tAmt)
 
 **Note:** You can extract `refId` from the success response url parameter.
 
-# Contribution
+## Contribution
 
-We highly value and appreciate the contributions of the Open Source community. To ensure a smooth and efficient process,
-please stick to the following guidelines when submitting code:
+The contributions of the Open Source community are highly valued and appreciated. To ensure a smooth and efficient process, please adhere to the following guidelines when submitting code:
 
-- Ensure that your code adheres to [PSR] standards.
+- Ensure that the code adheres to [PSR] standards.
 - All submitted code must pass relevant tests.
-- Proper documentation and clean code practices are a must.
+- Proper documentation and clean code practices are essential.
 - Please make pull requests to the `main` branch.
 
-Thank you for your support and contributions. We look forward to reviewing your code.
+Thank you for your support and contributions. Looking forward to reviewing your code.
 
 [eSewa]: https://esewa.com.np
 
+[remotemerge]: https://github.com/remotemerge
+
 [eSewa Documentation]: https://developer.esewa.com.np
 
-[Cixware]: https://cixware.io
-
-[composer]: http://getcomposer.org
-
-[packagist]: http://packagist.org
-
-[install-packagist]: https://packagist.org/packages/cixware/esewa-php-sdk
+[install-package]: https://packagist.org/packages/remotemerge/esewa-php-sdk
 
 [PSR]: https://www.php-fig.org/psr

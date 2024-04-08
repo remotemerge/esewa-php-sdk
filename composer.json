@@ -1,16 +1,11 @@
 {
-  "name": "cixware/esewa-php-sdk",
-  "version": "2.6.1",
+  "name": "remotemerge/esewa-php-sdk",
+  "version": "2.7.0",
   "type": "library",
   "description": "eSewa payment gateway integration in PHP.",
-  "homepage": "https://github.com/cixware/esewa-php-sdk",
+  "homepage": "https://github.com/remotemerge/esewa-php-sdk",
   "license": "MIT",
   "authors": [
-    {
-      "name": "Cixware",
-      "email": "support@cixware.io",
-      "homepage": "https://cixware.io"
-    },
     {
       "name": "Madan Sapkota",
       "email": "contact+github@madansapkota.com",
@@ -18,12 +13,13 @@
     }
   ],
   "keywords": [
-    "php",
-    "api",
-    "esewa",
-    "payment",
-    "gateway",
-    "nepal"
+    "PHP",
+    "API",
+    "Token",
+    "eSewa",
+    "Payment",
+    "Gateway",
+    "Nepal"
   ],
   "require": {
     "php": ">=7.4",
@@ -35,9 +31,6 @@
     "phpunit/phpunit": "^9.6.19",
     "rector/rector": "^1.0.4"
   },
-  "suggest": {
-    "remotemerge/esewa-php-sdk": "The package cixware/esewa-php-sdk is abandoned and no longer maintained. Consider using remotemerge/esewa-php-sdk instead."
-  },
   "config": {
     "discard-changes": true,
     "optimize-autoloader": true,
@@ -47,7 +40,7 @@
   "extra": {},
   "autoload": {
     "psr-4": {
-      "Cixware\\Esewa\\": "src"
+      "RemoteMerge\\Esewa\\": "src"
     }
   },
   "autoload-dev": {
