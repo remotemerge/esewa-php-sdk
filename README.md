@@ -27,12 +27,11 @@ composer require cixware/esewa-php-sdk
 
 ## Getting Help
 
-We track bugs and feature requests using GitHub issues and prioritize addressing them ASAP.
+Bugs and feature requests are tracked using GitHub issues, and prioritization is given to addressing them as soon as possible.
 
-* For account and payment related concerns, please reach [eSewa] by calling or emailing them.
-* If you believe you have found a bug, please [open an issue](https://github.com/cixware/esewa-php-sdk/issues/new) on
-  GitHub.
-* For assistance with integrating eSewa into your application, don't hesitate to contact [Cixware].
+* For account and payment related concerns, please contact [eSewa] directly by calling or emailing them.
+* If a bug is identified, please [open an issue](https://github.com/remotemerge/esewa-php-sdk/issues/new) on GitHub.
+* For assistance with integrating eSewa into your application, feel free to reach out to the support team.
 
 ## Quick Examples
 
@@ -42,7 +41,8 @@ We track bugs and feature requests using GitHub issues and prioritize addressing
 // Init composer autoloader.
 require 'vendor/autoload.php';
 
-use Cixware\Esewa\Client;use Cixware\Esewa\Config;
+use Cixware\Esewa\Client;
+use Cixware\Esewa\Config;
 
 // Set success and failure callback URLs.
 $successUrl = 'https://example.com/success.php';
@@ -124,8 +124,6 @@ Thank you for your support and contributions. Looking forward to reviewing your 
 [eSewa]: https://esewa.com.np
 
 [eSewa Documentation]: https://developer.esewa.com.np
-
-[Cixware]: https://cixware.io
 
 [composer]: http://getcomposer.org
 
