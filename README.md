@@ -7,22 +7,19 @@
 [![Downloads](https://img.shields.io/packagist/dt/cixware/esewa-php-sdk.svg?style=flat&label=Downloads)](https://packagist.org/packages/cixware/esewa-php-sdk)
 ![License](https://img.shields.io/github/license/cixware/esewa-php-sdk)
 
-We at [Cixware] develop and maintain the **eSewa SDK for PHP**, making it easy for developers to integrate the eSewa
-payment service into their PHP code. Find more details on the [eSewa Documentation] website.
+The **eSewa SDK for PHP** is developed and maintained by [remotemerge] and the community, simplifying the integration of the eSewa payment service into PHP code. For more details, refer to the [eSewa Documentation] website.
 
 ## Getting Started
 
 1. **Sign up for eSewa** – Before you begin, you need to sign up and retrieve your credentials from [eSewa].
-2. **Minimum requirements** – To run the SDK, your system will need to meet the minimum requirements, including having **PHP >= 7.4**. We highly recommend having it compiled with the cURL extension and cURL compiled with a TLS backend (
-   e.g., NSS or OpenSSL).
+2. **Minimum requirements** – To run the SDK, your system will need to meet the minimum requirements, including having **PHP >= 7.4**. We highly recommend having it compiled with the cURL extension and cURL compiled with a TLS backend (e.g., NSS or OpenSSL).
 
 ## Installation
 
-**Install the SDK** – Using [Composer] is the recommended way to install the eSewa SDK for PHP. The SDK is available
-via [Packagist] under the [`cixware/esewa-php-sdk`][install-packagist] package.
+**Install the SDK** – Using Composer is the recommended way to install the eSewa SDK for PHP. The SDK is available via Packagist under the [`remotemerge/esewa-php-sdk`][install-package] package.
 
 ```
-composer require cixware/esewa-php-sdk
+composer require remotemerge/esewa-php-sdk
 ```
 
 ## Getting Help
@@ -110,7 +107,7 @@ verify(string $refId, string $oid, float $tAmt)
 
 **Note:** You can extract `refId` from the success response url parameter.
 
-# Contribution
+## Contribution
 
 The contributions of the Open Source community are highly valued and appreciated. To ensure a smooth and efficient process, please adhere to the following guidelines when submitting code:
 
@@ -123,12 +120,10 @@ Thank you for your support and contributions. Looking forward to reviewing your 
 
 [eSewa]: https://esewa.com.np
 
+[remotemerge]: https://github.com/remotemerge
+
 [eSewa Documentation]: https://developer.esewa.com.np
 
-[composer]: http://getcomposer.org
-
-[packagist]: http://packagist.org
-
-[install-packagist]: https://packagist.org/packages/cixware/esewa-php-sdk
+[install-package]: https://packagist.org/packages/remotemerge/esewa-php-sdk
 
 [PSR]: https://www.php-fig.org/psr
