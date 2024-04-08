@@ -1,11 +1,11 @@
 # eSewa SDK for PHP
 
-[![@cixware on Twitter](https://img.shields.io/badge/Twitter-%40cixware-blue.svg?style=flat&logo=twitter)](https://twitter.com/cixware)
-[![@cixware on Facebook](https://img.shields.io/badge/Facebok-%40cixware-blue.svg?style=flat&logo=facebook)](https://www.facebook.com/cixware)
-![PHP Version](https://img.shields.io/packagist/php-v/cixware/esewa-php-sdk)
-![Build](https://img.shields.io/github/actions/workflow/status/cixware/esewa-php-sdk/install.yml?branch=main&logo=github)
-[![Downloads](https://img.shields.io/packagist/dt/cixware/esewa-php-sdk.svg?style=flat&label=Downloads)](https://packagist.org/packages/cixware/esewa-php-sdk)
-![License](https://img.shields.io/github/license/cixware/esewa-php-sdk)
+[![X (formerly Twitter)](https://img.shields.io/badge/-@sapkotamadan-white?style=flat&logo=x&label=(formerly%20Twitter))](https://twitter.com/sapkotamadan)
+[![Facebook](https://img.shields.io/badge/Facebook-NextSapkotaMadan-blue?style=flat&logo=facebook)](https://www.facebook.com/NextSapkotaMadan)
+![PHP Version](https://img.shields.io/packagist/php-v/remotemerge/esewa-php-sdk)
+![Build](https://img.shields.io/github/actions/workflow/status/remotemerge/esewa-php-sdk/install.yml?branch=main&style=flat&logo=github)
+[![Downloads](https://img.shields.io/packagist/dt/remotemerge/esewa-php-sdk.svg?style=flat&label=Downloads)](https://packagist.org/packages/remotemerge/esewa-php-sdk)
+![License](https://img.shields.io/github/license/remotemerge/esewa-php-sdk)
 
 The **eSewa SDK for PHP** is developed and maintained by [remotemerge] and the community, simplifying the integration of the eSewa payment service into PHP code. For more details, refer to the [eSewa Documentation] website.
 
@@ -38,8 +38,8 @@ Bugs and feature requests are tracked using GitHub issues, and prioritization is
 // Init composer autoloader.
 require 'vendor/autoload.php';
 
-use Cixware\Esewa\Client;
-use Cixware\Esewa\Config;
+use RemoteMerge\Esewa\Client;
+use RemoteMerge\Esewa\Config;
 
 // Set success and failure callback URLs.
 $successUrl = 'https://example.com/success.php';
