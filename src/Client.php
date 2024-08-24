@@ -6,13 +6,11 @@ namespace RemoteMerge\Esewa;
 
 use Exception;
 
-final class Client
+class Client
 {
-    private ?Config $config;
-
-    public function __construct(Config $config)
+    public function __construct(private readonly Config $config)
     {
-        $this->config = $config;
+        //
     }
 
     /**
