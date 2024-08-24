@@ -8,8 +8,8 @@ use RemoteMerge\Esewa\Client;
 require dirname(__DIR__) . '/vendor/autoload.php';
 
 // Set up the configuration object
-$successUrl = 'http://localhost:8090/demo/success.php';
-$failureUrl = 'http://localhost:8090/demo/failed.php';
+$successUrl = 'http://localhost:8080/demo/success.php';
+$failureUrl = 'http://localhost:8080/demo/failed.php';
 
 // Initialize the client with the configuration
 $esewa = new Client([

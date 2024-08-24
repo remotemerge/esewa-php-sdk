@@ -14,7 +14,7 @@ class ParentTestCase extends TestCase
     /**
      * @var string
      */
-    private const DEMO_URL = 'http://localhost:8090/demo/';
+    private const DEMO_URL = 'http://localhost:8080/demo/';
 
     protected function setUp(): void
     {
