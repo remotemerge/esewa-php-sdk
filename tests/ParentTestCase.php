@@ -4,9 +4,9 @@ declare(strict_types=1);
 
 namespace Tests;
 
+use PHPUnit\Framework\TestCase;
 use RemoteMerge\Esewa\Client;
 use RemoteMerge\Esewa\Config;
-use PHPUnit\Framework\TestCase;
 
 class ParentTestCase extends TestCase
 {

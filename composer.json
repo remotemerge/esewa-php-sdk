@@ -1,6 +1,6 @@
 {
   "name": "remotemerge/esewa-php-sdk",
-  "version": "2.7.3",
+  "version": "3.0.0",
   "type": "library",
   "description": "eSewa payment gateway integration in PHP.",
   "homepage": "https://github.com/remotemerge/esewa-php-sdk",
@@ -22,14 +22,14 @@
     "Nepal"
   ],
   "require": {
-    "php": ">=7.4",
+    "php": ">=8.1",
     "ext-curl": "*",
     "ext-simplexml": "*"
   },
   "require-dev": {
-    "friendsofphp/php-cs-fixer": "^3.58.1",
-    "phpunit/phpunit": "^9.6.19",
-    "rector/rector": "^1.1.0"
+    "friendsofphp/php-cs-fixer": "^3.62.0",
+    "phpunit/phpunit": "^10.5.30",
+    "rector/rector": "^1.2.4"
   },
   "config": {
     "discard-changes": true,

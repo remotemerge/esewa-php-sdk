@@ -12,7 +12,7 @@ The **eSewa SDK for PHP** is developed and maintained by [remotemerge] and the c
 ## Getting Started
 
 1. **Sign up for eSewa** – Before you begin, you need to sign up and retrieve your credentials from [eSewa].
-2. **Minimum requirements** – To run the SDK, your system will need to meet the minimum requirements, including having **PHP >= 7.4**. We highly recommend having it compiled with the cURL extension and cURL compiled with a TLS backend (e.g., NSS or OpenSSL).
+2. **Minimum requirements** – To run the SDK, your system will need to meet the minimum requirements, including having **PHP >= 8.1**. We highly recommend having it compiled with the cURL extension and cURL compiled with a TLS backend (e.g., NSS or OpenSSL).
 
 ## Installation
 
@@ -111,7 +111,7 @@ verify(string $refId, string $oid, float $tAmt)
 
 The contributions of the Open Source community are highly valued and appreciated. To ensure a smooth and efficient process, please adhere to the following guidelines when submitting code:
 
-- Ensure that the code adheres to [PSR] standards.
+- Ensure that the code adheres to [PER Coding Style 2.0] standards.
 - All submitted code must pass relevant tests.
 - Proper documentation and clean code practices are essential.
 - Please make pull requests to the `main` branch.
@@ -126,4 +126,4 @@ Thank you for your support and contributions. Looking forward to reviewing your 
 
 [install-package]: https://packagist.org/packages/remotemerge/esewa-php-sdk
 
-[PSR]: https://www.php-fig.org/psr
+[PER Coding Style 2.0]: https://www.php-fig.org/per/coding-style/
