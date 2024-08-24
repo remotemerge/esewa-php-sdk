@@ -1,6 +1,6 @@
 {
   "name": "remotemerge/esewa-php-sdk",
-  "version": "2.7.3",
+  "version": "3.0.0",
   "type": "library",
   "description": "eSewa payment gateway integration in PHP.",
   "homepage": "https://github.com/remotemerge/esewa-php-sdk",
