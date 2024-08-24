@@ -6,23 +6,23 @@ namespace RemoteMerge\Esewa;
 
 use Exception;
 
-class Client
+class Client extends Config implements ClientInterface
 {
-    public function __construct(private readonly Config $config)
+    public function __construct(private readonly array $configs = [])
     {
-        //
+        parent::__construct($this->configs);
     }
 
     /**
      * This method creates the form in runtime and post the data to eSewa server.
      */
-    public function process(string $productId, float $amount, float $taxAmount, float $serviceAmount = 0.0, float $deliveryAmount = 0.0): void
+    public function payment(string $productId, float $amount, float $taxAmount, float $serviceAmount = 0.0, float $deliveryAmount = 0.0): void
     {
         // format form attributes
         $formInputs = [
-            'scd' => $this->config->merchantCode,
-            'su' => $this->config->successUrl,
-            'fu' => $this->config->failureUrl . '?' . http_build_query(['pid' => $productId]),
+            'scd' => $this->getMerchantCode(),
+            'su' => $this->getSuccessUrl(),
+            'fu' => $this->getFailureUrl() . '?' . http_build_query(['pid' => $productId]),
             'pid' => $productId,
             'amt' => $amount,
             'txAmt' => $taxAmount,
@@ -32,7 +32,7 @@ class Client
         ];
 
         // generate form from attributes
-        $htmlForm = '<form method="POST" action="' . ($this->config->apiUrl . '/epay/main') . '" id="esewa-form">';
+        $htmlForm = '<form method="POST" action="' . ($this->getApiUrl() . '/epay/main') . '" id="esewa-form">';
 
         foreach ($formInputs as $name => $value):
             $htmlForm .= sprintf('<input name="%s" type="hidden" value="%s">', $name, $value);
@@ -48,13 +48,13 @@ class Client
      * This method verifies the payment using the reference ID.
      * @throws Exception
      */
-    public function verify(string $referenceId, string $productId, float $amount): bool
+    public function verifyPayment(string $referenceId, string $productId, float $amount): bool
     {
         // Initialize a cURL handle
         $ch = curl_init();
 
         // Set cURL options
-        curl_setopt($ch, CURLOPT_URL, $this->config->apiUrl . '/epay/transrec');
+        curl_setopt($ch, CURLOPT_URL, $this->getApiUrl() . '/epay/transrec');
         curl_setopt($ch, CURLOPT_POST, true);
         curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
         curl_setopt($ch, CURLOPT_FOLLOWLOCATION, true);
@@ -71,7 +71,7 @@ class Client
 
         // Set the request data
         curl_setopt($ch, CURLOPT_POSTFIELDS, http_build_query([
-            'scd' => $this->config->merchantCode,
+            'scd' => $this->getMerchantCode(),
             'rid' => $referenceId,
             'pid' => $productId,
             'amt' => $amount,
