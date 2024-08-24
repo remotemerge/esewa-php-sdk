@@ -6,7 +6,6 @@ namespace Tests;
 
 use PHPUnit\Framework\TestCase;
 use RemoteMerge\Esewa\Client;
-use RemoteMerge\Esewa\Config;
 
 class ParentTestCase extends TestCase
 {
@@ -28,7 +27,10 @@ class ParentTestCase extends TestCase
         $successUrl = self::DEMO_URL . 'success.php';
         $failureUrl = self::DEMO_URL . 'failed.php';
 
-        $config = new Config($successUrl, $failureUrl);
-        $this->esewa = new Client($config);
+        $this->esewa = new Client([
+            'merchant_code' => 'EPAYTEST',
+            'success_url' => $successUrl,
+            'failure_url' => $failureUrl,
+        ]);
     }
 }
