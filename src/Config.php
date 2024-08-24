@@ -29,9 +29,9 @@ class Config implements ConfigInterface
     public function __construct(private readonly array $configs = [])
     {
         // Update the configuration
-        $this->merchantCode = $this->configs['merchantCode'] ?? $this->merchantCode;
-        $this->successUrl = $this->configs['successUrl'] ?? $this->successUrl;
-        $this->failureUrl = $this->configs['failureUrl'] ?? $this->failureUrl;
+        $this->merchantCode = $this->configs['merchant_code'] ?? $this->merchantCode;
+        $this->successUrl = $this->configs['success_url'] ?? $this->successUrl;
+        $this->failureUrl = $this->configs['failure_url'] ?? $this->failureUrl;
 
         // Set the API URL
         $this->setApiUrl();
