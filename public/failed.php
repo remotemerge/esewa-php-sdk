@@ -7,6 +7,6 @@ require_once dirname(__DIR__) . '/vendor/autoload.php';
 
 // Print response
 $params = $_REQUEST;
-foreach ($params as $k => $v) {
-    printf("%s: %s\n", $k, $v);
+if ($params && is_array($params)) {
+    file_put_contents('failed.log', $params, FILE_APPEND);
 }
