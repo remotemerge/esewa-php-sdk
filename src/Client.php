@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace RemoteMerge\Esewa;
 
 use Exception;
+use RemoteMerge\Esewa\Exceptions\EsewaException;
 
 class Client extends Config implements ClientInterface
 {
@@ -83,7 +84,7 @@ class Client extends Config implements ClientInterface
         // Check for errors
         if (curl_errno($ch) !== 0) {
             // Handle errors here
-            throw new Exception(curl_error($ch));
+            throw new EsewaException(curl_error($ch));
         }
 
         // Close the cURL handle

@@ -5,7 +5,7 @@ declare(strict_types=1);
 use RemoteMerge\Esewa\Client;
 
 // Init the autoloader
-require dirname(__DIR__) . '/vendor/autoload.php';
+require_once dirname(__DIR__) . '/vendor/autoload.php';
 
 // Set up the configuration object
 $successUrl = 'http://localhost:8080/demo/success.php';
