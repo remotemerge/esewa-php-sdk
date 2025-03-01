@@ -7,7 +7,7 @@ namespace Tests;
 use PHPUnit\Framework\TestCase;
 use RemoteMerge\Esewa\Client;
 
-class ParentTestCase extends TestCase
+abstract class ParentTestCase extends TestCase
 {
     protected Client $esewa;
 
