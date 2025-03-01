@@ -13,7 +13,7 @@ networks:
 
 # Define services
 services:
-  pkg-dev-php:
+  pkg-dev-server:
     image: webdevops/php-nginx-dev:8.1
     working_dir: /var/www/html
     volumes:
