@@ -4,18 +4,19 @@ declare(strict_types=1);
 
 namespace RemoteMerge\Esewa\Http;
 
-use RemoteMerge\Esewa\Exceptions\HttpException;
+use RemoteMerge\Esewa\Exceptions\EsewaException;
 
 class CurlHttpClient implements HttpClientInterface
 {
     /**
      * {@inheritdoc}
+     * @throws EsewaException
      */
     public function get(string $url, array $headers = []): string
     {
         $ch = curl_init($url);
         if ($ch === false) {
-            throw new HttpException('Failed to initialize cURL', 0);
+            throw new EsewaException('Failed to initialize cURL', 0);
         }
 
         curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
@@ -37,11 +38,11 @@ class CurlHttpClient implements HttpClientInterface
         curl_close($ch);
 
         if ($response === false) {
-            throw new HttpException('cURL Error: ' . $error, 0);
+            throw new EsewaException('cURL Error: ' . $error, 0);
         }
 
         if ($statusCode >= 400) {
-            throw new HttpException('HTTP Error: ' . $statusCode, $statusCode);
+            throw new EsewaException('HTTP Error: ' . $statusCode, $statusCode);
         }
 
         return $response;
@@ -49,12 +50,13 @@ class CurlHttpClient implements HttpClientInterface
 
     /**
      * {@inheritdoc}
+     * @throws EsewaException
      */
     public function post(string $url, array $data, array $headers = []): string
     {
         $ch = curl_init($url);
         if ($ch === false) {
-            throw new HttpException('Failed to initialize cURL', 0);
+            throw new EsewaException('Failed to initialize cURL', 0);
         }
 
         $isJson = isset($headers['Content-Type']) && $headers['Content-Type'] === 'application/json';
@@ -83,11 +85,11 @@ class CurlHttpClient implements HttpClientInterface
         curl_close($ch);
 
         if ($response === false) {
-            throw new HttpException('cURL Error: ' . $error, 0);
+            throw new EsewaException('cURL Error: ' . $error, 0);
         }
 
         if ($statusCode >= 400) {
-            throw new HttpException('HTTP Error: ' . $statusCode, $statusCode);
+            throw new EsewaException('HTTP Error: ' . $statusCode, $statusCode);
         }
 
         return $response;
