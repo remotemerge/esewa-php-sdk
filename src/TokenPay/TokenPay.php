@@ -14,7 +14,7 @@ final class TokenPay extends AbstractPayment implements TokenInterface
     /**
      * The HTTP client for making requests.
      */
-    private HttpClientInterface $httpClient;
+    private readonly HttpClientInterface $httpClient;
 
     /**
      * The client secret for API authentication.
@@ -56,22 +56,26 @@ final class TokenPay extends AbstractPayment implements TokenInterface
             if (!in_array($options['environment'], ['test', 'production'], true)) {
                 throw new EsewaException('Environment must be either "test" or "production".');
             }
+
             $this->environment = $options['environment'];
         }
 
         if (!isset($options['product_code'])) {
             throw new EsewaException('Product code is required.');
         }
+
         $this->productCode = $options['product_code'];
 
         if (!isset($options['secret_key'])) {
             throw new EsewaException('Secret key is required.');
         }
+
         $this->secretKey = $options['secret_key'];
 
         if (!isset($options['client_secret'])) {
             throw new EsewaException('Client secret is required for token-based authentication.');
         }
+
         $this->clientSecret = $options['client_secret'];
     }
 
@@ -164,7 +168,7 @@ final class TokenPay extends AbstractPayment implements TokenInterface
 
         $url = $this->getBaseUrl('token') . self::ENDPOINTS['inquiry'] . '/' . $requestId;
 
-        if (!empty($additionalParams)) {
+        if ($additionalParams !== []) {
             $url .= '?' . http_build_query($additionalParams);
         }
 
@@ -281,6 +285,7 @@ final class TokenPay extends AbstractPayment implements TokenInterface
         if (!isset($paymentData['amount'])) {
             throw new EsewaException('Amount is required.');
         }
+
         $this->validateAmount((float) $paymentData['amount']);
 
         if (!isset($paymentData['transaction_code'])) {
@@ -303,6 +308,7 @@ final class TokenPay extends AbstractPayment implements TokenInterface
         if (!isset($statusData['amount'])) {
             throw new EsewaException('Amount is required.');
         }
+
         $this->validateAmount((float) $statusData['amount']);
 
         if (!isset($statusData['transaction_code'])) {

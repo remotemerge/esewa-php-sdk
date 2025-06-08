@@ -24,11 +24,12 @@ class HttpClient implements HttpClientInterface
         curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, true);
         curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, 2);
 
-        if (!empty($headers)) {
+        if ($headers !== []) {
             $headerArray = [];
             foreach ($headers as $key => $value) {
-                $headerArray[] = "$key: $value";
+                $headerArray[] = sprintf('%s: %s', $key, $value);
             }
+
             curl_setopt($ch, CURLOPT_HTTPHEADER, $headerArray);
         }
 
@@ -75,8 +76,9 @@ class HttpClient implements HttpClientInterface
 
         $headerArray = [];
         foreach ($headers as $key => $value) {
-            $headerArray[] = "$key: $value";
+            $headerArray[] = sprintf('%s: %s', $key, $value);
         }
+
         curl_setopt($ch, CURLOPT_HTTPHEADER, $headerArray);
 
         $response = curl_exec($ch);

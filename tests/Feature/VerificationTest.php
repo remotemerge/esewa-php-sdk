@@ -15,7 +15,7 @@ final class VerificationTest extends ParentTestCase
     public function test_with_invalid_data(): void
     {
         $response = $this->esewa->verifyPayment('Apple', 'Google', 105);
-        self::assertFalse($response);
+        $this->assertFalse($response);
     }
 
     /**
@@ -29,6 +29,6 @@ final class VerificationTest extends ParentTestCase
         $esewaAmount = (float) $_ENV['ESEWA_PAID_AMOUNT'];
 
         $response = $this->esewa->verifyPayment($referenceId, $productId, $esewaAmount);
-        self::assertTrue($response);
+        $this->assertTrue($response);
     }
 }

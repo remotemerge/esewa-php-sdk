@@ -14,7 +14,7 @@ final class Epay extends AbstractPayment implements EpayInterface
     /**
      * The HTTP client for making requests.
      */
-    private HttpClientInterface $httpClient;
+    private readonly HttpClientInterface $httpClient;
 
     /**
      * The success URL for redirecting after successful payment.
@@ -33,6 +33,7 @@ final class Epay extends AbstractPayment implements EpayInterface
 
     /**
      * {@inheritDoc}
+     * @throws EsewaException
      */
     public function configure(array $options): void
     {
@@ -40,27 +41,32 @@ final class Epay extends AbstractPayment implements EpayInterface
             if (!in_array($options['environment'], ['test', 'production'], true)) {
                 throw new EsewaException('Environment must be either "test" or "production".');
             }
+
             $this->environment = $options['environment'];
         }
 
         if (!isset($options['product_code'])) {
             throw new EsewaException('Product code is required.');
         }
+
         $this->productCode = $options['product_code'];
 
         if (!isset($options['secret_key'])) {
             throw new EsewaException('Secret key is required.');
         }
+
         $this->secretKey = $options['secret_key'];
 
         if (!isset($options['success_url'])) {
             throw new EsewaException('Success URL is required.');
         }
+
         $this->successUrl = $options['success_url'];
 
         if (!isset($options['failure_url'])) {
             throw new EsewaException('Failure URL is required.');
         }
+
         $this->failureUrl = $options['failure_url'];
     }
 
@@ -82,6 +88,7 @@ final class Epay extends AbstractPayment implements EpayInterface
 
     /**
      * {@inheritDoc}
+     * @throws EsewaException
      */
     public function createPayment(array $paymentData): array
     {
@@ -123,6 +130,7 @@ final class Epay extends AbstractPayment implements EpayInterface
 
     /**
      * {@inheritDoc}
+     * @throws EsewaException
      */
     public function verifyPayment(string $encodedResponse): array
     {
@@ -133,13 +141,14 @@ final class Epay extends AbstractPayment implements EpayInterface
         }
 
         // Verify signature
-        $signedFields = explode(',', $response['signed_field_names']);
+        $signedFields = explode(',', (string) $response['signed_field_names']);
         $dataToVerify = [];
         foreach ($signedFields as $field) {
             if (!isset($response[$field])) {
-                throw new EsewaException("Missing signed field: {$field}");
+                throw new EsewaException('Missing signed field: ' . $field);
             }
-            $dataToVerify[] = "{$field}={$response[$field]}";
+
+            $dataToVerify[] = sprintf('%s=%s', $field, $response[$field]);
         }
 
         $dataString = implode(',', $dataToVerify);
@@ -154,6 +163,7 @@ final class Epay extends AbstractPayment implements EpayInterface
 
     /**
      * {@inheritDoc}
+     * @throws EsewaException
      */
     public function checkStatus(string $transactionUuid, float $totalAmount): array
     {
@@ -192,13 +202,14 @@ final class Epay extends AbstractPayment implements EpayInterface
             return false;
         }
 
-        $signedFields = explode(',', $data['signed_field_names']);
+        $signedFields = explode(',', (string) $data['signed_field_names']);
         $dataToVerify = [];
         foreach ($signedFields as $field) {
             if (!isset($data[$field])) {
                 return false;
             }
-            $dataToVerify[] = "{$field}={$data[$field]}";
+
+            $dataToVerify[] = sprintf('%s=%s', $field, $data[$field]);
         }
 
         $dataString = implode(',', $dataToVerify);
@@ -218,6 +229,7 @@ final class Epay extends AbstractPayment implements EpayInterface
         if (!isset($paymentData['amount'])) {
             throw new EsewaException('Amount is required.');
         }
+
         $this->validateAmount((float) $paymentData['amount']);
 
         if (!isset($paymentData['transaction_uuid'])) {
