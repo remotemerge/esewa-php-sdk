@@ -7,7 +7,7 @@ namespace RemoteMerge\Esewa\Epay;
 use RemoteMerge\Esewa\AbstractPayment;
 use RemoteMerge\Esewa\Exceptions\EsewaException;
 use RemoteMerge\Esewa\Http\HttpClientInterface;
-use RemoteMerge\Esewa\Http\CurlHttpClient;
+use RemoteMerge\Esewa\Http\HttpClient;
 
 final class Epay extends AbstractPayment implements EpayInterface
 {
@@ -28,7 +28,7 @@ final class Epay extends AbstractPayment implements EpayInterface
 
     public function __construct(?HttpClientInterface $httpClient = null)
     {
-        $this->httpClient = $httpClient ?? new CurlHttpClient();
+        $this->httpClient = $httpClient ?? new HttpClient();
     }
 
     /**

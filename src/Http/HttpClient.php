@@ -6,7 +6,7 @@ namespace RemoteMerge\Esewa\Http;
 
 use RemoteMerge\Esewa\Exceptions\EsewaException;
 
-class CurlHttpClient implements HttpClientInterface
+class HttpClient implements HttpClientInterface
 {
     /**
      * {@inheritdoc}

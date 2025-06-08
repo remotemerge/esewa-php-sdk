@@ -7,7 +7,7 @@ namespace RemoteMerge\Esewa\TokenPay;
 use RemoteMerge\Esewa\AbstractPayment;
 use RemoteMerge\Esewa\Exceptions\EsewaException;
 use RemoteMerge\Esewa\Http\HttpClientInterface;
-use RemoteMerge\Esewa\Http\CurlHttpClient;
+use RemoteMerge\Esewa\Http\HttpClient;
 
 final class TokenPay extends AbstractPayment implements TokenInterface
 {
@@ -43,7 +43,7 @@ final class TokenPay extends AbstractPayment implements TokenInterface
 
     public function __construct(?HttpClientInterface $httpClient = null)
     {
-        $this->httpClient = $httpClient ?? new CurlHttpClient();
+        $this->httpClient = $httpClient ?? new HttpClient();
     }
 
     /**
