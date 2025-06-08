@@ -2,14 +2,14 @@
 
 declare(strict_types=1);
 
-namespace RemoteMerge\Esewa\Token;
+namespace RemoteMerge\Esewa\TokenPay;
 
 use RemoteMerge\Esewa\AbstractPayment;
 use RemoteMerge\Esewa\Exceptions\EsewaException;
 use RemoteMerge\Esewa\Http\HttpClientInterface;
 use RemoteMerge\Esewa\Http\CurlHttpClient;
 
-final class Token extends AbstractPayment implements TokenInterface
+final class TokenPay extends AbstractPayment implements TokenInterface
 {
     /**
      * The HTTP client for making requests.
@@ -145,7 +145,7 @@ final class Token extends AbstractPayment implements TokenInterface
         }
 
         if (!isset($authData['access_token'])) {
-            throw new EsewaException('Token refresh failed: no access token received.');
+            throw new EsewaException('TokenPay refresh failed: no access token received.');
         }
 
         $this->accessToken = $authData['access_token'];
@@ -236,7 +236,7 @@ final class Token extends AbstractPayment implements TokenInterface
      */
     public function verifySignature(array $data, string $signature): bool
     {
-        // Token-based API doesn't use signatures in the same way as ePay
+        // TokenPay-based API doesn't use signatures in the same way as ePay
         // This method is here for interface compliance
         return true;
     }

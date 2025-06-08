@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace RemoteMerge\Esewa\Token;
+namespace RemoteMerge\Esewa\TokenPay;
 
 use RemoteMerge\Esewa\PaymentInterface;
 
