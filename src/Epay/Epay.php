@@ -32,7 +32,7 @@ final class Epay extends AbstractPayment implements EpayInterface
     }
 
     /**
-     * {@inheritdoc}
+     * {@inheritDoc}
      */
     public function configure(array $options): void
     {
@@ -65,7 +65,7 @@ final class Epay extends AbstractPayment implements EpayInterface
     }
 
     /**
-     * {@inheritdoc}
+     * {@inheritDoc}
      */
     public function getEnvironment(): string
     {
@@ -73,7 +73,7 @@ final class Epay extends AbstractPayment implements EpayInterface
     }
 
     /**
-     * {@inheritdoc}
+     * {@inheritDoc}
      */
     public function getProductCode(): string
     {
@@ -81,7 +81,7 @@ final class Epay extends AbstractPayment implements EpayInterface
     }
 
     /**
-     * {@inheritdoc}
+     * {@inheritDoc}
      */
     public function createPayment(array $paymentData): array
     {
@@ -122,7 +122,7 @@ final class Epay extends AbstractPayment implements EpayInterface
     }
 
     /**
-     * {@inheritdoc}
+     * {@inheritDoc}
      */
     public function verifyPayment(string $encodedResponse): array
     {
@@ -153,7 +153,7 @@ final class Epay extends AbstractPayment implements EpayInterface
     }
 
     /**
-     * {@inheritdoc}
+     * {@inheritDoc}
      */
     public function checkStatus(string $transactionUuid, float $totalAmount): array
     {
@@ -176,7 +176,7 @@ final class Epay extends AbstractPayment implements EpayInterface
     }
 
     /**
-     * {@inheritdoc}
+     * {@inheritDoc}
      */
     public function getFormActionUrl(): string
     {
@@ -184,7 +184,7 @@ final class Epay extends AbstractPayment implements EpayInterface
     }
 
     /**
-     * {@inheritdoc}
+     * {@inheritDoc}
      */
     public function verifySignature(array $data, string $signature): bool
     {

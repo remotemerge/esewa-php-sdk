@@ -47,7 +47,7 @@ final class TokenPay extends AbstractPayment implements TokenInterface
     }
 
     /**
-     * {@inheritdoc}
+     * {@inheritDoc}
      * @throws EsewaException
      */
     public function configure(array $options): void
@@ -76,7 +76,7 @@ final class TokenPay extends AbstractPayment implements TokenInterface
     }
 
     /**
-     * {@inheritdoc}
+     * {@inheritDoc}
      */
     public function getEnvironment(): string
     {
@@ -84,7 +84,7 @@ final class TokenPay extends AbstractPayment implements TokenInterface
     }
 
     /**
-     * {@inheritdoc}
+     * {@inheritDoc}
      */
     public function getProductCode(): string
     {
@@ -92,7 +92,7 @@ final class TokenPay extends AbstractPayment implements TokenInterface
     }
 
     /**
-     * {@inheritdoc}
+     * {@inheritDoc}
      * @throws EsewaException
      */
     public function authenticate(string $username, string $password): array
@@ -124,7 +124,7 @@ final class TokenPay extends AbstractPayment implements TokenInterface
     }
 
     /**
-     * {@inheritdoc}
+     * {@inheritDoc}
      * @throws EsewaException
      */
     public function refreshToken(string $refreshToken): array
@@ -155,7 +155,7 @@ final class TokenPay extends AbstractPayment implements TokenInterface
     }
 
     /**
-     * {@inheritdoc}
+     * {@inheritDoc}
      * @throws EsewaException
      */
     public function inquiry(string $requestId, array $additionalParams = []): array
@@ -180,7 +180,7 @@ final class TokenPay extends AbstractPayment implements TokenInterface
     }
 
     /**
-     * {@inheritdoc}
+     * {@inheritDoc}
      * @throws EsewaException
      */
     public function payment(array $paymentData): array
@@ -202,7 +202,7 @@ final class TokenPay extends AbstractPayment implements TokenInterface
     }
 
     /**
-     * {@inheritdoc}
+     * {@inheritDoc}
      * @throws EsewaException
      */
     public function statusCheck(array $statusData): array
@@ -224,7 +224,7 @@ final class TokenPay extends AbstractPayment implements TokenInterface
     }
 
     /**
-     * {@inheritdoc}
+     * {@inheritDoc}
      */
     public function setAccessToken(string $accessToken): void
     {
@@ -232,7 +232,7 @@ final class TokenPay extends AbstractPayment implements TokenInterface
     }
 
     /**
-     * {@inheritdoc}
+     * {@inheritDoc}
      */
     public function verifySignature(array $data, string $signature): bool
     {

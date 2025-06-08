@@ -9,7 +9,7 @@ use RemoteMerge\Esewa\Exceptions\EsewaException;
 class HttpClient implements HttpClientInterface
 {
     /**
-     * {@inheritdoc}
+     * {@inheritDoc}
      * @throws EsewaException
      */
     public function get(string $url, array $headers = []): string
@@ -49,7 +49,7 @@ class HttpClient implements HttpClientInterface
     }
 
     /**
-     * {@inheritdoc}
+     * {@inheritDoc}
      * @throws EsewaException
      */
     public function post(string $url, array $data, array $headers = []): string
