@@ -7,9 +7,9 @@ namespace RemoteMerge\Esewa;
 use RemoteMerge\Esewa\Epay\Epay;
 use RemoteMerge\Esewa\Epay\EpayInterface;
 use RemoteMerge\Esewa\Exceptions\EsewaException;
-use RemoteMerge\Esewa\TokenPay\TokenPay;
-use RemoteMerge\Esewa\TokenPay\TokenInterface;
 use RemoteMerge\Esewa\Http\HttpClientInterface;
+use RemoteMerge\Esewa\TokenPay\TokenInterface;
+use RemoteMerge\Esewa\TokenPay\TokenPay;
 
 final class EsewaFactory
 {

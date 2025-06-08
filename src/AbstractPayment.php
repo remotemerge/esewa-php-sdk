@@ -89,8 +89,8 @@ abstract class AbstractPayment
      * Decodes base64 response from eSewa.
      *
      * @param string $encodedData The base64 encoded data.
-     * @return array<string, mixed> The decoded data.
      * @throws EsewaException If decoding fails.
+     * @return array<string, mixed> The decoded data.
      */
     protected function decodeResponse(string $encodedData): array
     {

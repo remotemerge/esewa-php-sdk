@@ -13,8 +13,8 @@ interface HttpClientInterface
      *
      * @param string $url The URL to request.
      * @param array<string, string> $headers Optional headers.
-     * @return string The response body.
      * @throws EsewaException If the request fails.
+     * @return string The response body.
      */
     public function get(string $url, array $headers = []): string;
 
@@ -24,8 +24,8 @@ interface HttpClientInterface
      * @param string $url The URL to request.
      * @param array<string, mixed> $data The data to send.
      * @param array<string, string> $headers Optional headers.
-     * @return string The response body.
      * @throws EsewaException If the request fails.
+     * @return string The response body.
      */
     public function post(string $url, array $data, array $headers = []): string;
 }

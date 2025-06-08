@@ -6,8 +6,8 @@ namespace RemoteMerge\Esewa\TokenPay;
 
 use RemoteMerge\Esewa\AbstractPayment;
 use RemoteMerge\Esewa\Exceptions\EsewaException;
-use RemoteMerge\Esewa\Http\HttpClientInterface;
 use RemoteMerge\Esewa\Http\HttpClient;
+use RemoteMerge\Esewa\Http\HttpClientInterface;
 
 final class TokenPay extends AbstractPayment implements TokenInterface
 {
