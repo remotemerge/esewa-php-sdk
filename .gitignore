@@ -4,21 +4,25 @@
 ## Build directories
 /build/
 /bundle/
+/coverage/
 /dist/
 
-### JetBrains template
+### JetBrains
 /.idea/*
 !/.idea/dictionaries/
 !/.idea/dictionaries/*.xml
+!/.idea/jsLibraryMappings.xml
+!/.idea/prettier.xml
+!/.idea/vcs.xml
 
-### VisualStudioCode template
-/.vscode/
+### Visual Studio Code
+/.vscode/*
+!/.vscode/*.json
 
-### NetBeans template
-/.nb-gradle/
-/nbbuild/
-/nbdist/
-/nbproject/
+### Dev configs
+coverage.xml
+junit.xml
+codecov
 
 ### Windows template
 *.lnk
@@ -39,6 +43,7 @@ ehthumbs_vista.db
 .nfs*
 
 ### Editor files
+*.cvsignore
 *.njsproj
 *.ntvs*
 *.sln
@@ -51,4 +56,3 @@ ehthumbs_vista.db
 *.log
 *.zip
 .env
-phpunit.xml
