@@ -117,7 +117,6 @@ final class TokenPay extends AbstractPayment implements TokenInterface
             throw new EsewaException('Invalid authentication response: ' . json_last_error_msg());
         }
 
-        // Validate response
         $this->validateResponse($authData);
 
         if (!isset($authData['access_token'])) {
@@ -151,7 +150,6 @@ final class TokenPay extends AbstractPayment implements TokenInterface
             throw new EsewaException('Invalid refresh token response: ' . json_last_error_msg());
         }
 
-        // Validate response
         $this->validateResponse($authData);
 
         if (!isset($authData['access_token'])) {
@@ -186,7 +184,6 @@ final class TokenPay extends AbstractPayment implements TokenInterface
             throw new EsewaException('Invalid inquiry response: ' . json_last_error_msg());
         }
 
-        // Validate response
         $this->validateResponse($data);
 
         return $data;
@@ -211,7 +208,6 @@ final class TokenPay extends AbstractPayment implements TokenInterface
             throw new EsewaException('Invalid payment response: ' . json_last_error_msg());
         }
 
-        // Validate response
         $this->validateResponse($data);
 
         return $data;
@@ -236,7 +232,6 @@ final class TokenPay extends AbstractPayment implements TokenInterface
             throw new EsewaException('Invalid status check response: ' . json_last_error_msg());
         }
 
-        // Validate response
         $this->validateResponse($data);
 
         return $data;
