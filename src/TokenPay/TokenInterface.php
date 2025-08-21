@@ -9,7 +9,7 @@ use RemoteMerge\Esewa\PaymentInterface;
 interface TokenInterface extends PaymentInterface
 {
     /**
-     * Authenticates with eSewa API and gets access token.
+     * Authenticates with eSewa API and gets an access token.
      *
      * @param string $username The API username.
      * @param string $password The API password.

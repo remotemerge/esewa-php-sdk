@@ -17,12 +17,12 @@ final class Epay extends AbstractPayment implements EpayInterface
     private readonly HttpClientInterface $httpClient;
 
     /**
-     * The success URL for redirecting after successful payment.
+     * The success URL for redirecting after a successful payment.
      */
     private string $successUrl;
 
     /**
-     * The failure URL for redirecting after failed payment.
+     * The failure URL for redirecting after a failed payment.
      */
     private string $failureUrl;
 
