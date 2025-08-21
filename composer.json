@@ -38,9 +38,7 @@
   "extra": {},
   "autoload": {
     "psr-4": {
-      "RemoteMerge\\Message\\": "src/Message",
-      "RemoteMerge\\Esewa\\Epay\\": "src/Epay",
-      "RemoteMerge\\Esewa\\TokenPay\\": "src/TokenPay"
+      "RemoteMerge\\Esewa\\": "src/"
     }
   },
   "autoload-dev": {
