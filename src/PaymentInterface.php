@@ -32,7 +32,7 @@ interface PaymentInterface
      *
      * @param array<string, mixed> $data The data to verify.
      * @param string $signature The signature to verify against.
-     * @return bool True if signature is valid, false otherwise.
+     * @return bool True if the signature is valid, false otherwise.
      */
     public function verifySignature(array $data, string $signature): bool;
 }
