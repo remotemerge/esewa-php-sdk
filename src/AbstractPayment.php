@@ -58,7 +58,7 @@ abstract class AbstractPayment
      */
     protected function validateTransactionUuid(string $uuid): void
     {
-        if (!preg_match('/^[a-zA-Z0-9\-]+$/', $uuid)) {
+        if (preg_match('/^[a-zA-Z0-9\-]+$/', $uuid) !== 1) {
             throw new EsewaException('Transaction UUID must be alphanumeric and may contain hyphens only.');
         }
     }
@@ -105,5 +105,18 @@ abstract class AbstractPayment
         }
 
         return $data;
+    }
+
+    /**
+     * Validates the response from the API.
+     *
+     * @param array<string, mixed> $resData The response data.
+     * @throws EsewaException
+     */
+    protected function validateResponse(array $resData): void
+    {
+        if (isset($resData['code']) && $resData['code'] !== 0) {
+            throw new EsewaException('API Error: ' . ($resData['message'] ?? 'Unknown payment gateway error'));
+        }
     }
 }

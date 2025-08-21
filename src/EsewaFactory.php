@@ -43,9 +43,9 @@ final class EsewaFactory
      */
     public static function createTokenPay(array $options, ?HttpClientInterface $httpClient = null): TokenInterface
     {
-        $token = new TokenPay($httpClient);
-        $token->configure($options);
+        $tokenPay = new TokenPay($httpClient);
+        $tokenPay->configure($options);
 
-        return $token;
+        return $tokenPay;
     }
 }

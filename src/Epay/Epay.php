@@ -143,12 +143,12 @@ final class Epay extends AbstractPayment implements EpayInterface
         // Verify signature
         $signedFields = explode(',', (string) $response['signed_field_names']);
         $dataToVerify = [];
-        foreach ($signedFields as $field) {
-            if (!isset($response[$field])) {
-                throw new EsewaException('Missing signed field: ' . $field);
+        foreach ($signedFields as $signedField) {
+            if (!isset($response[$signedField])) {
+                throw new EsewaException('Missing signed field: ' . $signedField);
             }
 
-            $dataToVerify[] = sprintf('%s=%s', $field, $response[$field]);
+            $dataToVerify[] = sprintf('%s=%s', $signedField, $response[$signedField]);
         }
 
         $dataString = implode(',', $dataToVerify);
@@ -182,6 +182,9 @@ final class Epay extends AbstractPayment implements EpayInterface
             throw new EsewaException('Invalid JSON response: ' . json_last_error_msg());
         }
 
+        // Validate response
+        $this->validateResponse($data);
+
         return $data;
     }
 
@@ -204,12 +207,12 @@ final class Epay extends AbstractPayment implements EpayInterface
 
         $signedFields = explode(',', (string) $data['signed_field_names']);
         $dataToVerify = [];
-        foreach ($signedFields as $field) {
-            if (!isset($data[$field])) {
+        foreach ($signedFields as $signedField) {
+            if (!isset($data[$signedField])) {
                 return false;
             }
 
-            $dataToVerify[] = sprintf('%s=%s', $field, $data[$field]);
+            $dataToVerify[] = sprintf('%s=%s', $signedField, $data[$signedField]);
         }
 
         $dataString = implode(',', $dataToVerify);
