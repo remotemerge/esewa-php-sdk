@@ -41,7 +41,7 @@ final class EsewaFactory
      * @throws EsewaException If the configuration options are invalid.
      * @return TokenInterface A configured TokenPay instance.
      */
-    public static function createToken(array $options, ?HttpClientInterface $httpClient = null): TokenInterface
+    public static function createTokenPay(array $options, ?HttpClientInterface $httpClient = null): TokenInterface
     {
         $token = new TokenPay($httpClient);
         $token->configure($options);
