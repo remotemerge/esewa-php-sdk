@@ -37,25 +37,7 @@ final class Epay extends AbstractPayment implements EpayInterface
      */
     public function configure(array $options): void
     {
-        if (isset($options['environment'])) {
-            if (!in_array($options['environment'], ['test', 'production'], true)) {
-                throw new EsewaException('Environment must be either "test" or "production".');
-            }
-
-            $this->environment = $options['environment'];
-        }
-
-        if (!isset($options['product_code'])) {
-            throw new EsewaException('Product code is required.');
-        }
-
-        $this->productCode = $options['product_code'];
-
-        if (!isset($options['secret_key'])) {
-            throw new EsewaException('Secret key is required.');
-        }
-
-        $this->secretKey = $options['secret_key'];
+        $this->validateCommonConfiguration($options);
 
         if (!isset($options['success_url'])) {
             throw new EsewaException('Success URL is required.');

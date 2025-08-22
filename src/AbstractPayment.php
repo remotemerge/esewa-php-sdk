@@ -108,6 +108,35 @@ abstract class AbstractPayment
     }
 
     /**
+     * Validates common configuration options.
+     *
+     * @param array<string, mixed> $options The configuration options.
+     * @throws EsewaException If validation fails.
+     */
+    protected function validateCommonConfiguration(array $options): void
+    {
+        if (isset($options['environment'])) {
+            if (!in_array($options['environment'], ['test', 'production'], true)) {
+                throw new EsewaException('Environment must be either "test" or "production".');
+            }
+
+            $this->environment = $options['environment'];
+        }
+
+        if (!isset($options['product_code'])) {
+            throw new EsewaException('Product code is required.');
+        }
+
+        $this->productCode = $options['product_code'];
+
+        if (!isset($options['secret_key'])) {
+            throw new EsewaException('Secret key is required.');
+        }
+
+        $this->secretKey = $options['secret_key'];
+    }
+
+    /**
      * Validates the response from the API.
      *
      * @param array<string, mixed> $resData The response data.
