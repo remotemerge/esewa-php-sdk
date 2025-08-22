@@ -66,7 +66,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['product_id'])) {
     <title>Premium Electronics Store</title>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@7.0.0/css/all.css"
           integrity="sha256-lQQ0StO/37OizAM1JKQP0z6xGFqiITYD/NeXfiyfCA4=" crossorigin="anonymous">
-    <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4.1.12/dist/index.global.js"
+            integrity="sha256-MYTW01hCMa8HLCBdElpddl3OZGC2pKWVZRDqgk3b0CA=" crossorigin="anonymous"></script>
     <style type="text/tailwindcss">
         @theme {
             --color-clifford: #da373d;
@@ -100,36 +101,102 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['product_id'])) {
 
 <?php if ($paymentForm): ?>
     <!-- Payment Form Modal -->
-    <div id="paymentModal" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
-        <div class="bg-white p-8 rounded-lg max-w-md w-full mx-4">
-            <h3 class="text-2xl font-bold mb-6 text-center">Complete Payment</h3>
-            <div class="bg-gray-50 p-4 rounded-lg mb-6">
-                <p class="text-sm text-gray-600">Product: <?= htmlspecialchars($_SESSION['product_name']) ?></p>
-                <p class="text-sm text-gray-600">Amount: NPR <?= number_format($_SESSION['amount']) ?></p>
-                <p class="text-sm text-gray-600">Tax (13%): NPR <?= number_format($_SESSION['amount'] * 0.13) ?></p>
-                <p class="text-sm text-gray-600">Delivery: NPR 100</p>
-                <hr class="my-2">
-                <p class="font-bold">Total: NPR <?= number_format($paymentForm['total_amount']) ?></p>
-            </div>
-
-            <form action="<?= $epay->getFormActionUrl() ?>" method="POST" id="esewaForm">
-                <?php foreach ($paymentForm as $key => $value): ?>
-                    <input type="hidden" name="<?= htmlspecialchars((string)$key) ?>"
-                           value="<?= htmlspecialchars((string)$value) ?>">
-                <?php endforeach; ?>
-
-                <div class="flex space-x-4">
+    <div id="paymentModal" class="fixed inset-0 bg-black bg-opacity-60 flex items-center justify-center z-50 p-4">
+        <div
+            class="bg-white rounded-2xl shadow-2xl max-w-lg w-full transform transition-all duration-300 scale-95 opacity-0"
+            id="modalContent">
+            <!-- Modal Header -->
+            <div class="bg-gradient-to-r from-primary to-secondary p-6 rounded-t-2xl">
+                <div class="flex items-center justify-between">
+                    <div class="flex items-center space-x-3">
+                        <div class="w-12 h-12 bg-white bg-opacity-20 rounded-full flex items-center justify-center">
+                            <i class="fas fa-shopping-bag text-white text-xl"></i>
+                        </div>
+                        <div>
+                            <h3 class="text-2xl font-bold text-white">Secure Checkout</h3>
+                            <p class="text-blue-100 text-sm">Complete your purchase safely</p>
+                        </div>
+                    </div>
                     <button type="button" onclick="closeModal()"
-                            class="flex-1 bg-gray-300 text-gray-700 py-3 px-6 rounded-lg hover:bg-gray-400 transition-colors">
-                        Cancel
-                    </button>
-                    <button type="submit"
-                            class="flex-1 bg-esewa text-white py-3 px-6 rounded-lg hover:bg-green-600 transition-colors">
-                        <i class="fas fa-mobile-alt mr-2"></i>
-                        Pay with eSewa
+                            class="text-white hover:text-gray-200 transition-colors">
+                        <i class="fas fa-times text-xl"></i>
                     </button>
                 </div>
-            </form>
+            </div>
+
+            <!-- Order Summary -->
+            <div class="p-6">
+                <div class="bg-gradient-to-br from-gray-50 to-gray-100 rounded-xl p-5 mb-6 border border-gray-200">
+                    <h4 class="text-lg font-semibold text-gray-800 mb-4 flex items-center">
+                        <i class="fas fa-receipt text-primary mr-2"></i>
+                        Order Summary
+                    </h4>
+
+                    <div class="space-y-3">
+                        <div class="flex justify-between items-center">
+                            <span
+                                class="text-gray-600 font-medium"><?= htmlspecialchars($_SESSION['product_name']) ?></span>
+                            <span
+                                class="font-semibold text-gray-800">NPR <?= number_format($_SESSION['amount']) ?></span>
+                        </div>
+
+                        <div class="flex justify-between items-center">
+                            <span class="text-gray-600">Tax (13%)</span>
+                            <span class="text-gray-800">NPR <?= number_format($_SESSION['amount'] * 0.13) ?></span>
+                        </div>
+
+                        <div class="flex justify-between items-center">
+                            <span class="text-gray-600">Delivery Charge</span>
+                            <span class="text-gray-800">NPR 100</span>
+                        </div>
+
+                        <hr class="border-gray-300">
+
+                        <div class="flex justify-between items-center text-lg">
+                            <span class="font-bold text-gray-800">Total Amount</span>
+                            <span
+                                class="font-bold text-primary text-xl">NPR <?= number_format($paymentForm['total_amount']) ?></span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Form -->
+                <form action="<?= $epay->getFormActionUrl() ?>" method="POST" id="esewaForm">
+                    <?php foreach ($paymentForm as $key => $value): ?>
+                        <input type="hidden" name="<?= htmlspecialchars((string)$key) ?>"
+                               value="<?= htmlspecialchars((string)$value) ?>">
+                    <?php endforeach; ?>
+
+                    <div class="flex space-x-4">
+                        <button type="button" onclick="closeModal()"
+                                class="flex-1 bg-gray-100 text-gray-700 py-4 px-6 rounded-xl hover:bg-gray-200 transition-all duration-200 font-semibold border border-gray-300">
+                            <i class="fas fa-arrow-left mr-2"></i>
+                            Cancel
+                        </button>
+                        <button type="submit"
+                                class="flex-1 bg-gradient-to-r from-esewa to-green-600 text-white py-4 px-6 rounded-xl hover:from-green-600 hover:to-green-700 transition-all duration-200 font-semibold shadow-lg hover:shadow-xl transform hover:-translate-y-0.5">
+                            <i class="fas fa-lock mr-2"></i>
+                            Pay Securely
+                        </button>
+                    </div>
+                </form>
+
+                <!-- Trust Indicators -->
+                <div class="mt-6 flex items-center justify-center space-x-6 text-xs text-gray-500">
+                    <div class="flex items-center space-x-1">
+                        <i class="fas fa-shield-alt text-green-500"></i>
+                        <span>SSL Secured</span>
+                    </div>
+                    <div class="flex items-center space-x-1">
+                        <i class="fas fa-lock text-green-500"></i>
+                        <span>Encrypted</span>
+                    </div>
+                    <div class="flex items-center space-x-1">
+                        <i class="fas fa-certificate text-green-500"></i>
+                        <span>Verified</span>
+                    </div>
+                </div>
+            </div>
         </div>
     </div>
 <?php endif; ?>
@@ -343,18 +410,54 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['product_id'])) {
 <script>
     function closeModal() {
         const modal = document.getElementById('paymentModal');
-        if (modal) {
-            modal.style.display = 'none';
+        const modalContent = document.getElementById('modalContent');
+
+        if (modal && modalContent) {
+            modalContent.style.opacity = '0';
+            modalContent.style.transform = 'scale(0.95)';
+
+            setTimeout(() => {
+                modal.style.display = 'none';
+            }, 300);
         }
     }
 
-    // Auto-submit payment form after user confirms
+    function openModal() {
+        const modal = document.getElementById('paymentModal');
+        const modalContent = document.getElementById('modalContent');
+
+        if (modal && modalContent) {
+            modal.style.display = 'flex';
+
+            // Force reflow
+            modal.offsetHeight;
+
+            modalContent.style.opacity = '1';
+            modalContent.style.transform = 'scale(1)';
+        }
+    }
+
+    // Auto-submit a payment form after the user confirms
     <?php if ($paymentForm): ?>
     document.addEventListener('DOMContentLoaded', function () {
-        const modal = document.getElementById('paymentModal');
-        modal.style.display = 'flex';
+        openModal();
     });
     <?php endif; ?>
+
+    // Close modal when clicking outside
+    document.addEventListener('click', function (e) {
+        const modal = document.getElementById('paymentModal');
+        if (modal && e.target === modal) {
+            closeModal();
+        }
+    });
+
+    // Close modal with an Escape key
+    document.addEventListener('keydown', function (e) {
+        if (e.key === 'Escape') {
+            closeModal();
+        }
+    });
 
     // Smooth scrolling for anchor links
     document.querySelectorAll('a[href^="#"]').forEach(anchor => {
@@ -368,6 +471,20 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['product_id'])) {
                 });
             }
         });
+    });
+
+    // Add loading state to the payment button
+    document.addEventListener('DOMContentLoaded', function () {
+        const paymentForm = document.getElementById('esewaForm');
+        if (paymentForm) {
+            paymentForm.addEventListener('submit', function () {
+                const submitButton = this.querySelector('button[type="submit"]');
+                if (submitButton) {
+                    submitButton.innerHTML = '<i class="fas fa-spinner fa-spin mr-2"></i>Processing...';
+                    submitButton.disabled = true;
+                }
+            });
+        }
     });
 </script>
 
