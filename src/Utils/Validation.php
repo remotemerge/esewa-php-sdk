@@ -42,7 +42,7 @@ trait Validation
      */
     protected function validateTransactionCode(string $code): void
     {
-        if (empty(trim($code))) {
+        if (trim($code) === '') {
             throw new EsewaException('Transaction code cannot be empty.');
         }
     }
@@ -55,7 +55,7 @@ trait Validation
      */
     protected function validateRequestId(string $requestId): void
     {
-        if (empty(trim($requestId))) {
+        if (trim($requestId) === '') {
             throw new EsewaException('Request ID cannot be empty.');
         }
     }
@@ -81,7 +81,7 @@ trait Validation
      */
     protected function validateProductCode(string $productCode): void
     {
-        if (empty(trim($productCode))) {
+        if (trim($productCode) === '') {
             throw new EsewaException('Product code cannot be empty.');
         }
     }
@@ -94,7 +94,7 @@ trait Validation
      */
     protected function validateSecretKey(string $secretKey): void
     {
-        if (empty(trim($secretKey))) {
+        if (trim($secretKey) === '') {
             throw new EsewaException('Secret key cannot be empty.');
         }
     }
@@ -137,10 +137,10 @@ trait Validation
     {
         $this->validateRequiredField($data, 'request_id', 'Request ID');
         $this->validateRequestId($data['request_id']);
-        
+
         $this->validateRequiredField($data, 'amount', 'Amount');
         $this->validateAmount((float) $data['amount']);
-        
+
         $this->validateRequiredField($data, 'transaction_code', 'Transaction code');
         $this->validateTransactionCode($data['transaction_code']);
     }
