@@ -20,7 +20,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['product_id'])) {
             'product_code' => 'EPAYTEST',
             'secret_key' => '8gBm/:&EnhH.1/q',
             'success_url' => 'http://localhost:8000/success.php',
-            'failure_url' => 'http://localhost:8000/failure.php'
+            'failure_url' => 'http://localhost:8000/failure.php',
         ]);
 
         $productData = [
@@ -29,10 +29,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['product_id'])) {
             3 => ['name' => 'Smart Watch', 'price' => 25000],
             4 => ['name' => 'Gaming Mouse', 'price' => 3500],
             5 => ['name' => 'Mechanical Keyboard', 'price' => 8500],
-            6 => ['name' => 'Monitor 4K', 'price' => 45000]
+            6 => ['name' => 'Monitor 4K', 'price' => 45000],
         ];
 
-        $productId = (int)$_POST['product_id'];
+        $productId = (int) $_POST['product_id'];
         if (!isset($productData[$productId])) {
             throw new Exception('Invalid product selected');
         }
@@ -45,7 +45,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['product_id'])) {
             'tax_amount' => $product['price'] * 0.13,
             'product_service_charge' => 0,
             'product_delivery_charge' => 100,
-            'transaction_uuid' => $transactionUuid
+            'transaction_uuid' => $transactionUuid,
         ];
 
         $paymentForm = $epay->createPayment($paymentData);
@@ -163,8 +163,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['product_id'])) {
                 <!-- Form -->
                 <form action="<?= $epay->getFormActionUrl() ?>" method="POST" id="esewaForm">
                     <?php foreach ($paymentForm as $key => $value): ?>
-                        <input type="hidden" name="<?= htmlspecialchars((string)$key) ?>"
-                               value="<?= htmlspecialchars((string)$value) ?>">
+                        <input type="hidden" name="<?= htmlspecialchars((string) $key) ?>"
+                               value="<?= htmlspecialchars((string) $value) ?>">
                     <?php endforeach; ?>
 
                     <div class="flex space-x-4">

@@ -178,7 +178,12 @@ final class TokenPay extends AbstractPayment implements TokenInterface
     public function payment(array $paymentData): array
     {
         $this->ensureAuthenticated();
-        $this->validatePaymentData($paymentData);
+        $this->validateRequiredField($paymentData, 'request_id', 'Request ID');
+        $this->validateRequestId($paymentData['request_id']);
+        $this->validateRequiredField($paymentData, 'amount', 'Amount');
+        $this->validateAmount((float) $paymentData['amount']);
+        $this->validateRequiredField($paymentData, 'transaction_code', 'Transaction code');
+        $this->validateTransactionCode($paymentData['transaction_code']);
 
         $url = $this->getBaseUrl('token') . self::ENDPOINTS['payment'];
         $headers = $this->getAuthHeaders();
@@ -202,7 +207,12 @@ final class TokenPay extends AbstractPayment implements TokenInterface
     public function statusCheck(array $statusData): array
     {
         $this->ensureAuthenticated();
-        $this->validateStatusData($statusData);
+        $this->validateRequiredField($statusData, 'request_id', 'Request ID');
+        $this->validateRequestId($statusData['request_id']);
+        $this->validateRequiredField($statusData, 'amount', 'Amount');
+        $this->validateAmount((float) $statusData['amount']);
+        $this->validateRequiredField($statusData, 'transaction_code', 'Transaction code');
+        $this->validateTransactionCode($statusData['transaction_code']);
 
         $url = $this->getBaseUrl('token') . self::ENDPOINTS['status'];
         $headers = $this->getAuthHeaders();
@@ -262,49 +272,4 @@ final class TokenPay extends AbstractPayment implements TokenInterface
         ];
     }
 
-    /**
-     * Validates payment data.
-     *
-     * @param array<string, mixed> $paymentData The payment data to validate.
-     * @throws EsewaException If validation fails.
-     */
-    private function validatePaymentData(array $paymentData): void
-    {
-        if (!isset($paymentData['request_id'])) {
-            throw new EsewaException('Request ID is required.');
-        }
-
-        if (!isset($paymentData['amount'])) {
-            throw new EsewaException('Amount is required.');
-        }
-
-        $this->validateAmount((float) $paymentData['amount']);
-
-        if (!isset($paymentData['transaction_code'])) {
-            throw new EsewaException('Transaction code is required.');
-        }
-    }
-
-    /**
-     * Validates status check data.
-     *
-     * @param array<string, mixed> $statusData The status data to validate.
-     * @throws EsewaException If validation fails.
-     */
-    private function validateStatusData(array $statusData): void
-    {
-        if (!isset($statusData['request_id'])) {
-            throw new EsewaException('Request ID is required.');
-        }
-
-        if (!isset($statusData['amount'])) {
-            throw new EsewaException('Amount is required.');
-        }
-
-        $this->validateAmount((float) $statusData['amount']);
-
-        if (!isset($statusData['transaction_code'])) {
-            throw new EsewaException('Transaction code is required.');
-        }
-    }
 }

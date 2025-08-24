@@ -5,9 +5,11 @@ declare(strict_types=1);
 namespace RemoteMerge\Esewa;
 
 use RemoteMerge\Esewa\Exceptions\EsewaException;
+use RemoteMerge\Esewa\Utils\Validation;
 
 abstract class AbstractPayment
 {
+    use Validation;
     /**
      * The eSewa environment test or production.
      */
@@ -37,31 +39,6 @@ abstract class AbstractPayment
         ],
     ];
 
-    /**
-     * Validates the amount.
-     *
-     * @param float $amount The amount to validate.
-     * @throws EsewaException If the amount is invalid.
-     */
-    protected function validateAmount(float $amount): void
-    {
-        if ($amount <= 0) {
-            throw new EsewaException('Amount must be greater than 0.');
-        }
-    }
-
-    /**
-     * Validates the transaction UUID.
-     *
-     * @param string $uuid The UUID to validate.
-     * @throws EsewaException If the UUID is invalid.
-     */
-    protected function validateTransactionUuid(string $uuid): void
-    {
-        if (preg_match('/^[a-zA-Z0-9\-]+$/', $uuid) !== 1) {
-            throw new EsewaException('Transaction UUID must be alphanumeric and may contain hyphens only.');
-        }
-    }
 
     /**
      * Generates HMAC signature using SHA256.
@@ -72,6 +49,39 @@ abstract class AbstractPayment
     protected function generateSignature(string $data): string
     {
         return base64_encode(hash_hmac('sha256', $data, $this->secretKey, true));
+    }
+
+    /**
+     * Validates common configuration options.
+     *
+     * @param array<string, mixed> $options The configuration options.
+     * @throws EsewaException If validation fails.
+     */
+    protected function validateCommonConfiguration(array $options): void
+    {
+        if (isset($options['environment'])) {
+            $this->validateEnvironment($options['environment']);
+            $this->environment = $options['environment'];
+        }
+
+        $this->validateRequiredField($options, 'product_code', 'Product code');
+        $this->validateProductCode($options['product_code']);
+        $this->productCode = $options['product_code'];
+
+        $this->validateRequiredField($options, 'secret_key', 'Secret key');
+        $this->validateSecretKey($options['secret_key']);
+        $this->secretKey = $options['secret_key'];
+    }
+
+    /**
+     * Validates the response from the API.
+     *
+     * @param array<string, mixed> $resData The response data.
+     * @throws EsewaException
+     */
+    protected function validateResponse(array $resData): void
+    {
+        $this->validateApiResponse($resData);
     }
 
     /**
@@ -107,45 +117,4 @@ abstract class AbstractPayment
         return $data;
     }
 
-    /**
-     * Validates common configuration options.
-     *
-     * @param array<string, mixed> $options The configuration options.
-     * @throws EsewaException If validation fails.
-     */
-    protected function validateCommonConfiguration(array $options): void
-    {
-        if (isset($options['environment'])) {
-            if (!in_array($options['environment'], ['test', 'production'], true)) {
-                throw new EsewaException('Environment must be either "test" or "production".');
-            }
-
-            $this->environment = $options['environment'];
-        }
-
-        if (!isset($options['product_code'])) {
-            throw new EsewaException('Product code is required.');
-        }
-
-        $this->productCode = $options['product_code'];
-
-        if (!isset($options['secret_key'])) {
-            throw new EsewaException('Secret key is required.');
-        }
-
-        $this->secretKey = $options['secret_key'];
-    }
-
-    /**
-     * Validates the response from the API.
-     *
-     * @param array<string, mixed> $resData The response data.
-     * @throws EsewaException
-     */
-    protected function validateResponse(array $resData): void
-    {
-        if (isset($resData['code']) && $resData['code'] !== 0) {
-            throw new EsewaException('API Error: ' . ($resData['message'] ?? 'Unknown payment gateway error'));
-        }
-    }
 }

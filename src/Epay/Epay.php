@@ -74,7 +74,9 @@ final class Epay extends AbstractPayment implements EpayInterface
      */
     public function createPayment(array $paymentData): array
     {
-        $this->validatePaymentData($paymentData);
+        $this->validateRequiredField($paymentData, 'amount', 'Amount');
+        $this->validateAmount((float) $paymentData['amount']);
+        $this->validateRequiredField($paymentData, 'transaction_uuid', 'Transaction UUID');
 
         $amount = (float) $paymentData['amount'];
         $taxAmount = (float) ($paymentData['tax_amount'] ?? 0);
@@ -200,24 +202,5 @@ final class Epay extends AbstractPayment implements EpayInterface
         $expectedSignature = $this->generateSignature($dataString);
 
         return hash_equals($expectedSignature, $signature);
-    }
-
-    /**
-     * Validates payment data.
-     *
-     * @param array<string, mixed> $paymentData The payment data to validate.
-     * @throws EsewaException If validation fails.
-     */
-    private function validatePaymentData(array $paymentData): void
-    {
-        if (!isset($paymentData['amount'])) {
-            throw new EsewaException('Amount is required.');
-        }
-
-        $this->validateAmount((float) $paymentData['amount']);
-
-        if (!isset($paymentData['transaction_uuid'])) {
-            throw new EsewaException('Transaction UUID is required.');
-        }
     }
 }
