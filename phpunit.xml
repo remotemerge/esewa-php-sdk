@@ -17,6 +17,10 @@
     </include>
     <exclude>
       <file>src/Data/messages.php</file>
+      <file>src/Epay/EpayInterface.php</file>
+      <file>src/Http/HttpClientInterface.php</file>
+      <file>src/PaymentInterface.php</file>
+      <file>src/TokenPay/TokenInterface.php</file>
     </exclude>
   </source>
   <coverage>
