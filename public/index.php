@@ -89,7 +89,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['product_id'])) {
     </div>
 </section>
 
-<?php if ($error): ?>
+<?php if ($error !== null && $error !== '' && $error !== '0'): ?>
     <!-- Error Message -->
     <div class="container mx-auto px-4 py-4">
         <div class="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative" role="alert">
@@ -99,7 +99,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['product_id'])) {
     </div>
 <?php endif; ?>
 
-<?php if ($paymentForm): ?>
+<?php if ($paymentForm !== null && $paymentForm !== []): ?>
     <!-- Payment Form Modal -->
     <div id="paymentModal" class="fixed inset-0 bg-black bg-opacity-60 flex items-center justify-center z-50 p-4">
         <div
@@ -135,7 +135,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['product_id'])) {
                     <div class="space-y-3">
                         <div class="flex justify-between items-center">
                             <span
-                                class="text-gray-600 font-medium"><?= htmlspecialchars($_SESSION['product_name']) ?></span>
+                                class="text-gray-600 font-medium"><?= htmlspecialchars((string) $_SESSION['product_name']) ?></span>
                             <span
                                 class="font-semibold text-gray-800">NPR <?= number_format($_SESSION['amount']) ?></span>
                         </div>
@@ -438,7 +438,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['product_id'])) {
     }
 
     // Auto-submit a payment form after the user confirms
-    <?php if ($paymentForm): ?>
+    <?php if ($paymentForm !== null && $paymentForm !== []): ?>
     document.addEventListener('DOMContentLoaded', function () {
         openModal();
     });
