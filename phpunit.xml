@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<phpunit xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:noNamespaceSchemaLocation="./vendor/phpunit/phpunit/phpunit.xsd"
+         bootstrap="./vendor/autoload.php"
+         beStrictAboutOutputDuringTests="true"
+         requireCoverageMetadata="true"
+         colors="true">
+  <testsuites>
+    <testsuite name="feature">
+      <!--<directory>tests/Feature</directory>-->
+      <directory>tests/Unit</directory>
+    </testsuite>
+  </testsuites>
+  <source>
+    <include>
+      <directory>src</directory>
+    </include>
+    <exclude>
+      <file>src/Data/messages.php</file>
+      <file>src/Epay/EpayInterface.php</file>
+      <file>src/Http/HttpClientInterface.php</file>
+      <file>src/PaymentInterface.php</file>
+      <file>src/TokenPay/TokenInterface.php</file>
+    </exclude>
+  </source>
+  <coverage>
+    <report>
+      <html outputDirectory="coverage"/>
+      <clover outputFile="coverage.xml"/>
+    </report>
+  </coverage>
+  <logging>
+    <junit outputFile="junit.xml"/>
+  </logging>
+</phpunit>

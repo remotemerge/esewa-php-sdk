@@ -1,34 +1,32 @@
-# The workflow to install the package on different OS and PHP versions
 name: Install
 
-# Trigger the workflow on new releases
 on:
+  # Run the workflow on new releases
   release:
     types: [ published ]
     branches: [ main ]
 
 jobs:
-  php-test:
+  install:
     # Run on the latest OS versions
     runs-on: ${{ matrix.os }}
     strategy:
       matrix:
         # Define the OS and PHP versions to test
-        os: [ ubuntu-latest, windows-latest, macos-latest ]
-        php: [ '8.1', '8.2', '8.3' ]
+        os: [ ubuntu-24.04, windows-2025, macos-15 ]
+        php: [ '8.1', '8.2', '8.3', '8.4' ]
 
     steps:
       - name: "Install PHP"
         uses: shivammathur/setup-php@v2
         with:
           php-version: ${{ matrix.php }}
-          extensions: curl, simplexml
 
       - name: "Display PHP and Composer version information"
         run: php --version && composer --version
 
-      - name: "Initialize Composer"
-        run: composer init --no-interaction --stability=stable
+      - name: "Install dependencies"
+        run: composer install --no-interaction --no-progress --optimize-autoloader --prefer-dist
 
       - name: "Install dependencies"
         run: composer require remotemerge/esewa-php-sdk
