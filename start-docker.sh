@@ -1,15 +1,26 @@
 #!/bin/bash
 
-# Stop and remove orphan services
-docker compose --file compose.yml down --remove-orphans
+# Enable strict error handling
+set -euo pipefail
 
-# Set current user IDs in the environment
-USER_ID=$(id -u)
-GROUP_ID=$(id -g)
-export USER_ID GROUP_ID
+# Configuration
+readonly COMPOSE_FILE="compose.yml"
+readonly NETWORK_NAME="esewa-network"
+readonly PROJECT_NAME="esewa"
 
-# Create the network for the services
-docker network create rm-pkg-network >/dev/null 2>&1 || true
+# Docker Compose command wrapper
+COMPOSE_CMD="docker compose --file ${COMPOSE_FILE} --project-name ${PROJECT_NAME}"
 
-# Start services
-docker compose --file compose.yml up --build
+# Set current GID/UID in environment variables
+APPLICATION_GID=$(id -g)
+APPLICATION_UID=$(id -u)
+export APPLICATION_GID APPLICATION_UID
+
+echo "Creating Docker network..."
+docker network create "${NETWORK_NAME}" >/dev/null 2>&1 || true
+
+echo "Building Docker images..."
+${COMPOSE_CMD} build --build-arg APPLICATION_GID="${APPLICATION_GID}" --build-arg APPLICATION_UID="${APPLICATION_UID}"
+
+echo "Starting Docker containers..."
+${COMPOSE_CMD} up

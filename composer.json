@@ -27,10 +27,10 @@
     "ext-json": "*"
   },
   "require-dev": {
-    "friendsofphp/php-cs-fixer": "^3.86",
-    "phpunit/phpunit": "^10.5.53",
-    "ramsey/uuid": "^4.9",
-    "rector/rector": "^2.1.4"
+    "friendsofphp/php-cs-fixer": "^3.92.3",
+    "phpunit/phpunit": "^10.5.60",
+    "ramsey/uuid": "^4.9.2",
+    "rector/rector": "^2.2.14"
   },
   "config": {
     "discard-changes": true,

@@ -1,33 +1,44 @@
-# Build arguments
-ARG PHP_IMAGE_TAG=8.1-unit
+# Use a base image with FPM and Nginx
+FROM serversideup/php:8.1-fpm-nginx
 
-# Use PHP with Nginx Unit as the base image
-FROM serversideup/php:${PHP_IMAGE_TAG}
+# Build arguments
+ARG SHOW_WELCOME_MESSAGE=false
+ARG COMPOSER_ALLOW_SUPERUSER=0
+ARG COMPOSER_ROOT_VERSION=1.0.0
+ARG HEALTHCHECK_PATH=/
+
+# Build arguments for user and group
+ARG APPLICATION_UID=1000
+ARG APPLICATION_GID=1000
 
 # Switch to root user to perform system-level operations
 USER root
 
-# Build arguments
-ARG USER_ID
-ARG GROUP_ID
+# Install system dependencies
+RUN apt update && \
+    apt install -y nano bash && \
+    apt clean && \
+    rm -rf /var/lib/apt/lists/*
 
-# Install required PHP extensions
+# Install essential PHP extensions
 RUN install-php-extensions xdebug
 
-# Configure user permissions and ownership for the web server
-RUN docker-php-serversideup-set-id www-data ${USER_ID}:${GROUP_ID}
-
-# Set the user to match host user for proper file permissions
-RUN docker-php-serversideup-set-file-permissions --owner ${USER_ID}:${GROUP_ID} --service unit
+# Configure user permissions
+RUN docker-php-serversideup-set-id www-data ${APPLICATION_UID}:${APPLICATION_GID} && \
+    docker-php-serversideup-set-file-permissions --owner ${APPLICATION_UID}:${APPLICATION_GID} --service nginx
 
 # Create and configure Composer cache directory
-RUN mkdir -p /composer/cache && chown -R www-data:www-data /composer/cache
+RUN mkdir -p /composer/cache && chown -R ${APPLICATION_UID}:${APPLICATION_GID} /composer/cache
 
-# Copy local entrypoint scripts
-COPY --chmod=755 ./.docker/scripts/ /etc/entrypoint.d/
+# Create application directory and set ownership
+RUN mkdir -p /var/www/html && \
+    chown -R ${APPLICATION_UID}:${APPLICATION_GID} /var/www/html
 
 # Switch to unprivileged user for security
-USER www-data
+USER ${APPLICATION_UID}:${APPLICATION_GID}
 
-# Set the working directory for the application
+# Copy local entrypoint entrypoint.d
+COPY --chmod=755 --chown=${APPLICATION_UID}:${APPLICATION_GID} ./.docker/entrypoint.d/ /etc/entrypoint.d/
+
+# Set working directory
 WORKDIR /var/www/html
