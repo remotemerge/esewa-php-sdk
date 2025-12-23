@@ -1,5 +1,5 @@
 # Use a base image with FPM and Nginx
-FROM serversideup/php:8.1-fpm-nginx
+FROM serversideup/php:8.5-fpm-nginx
 
 # Build arguments
 ARG SHOW_WELCOME_MESSAGE=false
