@@ -1,9 +1,16 @@
 #!/bin/bash
 
-# Set current user IDs in the environment
-USER_ID=$(id -u)
-GROUP_ID=$(id -g)
-export USER_ID GROUP_ID
+# Enable strict error handling
+set -euo pipefail
+
+# Configuration
+readonly COMPOSE_FILE="compose.yml"
+readonly PROJECT_NAME="esewa"
+readonly APP_CONTAINER_NAME="demo-server"
+
+# Set current UID in environment variables
+APPLICATION_UID=$(id -u)
+export APPLICATION_UID
 
 # Login to the app container
-docker compose --file compose.yml exec --user "${USER_ID}" esewa-server bash
+docker compose --file "${COMPOSE_FILE}" --project-name "${PROJECT_NAME}" exec --user "${APPLICATION_UID}" "${APP_CONTAINER_NAME}" bash
