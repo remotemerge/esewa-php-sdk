@@ -12,11 +12,6 @@ use RemoteMerge\Esewa\Http\HttpClientInterface;
 final class Epay extends AbstractPayment implements EpayInterface
 {
     /**
-     * The HTTP client for making requests.
-     */
-    private readonly HttpClientInterface $httpClient;
-
-    /**
      * The success URL for redirecting after a successful payment.
      */
     private string $successUrl;
@@ -26,9 +21,9 @@ final class Epay extends AbstractPayment implements EpayInterface
      */
     private string $failureUrl;
 
-    public function __construct(?HttpClientInterface $httpClient = null)
+    public function __construct(private readonly ?HttpClientInterface $httpClient = new HttpClient())
     {
-        $this->httpClient = $httpClient ?? new HttpClient();
+        //
     }
 
     /**

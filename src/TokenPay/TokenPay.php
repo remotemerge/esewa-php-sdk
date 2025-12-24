@@ -12,11 +12,6 @@ use RemoteMerge\Esewa\Http\HttpClientInterface;
 final class TokenPay extends AbstractPayment implements TokenInterface
 {
     /**
-     * The HTTP client for making requests.
-     */
-    private readonly HttpClientInterface $httpClient;
-
-    /**
      * The client secret for API authentication.
      */
     private string $clientSecret;
@@ -41,9 +36,9 @@ final class TokenPay extends AbstractPayment implements TokenInterface
         'status' => '/status',
     ];
 
-    public function __construct(?HttpClientInterface $httpClient = null)
+    public function __construct(private readonly ?HttpClientInterface $httpClient = new HttpClient())
     {
-        $this->httpClient = $httpClient ?? new HttpClient();
+        //
     }
 
     /**
