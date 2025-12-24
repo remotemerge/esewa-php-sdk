@@ -89,7 +89,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['product_id'])) {
     </div>
 </section>
 
-<?php if ($error !== null && $error !== '' && $error !== '0'): ?>
+<?php if ($error): ?>
     <!-- Error Message -->
     <div class="container mx-auto px-4 py-4">
         <div class="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative" role="alert">
