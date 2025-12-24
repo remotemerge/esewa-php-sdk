@@ -13,7 +13,7 @@ use RemoteMerge\Esewa\Http\HttpClientInterface;
 use RemoteMerge\Esewa\TokenPay\TokenInterface;
 
 #[CoversClass(EsewaFactory::class)]
-class EsewaFactoryTest extends TestCase
+final class EsewaFactoryTest extends TestCase
 {
     private array $validEpayOptions;
 

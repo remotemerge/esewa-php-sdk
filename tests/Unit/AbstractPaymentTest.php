@@ -10,7 +10,7 @@ use RemoteMerge\Esewa\AbstractPayment;
 use RemoteMerge\Esewa\Exceptions\EsewaException;
 
 #[CoversClass(AbstractPayment::class)]
-class AbstractPaymentTest extends TestCase
+final class AbstractPaymentTest extends TestCase
 {
     private AbstractPaymentTestClass $paymentTestClass;
 

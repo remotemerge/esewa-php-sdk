@@ -10,6 +10,7 @@ use RemoteMerge\Esewa\Utils\Validation;
 abstract class AbstractPayment
 {
     use Validation;
+
     /**
      * The eSewa environment test or production.
      */

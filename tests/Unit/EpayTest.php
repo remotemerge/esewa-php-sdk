@@ -13,7 +13,7 @@ use RemoteMerge\Esewa\Exceptions\EsewaException;
 use RemoteMerge\Esewa\Http\HttpClientInterface;
 
 #[CoversClass(Epay::class)]
-class EpayTest extends TestCase
+final class EpayTest extends TestCase
 {
     private Epay $epay;
 

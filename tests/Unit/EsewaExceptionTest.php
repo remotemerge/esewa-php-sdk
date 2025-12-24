@@ -12,7 +12,7 @@ use RuntimeException;
 use Throwable;
 
 #[CoversClass(EsewaException::class)]
-class EsewaExceptionTest extends TestCase
+final class EsewaExceptionTest extends TestCase
 {
     public function testExceptionExtendsException(): void
     {
@@ -254,7 +254,7 @@ class EsewaExceptionTest extends TestCase
 
     public function testExceptionWithNullPrevious(): void
     {
-        $esewaException = new EsewaException('Test', 0, null);
+        $esewaException = new EsewaException('Test', 0);
 
         $this->assertNotInstanceOf(Throwable::class, $esewaException->getPrevious());
     }
