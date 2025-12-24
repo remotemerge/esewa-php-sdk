@@ -13,7 +13,7 @@ use RemoteMerge\Esewa\Http\HttpClient;
 use RemoteMerge\Esewa\Http\HttpClientInterface;
 
 #[CoversClass(HttpClient::class)]
-class HttpClientTest extends TestCase
+final class HttpClientTest extends TestCase
 {
     private TestableHttpClient $testableHttpClient;
 

@@ -11,7 +11,7 @@ use RemoteMerge\Esewa\Utils\Validation;
 /**
  * @covers \RemoteMerge\Esewa\Utils\Validation
  */
-class ValidationTraitTest extends TestCase
+final class ValidationTraitTest extends TestCase
 {
     private ValidationTestClass $validationTestClass;
 

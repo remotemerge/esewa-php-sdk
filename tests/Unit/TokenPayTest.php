@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Tests\Unit;
 
+use ArrayAccess;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 use RemoteMerge\Esewa\Exceptions\EsewaException;
@@ -12,7 +13,7 @@ use RemoteMerge\Esewa\TokenPay\TokenInterface;
 use RemoteMerge\Esewa\TokenPay\TokenPay;
 
 #[\PHPUnit\Framework\Attributes\CoversClass(TokenPay::class)]
-class TokenPayTest extends TestCase
+final class TokenPayTest extends TestCase
 {
     private TokenPay $tokenPay;
 
@@ -103,8 +104,14 @@ class TokenPayTest extends TestCase
             ->with(
                 $this->stringContains('/access-token'),
                 $this->callback(
-                    fn ($data): bool => isset($data['grant_type']) && $data['grant_type'] === 'password'
-                        && isset($data['username'], $data['password'], $data['client_secret'])
+                    function (array|ArrayAccess $data): bool {
+                        $this->assertArrayHasKey('grant_type', $data);
+                        $this->assertSame('password', $data['grant_type']);
+                        $this->assertArrayHasKey('client_secret', $data);
+                        $this->assertArrayHasKey('password', $data);
+                        $this->assertArrayHasKey('username', $data);
+                        return true;
+                    }
                 )
             )
             ->willReturn(json_encode($authResponse));
@@ -198,8 +205,13 @@ class TokenPayTest extends TestCase
             ->with(
                 $this->stringContains('/access-token'),
                 $this->callback(
-                    fn ($data): bool => isset($data['grant_type']) && $data['grant_type'] === 'refresh_token'
-                        && isset($data['refresh_token'], $data['client_secret'])
+                    function (array|ArrayAccess $data): bool {
+                        $this->assertArrayHasKey('grant_type', $data);
+                        $this->assertSame('refresh_token', $data['grant_type']);
+                        $this->assertArrayHasKey('client_secret', $data);
+                        $this->assertArrayHasKey('refresh_token', $data);
+                        return true;
+                    }
                 )
             )
             ->willReturn(json_encode($refreshResponse));
@@ -271,8 +283,13 @@ class TokenPayTest extends TestCase
             ->method('get')
             ->with(
                 $this->stringContains('/inquiry/REQ12345'),
-                $this->callback(fn ($headers): bool => isset($headers['Authorization']) && $headers['Authorization'] === 'Bearer test-access-token'
-                        && isset($headers['Content-Type']) && $headers['Content-Type'] === 'application/json')
+                $this->callback(function (array|ArrayAccess $headers): bool {
+                    $this->assertArrayHasKey('Authorization', $headers);
+                    $this->assertSame('Bearer test-access-token', $headers['Authorization']);
+                    $this->assertArrayHasKey('Content-Type', $headers);
+                    $this->assertSame('application/json', $headers['Content-Type']);
+                    return true;
+                })
             )
             ->willReturn(json_encode($inquiryResponse));
 
@@ -363,7 +380,11 @@ class TokenPayTest extends TestCase
             ->with(
                 $this->stringContains('/payment'),
                 $paymentData,
-                $this->callback(fn ($headers): bool => isset($headers['Authorization']) && $headers['Authorization'] === 'Bearer test-access-token')
+                $this->callback(function (array|ArrayAccess $headers): bool {
+                    $this->assertArrayHasKey('Authorization', $headers);
+                    $this->assertSame('Bearer test-access-token', $headers['Authorization']);
+                    return true;
+                })
             )
             ->willReturn(json_encode($paymentResponse));
 
@@ -437,7 +458,11 @@ class TokenPayTest extends TestCase
             ->with(
                 $this->stringContains('/status'),
                 $statusData,
-                $this->callback(fn ($headers): bool => isset($headers['Authorization']) && $headers['Authorization'] === 'Bearer test-access-token')
+                $this->callback(function (array|ArrayAccess $headers): bool {
+                    $this->assertArrayHasKey('Authorization', $headers);
+                    $this->assertSame('Bearer test-access-token', $headers['Authorization']);
+                    return true;
+                })
             )
             ->willReturn(json_encode($statusResponse));
 
@@ -504,7 +529,11 @@ class TokenPayTest extends TestCase
             ->method('get')
             ->with(
                 $this->anything(),
-                $this->callback(fn ($headers): bool => isset($headers['Authorization']) && $headers['Authorization'] === 'Bearer custom-access-token')
+                $this->callback(function (array|ArrayAccess $headers): bool {
+                    $this->assertArrayHasKey('Authorization', $headers);
+                    $this->assertSame('Bearer custom-access-token', $headers['Authorization']);
+                    return true;
+                })
             )
             ->willReturn(json_encode($inquiryResponse));
 
@@ -544,10 +573,11 @@ class TokenPayTest extends TestCase
             ->method('post')
             ->with(
                 $this->anything(),
-                $this->callback(fn ($data): bool
-                    // Verify that client_secret and password are base64 encoded
-                    => $data['client_secret'] === base64_encode('client-secret-123')
-                    && $data['password'] === base64_encode('test-password'))
+                $this->callback(function (array $data): bool {
+                    $this->assertSame(base64_encode('client-secret-123'), $data['client_secret']);
+                    $this->assertSame(base64_encode('test-password'), $data['password']);
+                    return true;
+                })
             )
             ->willReturn(json_encode($authResponse));
 
@@ -571,7 +601,10 @@ class TokenPayTest extends TestCase
             ->method('post')
             ->with(
                 $this->anything(),
-                $this->callback(fn ($data): bool => $data['client_secret'] === base64_encode('client-secret-123'))
+                $this->callback(function (array $data): bool {
+                    $this->assertSame(base64_encode('client-secret-123'), $data['client_secret']);
+                    return true;
+                })
             )
             ->willReturn(json_encode($refreshResponse));
 
@@ -605,7 +638,10 @@ class TokenPayTest extends TestCase
             ->method('get')
             ->with(
                 $this->anything(),
-                $this->callback(fn ($headers): bool => $headers['Authorization'] === 'Custom test-token')
+                $this->callback(function (array $headers): bool {
+                    $this->assertSame('Custom test-token', $headers['Authorization']);
+                    return true;
+                })
             )
             ->willReturn(json_encode($inquiryResponse));
 
@@ -639,7 +675,10 @@ class TokenPayTest extends TestCase
             ->method('get')
             ->with(
                 $this->anything(),
-                $this->callback(fn ($headers): bool => $headers['Authorization'] === 'Bearer test-token')
+                $this->callback(function (array $headers): bool {
+                    $this->assertSame('Bearer test-token', $headers['Authorization']);
+                    return true;
+                })
             )
             ->willReturn(json_encode($inquiryResponse));
 
