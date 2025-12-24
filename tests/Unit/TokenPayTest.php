@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Tests\Unit;
 
 use ArrayAccess;
+use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 use RemoteMerge\Esewa\Exceptions\EsewaException;
@@ -12,7 +13,7 @@ use RemoteMerge\Esewa\Http\HttpClientInterface;
 use RemoteMerge\Esewa\TokenPay\TokenInterface;
 use RemoteMerge\Esewa\TokenPay\TokenPay;
 
-#[\PHPUnit\Framework\Attributes\CoversClass(TokenPay::class)]
+#[CoversClass(TokenPay::class)]
 final class TokenPayTest extends TestCase
 {
     private TokenPay $tokenPay;
