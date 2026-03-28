@@ -5,12 +5,12 @@ declare(strict_types=1);
 namespace Tests\Unit;
 
 use PHPUnit\Framework\Attributes\CoversClass;
-use PHPUnit\Framework\TestCase;
 use RemoteMerge\Esewa\AbstractPayment;
 use RemoteMerge\Esewa\Exceptions\EsewaException;
+use Tests\ParentTestCase;
 
 #[CoversClass(AbstractPayment::class)]
-final class AbstractPaymentTest extends TestCase
+final class AbstractPaymentTest extends ParentTestCase
 {
     private AbstractPaymentTestClass $paymentTestClass;
 
@@ -205,28 +205,12 @@ final class AbstractPaymentTest extends TestCase
         $this->assertSame('https://rc-epay.esewa.com.np', $baseUrl);
     }
 
-    public function testGetBaseUrlForTestToken(): void
-    {
-        $this->paymentTestClass->setEnvironment('test');
-        $baseUrl = $this->paymentTestClass->testGetBaseUrl('token');
-
-        $this->assertSame('https://uat.esewa.com.np', $baseUrl);
-    }
-
     public function testGetBaseUrlForProductionEpay(): void
     {
         $this->paymentTestClass->setEnvironment('production');
         $baseUrl = $this->paymentTestClass->testGetBaseUrl('epay');
 
         $this->assertSame('https://epay.esewa.com.np', $baseUrl);
-    }
-
-    public function testGetBaseUrlForProductionToken(): void
-    {
-        $this->paymentTestClass->setEnvironment('production');
-        $baseUrl = $this->paymentTestClass->testGetBaseUrl('token');
-
-        $this->assertSame('https://esewa.com.np', $baseUrl);
     }
 
     /**

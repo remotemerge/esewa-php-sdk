@@ -4,8 +4,8 @@ declare(strict_types=1);
 
 namespace RemoteMerge\Esewa;
 
+use RemoteMerge\Esewa\Concerns\Validation;
 use RemoteMerge\Esewa\Exceptions\EsewaException;
-use RemoteMerge\Esewa\Utils\Validation;
 
 abstract class AbstractPayment
 {
@@ -32,11 +32,9 @@ abstract class AbstractPayment
     protected const BASE_URLS = [
         'test' => [
             'epay' => 'https://rc-epay.esewa.com.np',
-            'token' => 'https://uat.esewa.com.np',
         ],
         'production' => [
             'epay' => 'https://epay.esewa.com.np',
-            'token' => 'https://esewa.com.np',
         ],
     ];
 

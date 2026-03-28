@@ -2,12 +2,12 @@
 
 declare(strict_types=1);
 
-namespace RemoteMerge\Esewa\Epay;
+namespace RemoteMerge\Esewa;
 
-use RemoteMerge\Esewa\AbstractPayment;
+use RemoteMerge\Esewa\Contracts\EpayInterface;
+use RemoteMerge\Esewa\Contracts\HttpClientInterface;
 use RemoteMerge\Esewa\Exceptions\EsewaException;
 use RemoteMerge\Esewa\Http\HttpClient;
-use RemoteMerge\Esewa\Http\HttpClientInterface;
 
 final class Epay extends AbstractPayment implements EpayInterface
 {

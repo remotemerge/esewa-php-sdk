@@ -6,13 +6,13 @@ namespace Tests\Unit;
 
 use Exception;
 use PHPUnit\Framework\Attributes\CoversClass;
-use PHPUnit\Framework\TestCase;
 use RemoteMerge\Esewa\Exceptions\EsewaException;
 use RuntimeException;
+use Tests\ParentTestCase;
 use Throwable;
 
 #[CoversClass(EsewaException::class)]
-final class EsewaExceptionTest extends TestCase
+final class EsewaExceptionTest extends ParentTestCase
 {
     public function testExceptionExtendsException(): void
     {

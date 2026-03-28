@@ -19,17 +19,17 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['product_id'])) {
             'environment' => 'test',
             'product_code' => 'EPAYTEST',
             'secret_key' => '8gBm/:&EnhH.1/q',
-            'success_url' => 'http://localhost:8000/success.php',
-            'failure_url' => 'http://localhost:8000/failure.php',
+            'success_url' => 'http://localhost:8080/success.php',
+            'failure_url' => 'http://localhost:8080/failed.php',
         ]);
 
         $productData = [
-            1 => ['name' => 'Premium Laptop', 'price' => 85000],
-            2 => ['name' => 'Wireless Headphones', 'price' => 12500],
-            3 => ['name' => 'Smart Watch', 'price' => 25000],
-            4 => ['name' => 'Gaming Mouse', 'price' => 3500],
-            5 => ['name' => 'Mechanical Keyboard', 'price' => 8500],
-            6 => ['name' => 'Monitor 4K', 'price' => 45000],
+            1 => ['name' => 'Nepali Masala Tea (250g)', 'price' => 350],
+            2 => ['name' => 'Handmade Dhaka Wallet', 'price' => 550],
+            3 => ['name' => 'Himalayan Honey (500g)', 'price' => 650],
+            4 => ['name' => 'Khukuri Pocket Knife', 'price' => 750],
+            5 => ['name' => 'Pashmina Scarf', 'price' => 700],
+            6 => ['name' => 'Singing Bowl (Small)', 'price' => 450],
         ];
 
         $productId = (int) $_POST['product_id'];
@@ -63,11 +63,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['product_id'])) {
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-    <title>Premium Electronics Store</title>
+    <title>Nepali Craft Store</title>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@7.0.0/css/all.css"
           integrity="sha256-lQQ0StO/37OizAM1JKQP0z6xGFqiITYD/NeXfiyfCA4=" crossorigin="anonymous">
-    <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4.1.12/dist/index.global.js"
-            integrity="sha256-MYTW01hCMa8HLCBdElpddl3OZGC2pKWVZRDqgk3b0CA=" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
     <style type="text/tailwindcss">
         @theme {
             --color-clifford: #da373d;
@@ -83,9 +82,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['product_id'])) {
 <!-- Hero Section -->
 <section class="bg-gradient-to-r from-primary to-secondary text-white py-20">
     <div class="container mx-auto px-4 text-center">
-        <h1 class="text-5xl font-bold mb-6">Premium Electronics Store</h1>
-        <p class="text-xl mb-8 max-w-2xl mx-auto">Discover the latest technology with seamless eSewa payment
-            integration</p>
+        <h1 class="text-5xl font-bold mb-6">Nepali Craft Store</h1>
+        <p class="text-xl mb-8 max-w-2xl mx-auto">Authentic Nepali products with seamless eSewa payment integration</p>
     </div>
 </section>
 
@@ -206,7 +204,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['product_id'])) {
     <div class="container mx-auto px-4">
         <div class="text-center mb-12">
             <h2 class="text-4xl font-bold text-gray-900 mb-4">Featured Products</h2>
-            <p class="text-xl text-gray-600">Premium electronics with secure eSewa payment</p>
+            <p class="text-xl text-gray-600">Authentic Nepali crafts and natural products</p>
         </div>
 
         <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
@@ -216,16 +214,15 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['product_id'])) {
                 class="bg-white rounded-xl shadow-lg overflow-hidden hover:shadow-xl transition-shadow duration-300 transform hover:-translate-y-1">
                 <div class="h-48 overflow-hidden">
                     <img
-                        src="https://images.unsplash.com/photo-1496181133206-80ce9b88a853?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1000&q=80"
-                        alt="Premium Laptop"
+                        src="https://images.unsplash.com/photo-1556742049-0cfed4f6a45d?auto=format&fit=crop&w=1000&q=80"
+                        alt="Nepali Masala Tea"
                         class="w-full h-full object-cover hover:scale-110 transition-transform duration-300">
                 </div>
                 <div class="p-6">
-                    <h3 class="text-xl font-bold mb-2">Premium Laptop</h3>
-                    <p class="text-gray-600 mb-4">High-performance laptop with latest processors and premium build
-                        quality.</p>
+                    <h3 class="text-xl font-bold mb-2">Nepali Masala Tea (250g)</h3>
+                    <p class="text-gray-600 mb-4">Aromatic blend of Himalayan tea leaves with cardamom, ginger, and spices. Perfect for a warm cup.</p>
                     <div class="flex items-center justify-between">
-                        <span class="text-2xl font-bold text-primary">NPR 85,000</span>
+                        <span class="text-2xl font-bold text-primary">NPR 350</span>
                         <form method="POST" class="inline">
                             <input type="hidden" name="product_id" value="1">
                             <button type="submit"
@@ -242,16 +239,15 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['product_id'])) {
                 class="bg-white rounded-xl shadow-lg overflow-hidden hover:shadow-xl transition-shadow duration-300 transform hover:-translate-y-1">
                 <div class="h-48 overflow-hidden">
                     <img
-                        src="https://images.unsplash.com/photo-1505740420928-5e560c06d30e?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1000&q=80"
-                        alt="Wireless Headphones"
+                        src="https://images.unsplash.com/photo-1627384113710-424c9181ebbb?auto=format&fit=crop&w=1000&q=80"
+                        alt="Handmade Dhaka Wallet"
                         class="w-full h-full object-cover hover:scale-110 transition-transform duration-300">
                 </div>
                 <div class="p-6">
-                    <h3 class="text-xl font-bold mb-2">Wireless Headphones</h3>
-                    <p class="text-gray-600 mb-4">Premium noise-canceling wireless headphones with superior sound
-                        quality.</p>
+                    <h3 class="text-xl font-bold mb-2">Handmade Dhaka Wallet</h3>
+                    <p class="text-gray-600 mb-4">Handcrafted wallet made from traditional Dhaka fabric. Compact, durable, and uniquely Nepali.</p>
                     <div class="flex items-center justify-between">
-                        <span class="text-2xl font-bold text-primary">NPR 12,500</span>
+                        <span class="text-2xl font-bold text-primary">NPR 550</span>
                         <form method="POST" class="inline">
                             <input type="hidden" name="product_id" value="2">
                             <button type="submit"
@@ -268,16 +264,15 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['product_id'])) {
                 class="bg-white rounded-xl shadow-lg overflow-hidden hover:shadow-xl transition-shadow duration-300 transform hover:-translate-y-1">
                 <div class="h-48 overflow-hidden">
                     <img
-                        src="https://images.unsplash.com/photo-1523275335684-37898b6baf30?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1000&q=80"
-                        alt="Smart Watch"
+                        src="https://images.unsplash.com/photo-1587049352846-4a222e784d38?auto=format&fit=crop&w=1000&q=80"
+                        alt="Himalayan Honey"
                         class="w-full h-full object-cover hover:scale-110 transition-transform duration-300">
                 </div>
                 <div class="p-6">
-                    <h3 class="text-xl font-bold mb-2">Smart Watch</h3>
-                    <p class="text-gray-600 mb-4">Advanced smartwatch with health monitoring and fitness tracking
-                        features.</p>
+                    <h3 class="text-xl font-bold mb-2">Himalayan Honey (500g)</h3>
+                    <p class="text-gray-600 mb-4">Pure raw honey harvested from the high-altitude meadows of the Himalayas. Unprocessed and naturally sweet.</p>
                     <div class="flex items-center justify-between">
-                        <span class="text-2xl font-bold text-primary">NPR 25,000</span>
+                        <span class="text-2xl font-bold text-primary">NPR 650</span>
                         <form method="POST" class="inline">
                             <input type="hidden" name="product_id" value="3">
                             <button type="submit"
@@ -294,16 +289,15 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['product_id'])) {
                 class="bg-white rounded-xl shadow-lg overflow-hidden hover:shadow-xl transition-shadow duration-300 transform hover:-translate-y-1">
                 <div class="h-48 overflow-hidden">
                     <img
-                        src="https://images.unsplash.com/photo-1527864550417-7fd91fc51a46?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1000&q=80"
-                        alt="Gaming Mouse"
+                        src="https://images.unsplash.com/photo-1595429035839-c99c298ffdde?auto=format&fit=crop&w=1000&q=80"
+                        alt="Khukuri Pocket Knife"
                         class="w-full h-full object-cover hover:scale-110 transition-transform duration-300">
                 </div>
                 <div class="p-6">
-                    <h3 class="text-xl font-bold mb-2">Gaming Mouse</h3>
-                    <p class="text-gray-600 mb-4">High-precision gaming mouse with customizable RGB lighting and
-                        ergonomic design.</p>
+                    <h3 class="text-xl font-bold mb-2">Khukuri Pocket Knife</h3>
+                    <p class="text-gray-600 mb-4">Miniature hand-forged khukuri with a wooden handle. An iconic Nepali keepsake and practical tool.</p>
                     <div class="flex items-center justify-between">
-                        <span class="text-2xl font-bold text-primary">NPR 3,500</span>
+                        <span class="text-2xl font-bold text-primary">NPR 750</span>
                         <form method="POST" class="inline">
                             <input type="hidden" name="product_id" value="4">
                             <button type="submit"
@@ -320,16 +314,15 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['product_id'])) {
                 class="bg-white rounded-xl shadow-lg overflow-hidden hover:shadow-xl transition-shadow duration-300 transform hover:-translate-y-1">
                 <div class="h-48 overflow-hidden">
                     <img
-                        src="https://images.unsplash.com/photo-1541140532154-b024d705b90a?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1000&q=80"
-                        alt="Mechanical Keyboard"
+                        src="https://images.unsplash.com/photo-1601924994987-69e26d50dc26?auto=format&fit=crop&w=1000&q=80"
+                        alt="Pashmina Scarf"
                         class="w-full h-full object-cover hover:scale-110 transition-transform duration-300">
                 </div>
                 <div class="p-6">
-                    <h3 class="text-xl font-bold mb-2">Mechanical Keyboard</h3>
-                    <p class="text-gray-600 mb-4">Premium mechanical keyboard with tactile switches and customizable
-                        backlighting.</p>
+                    <h3 class="text-xl font-bold mb-2">Pashmina Scarf</h3>
+                    <p class="text-gray-600 mb-4">Soft and lightweight pashmina scarf woven in Nepal. Warm, elegant, and available in classic earth tones.</p>
                     <div class="flex items-center justify-between">
-                        <span class="text-2xl font-bold text-primary">NPR 8,500</span>
+                        <span class="text-2xl font-bold text-primary">NPR 700</span>
                         <form method="POST" class="inline">
                             <input type="hidden" name="product_id" value="5">
                             <button type="submit"
@@ -346,16 +339,15 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['product_id'])) {
                 class="bg-white rounded-xl shadow-lg overflow-hidden hover:shadow-xl transition-shadow duration-300 transform hover:-translate-y-1">
                 <div class="h-48 overflow-hidden">
                     <img
-                        src="https://images.unsplash.com/photo-1527443224154-c4a3942d3acf?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1000&q=80"
-                        alt="4K Monitor"
+                        src="https://images.unsplash.com/photo-1519682337058-a94d519337bc?auto=format&fit=crop&w=1000&q=80"
+                        alt="Singing Bowl"
                         class="w-full h-full object-cover hover:scale-110 transition-transform duration-300">
                 </div>
                 <div class="p-6">
-                    <h3 class="text-xl font-bold mb-2">Monitor 4K</h3>
-                    <p class="text-gray-600 mb-4">Ultra-high-definition 4K monitor with vibrant colors and wide viewing
-                        angles.</p>
+                    <h3 class="text-xl font-bold mb-2">Singing Bowl (Small)</h3>
+                    <p class="text-gray-600 mb-4">Hand-hammered bronze singing bowl from Bhaktapur. Used for meditation, sound healing, and mindfulness.</p>
                     <div class="flex items-center justify-between">
-                        <span class="text-2xl font-bold text-primary">NPR 45,000</span>
+                        <span class="text-2xl font-bold text-primary">NPR 450</span>
                         <form method="POST" class="inline">
                             <input type="hidden" name="product_id" value="6">
                             <button type="submit"
@@ -375,8 +367,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['product_id'])) {
 <section class="bg-white py-16">
     <div class="container mx-auto px-4">
         <div class="text-center mb-12">
-            <h2 class="text-3xl font-bold text-gray-900 mb-4">Why Choose TechStore?</h2>
-            <p class="text-xl text-gray-600">Premium products with secure payment solutions</p>
+            <h2 class="text-3xl font-bold text-gray-900 mb-4">Why Choose Nepali Craft Store?</h2>
+            <p class="text-xl text-gray-600">Genuine crafts and natural goods with secure payment</p>
         </div>
 
         <div class="grid grid-cols-1 md:grid-cols-3 gap-8">

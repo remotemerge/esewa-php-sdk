@@ -4,9 +4,10 @@ declare(strict_types=1);
 
 namespace RemoteMerge\Esewa\Http;
 
+use RemoteMerge\Esewa\Contracts\HttpClientInterface;
 use RemoteMerge\Esewa\Exceptions\EsewaException;
 
-class HttpClient implements HttpClientInterface
+final class HttpClient implements HttpClientInterface
 {
     /**
      * {@inheritDoc}

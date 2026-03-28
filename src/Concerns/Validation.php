@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace RemoteMerge\Esewa\Utils;
+namespace RemoteMerge\Esewa\Concerns;
 
 use RemoteMerge\Esewa\Exceptions\EsewaException;
 
@@ -31,32 +31,6 @@ trait Validation
     {
         if (preg_match('/^[a-zA-Z0-9\-]+$/', $uuid) !== 1) {
             throw new EsewaException('Transaction UUID must be alphanumeric and may contain hyphens only.');
-        }
-    }
-
-    /**
-     * Validates the transaction code.
-     *
-     * @param string $code The transaction code to validate.
-     * @throws EsewaException If the code is invalid.
-     */
-    protected function validateTransactionCode(string $code): void
-    {
-        if (trim($code) === '') {
-            throw new EsewaException('Transaction code cannot be empty.');
-        }
-    }
-
-    /**
-     * Validates the request ID.
-     *
-     * @param string $requestId The request ID to validate.
-     * @throws EsewaException If the request ID is invalid.
-     */
-    protected function validateRequestId(string $requestId): void
-    {
-        if (trim($requestId) === '') {
-            throw new EsewaException('Request ID cannot be empty.');
         }
     }
 
@@ -125,23 +99,5 @@ trait Validation
         if (isset($resData['code']) && $resData['code'] !== 0) {
             throw new EsewaException('API Error: ' . ($resData['message'] ?? 'Unknown payment gateway error'));
         }
-    }
-
-    /**
-     * Validates TokenPay transaction data (common pattern for payment and status).
-     *
-     * @param array<string, mixed> $data The transaction data to validate.
-     * @throws EsewaException If validation fails.
-     */
-    protected function validateTokenPayTransactionData(array $data): void
-    {
-        $this->validateRequiredField($data, 'request_id', 'Request ID');
-        $this->validateRequestId($data['request_id']);
-
-        $this->validateRequiredField($data, 'amount', 'Amount');
-        $this->validateAmount((float) $data['amount']);
-
-        $this->validateRequiredField($data, 'transaction_code', 'Transaction code');
-        $this->validateTransactionCode($data['transaction_code']);
     }
 }

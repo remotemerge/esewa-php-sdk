@@ -5,15 +5,15 @@ declare(strict_types=1);
 namespace Tests\Unit;
 
 use PHPUnit\Framework\Attributes\CoversClass;
-use PHPUnit\Framework\TestCase;
 use ReflectionMethod;
 use ReflectionType;
+use RemoteMerge\Esewa\Contracts\HttpClientInterface;
 use RemoteMerge\Esewa\Exceptions\EsewaException;
 use RemoteMerge\Esewa\Http\HttpClient;
-use RemoteMerge\Esewa\Http\HttpClientInterface;
+use Tests\ParentTestCase;
 
 #[CoversClass(HttpClient::class)]
-final class HttpClientTest extends TestCase
+final class HttpClientTest extends ParentTestCase
 {
     private TestableHttpClient $testableHttpClient;
 
@@ -251,7 +251,7 @@ final class HttpClientTest extends TestCase
 /**
  * Testable version of HttpClient that allows mocking cURL functions
  */
-class TestableHttpClient extends HttpClient
+class TestableHttpClient implements HttpClientInterface
 {
     private bool $curlInitShouldFail = false;
 
