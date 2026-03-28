@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace RemoteMerge\Esewa\Utils;
+namespace RemoteMerge\Esewa\Concerns;
 
 use RemoteMerge\Esewa\Exceptions\EsewaException;
 
@@ -100,5 +100,4 @@ trait Validation
             throw new EsewaException('API Error: ' . ($resData['message'] ?? 'Unknown payment gateway error'));
         }
     }
-
 }

@@ -5,14 +5,14 @@ declare(strict_types=1);
 namespace Tests\Unit;
 
 use PHPUnit\Framework\Attributes\CoversClass;
-use PHPUnit\Framework\TestCase;
-use RemoteMerge\Esewa\Epay\EpayInterface;
+use RemoteMerge\Esewa\Contracts\EpayInterface;
+use RemoteMerge\Esewa\Contracts\HttpClientInterface;
 use RemoteMerge\Esewa\EsewaFactory;
 use RemoteMerge\Esewa\Exceptions\EsewaException;
-use RemoteMerge\Esewa\Http\HttpClientInterface;
+use Tests\ParentTestCase;
 
 #[CoversClass(EsewaFactory::class)]
-final class EsewaFactoryTest extends TestCase
+final class EsewaFactoryTest extends ParentTestCase
 {
     private array $validEpayOptions;
 

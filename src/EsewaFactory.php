@@ -4,10 +4,9 @@ declare(strict_types=1);
 
 namespace RemoteMerge\Esewa;
 
-use RemoteMerge\Esewa\Epay\Epay;
-use RemoteMerge\Esewa\Epay\EpayInterface;
+use RemoteMerge\Esewa\Contracts\EpayInterface;
+use RemoteMerge\Esewa\Contracts\HttpClientInterface;
 use RemoteMerge\Esewa\Exceptions\EsewaException;
-use RemoteMerge\Esewa\Http\HttpClientInterface;
 
 final class EsewaFactory
 {

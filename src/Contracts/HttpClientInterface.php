@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace RemoteMerge\Esewa\Http;
+namespace RemoteMerge\Esewa\Contracts;
 
 use RemoteMerge\Esewa\Exceptions\EsewaException;
 

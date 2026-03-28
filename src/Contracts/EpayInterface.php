@@ -2,9 +2,7 @@
 
 declare(strict_types=1);
 
-namespace RemoteMerge\Esewa\Epay;
-
-use RemoteMerge\Esewa\PaymentInterface;
+namespace RemoteMerge\Esewa\Contracts;
 
 interface EpayInterface extends PaymentInterface
 {

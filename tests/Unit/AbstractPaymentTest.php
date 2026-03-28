@@ -5,12 +5,12 @@ declare(strict_types=1);
 namespace Tests\Unit;
 
 use PHPUnit\Framework\Attributes\CoversClass;
-use PHPUnit\Framework\TestCase;
 use RemoteMerge\Esewa\AbstractPayment;
 use RemoteMerge\Esewa\Exceptions\EsewaException;
+use Tests\ParentTestCase;
 
 #[CoversClass(AbstractPayment::class)]
-final class AbstractPaymentTest extends TestCase
+final class AbstractPaymentTest extends ParentTestCase
 {
     private AbstractPaymentTestClass $paymentTestClass;
 

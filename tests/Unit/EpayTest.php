@@ -6,14 +6,14 @@ namespace Tests\Unit;
 
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\MockObject\MockObject;
-use PHPUnit\Framework\TestCase;
-use RemoteMerge\Esewa\Epay\Epay;
-use RemoteMerge\Esewa\Epay\EpayInterface;
+use RemoteMerge\Esewa\Contracts\EpayInterface;
+use RemoteMerge\Esewa\Contracts\HttpClientInterface;
+use RemoteMerge\Esewa\Epay;
 use RemoteMerge\Esewa\Exceptions\EsewaException;
-use RemoteMerge\Esewa\Http\HttpClientInterface;
+use Tests\ParentTestCase;
 
 #[CoversClass(Epay::class)]
-final class EpayTest extends TestCase
+final class EpayTest extends ParentTestCase
 {
     private Epay $epay;
 

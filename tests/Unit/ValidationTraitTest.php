@@ -4,14 +4,13 @@ declare(strict_types=1);
 
 namespace Tests\Unit;
 
-use PHPUnit\Framework\TestCase;
+use PHPUnit\Framework\Attributes\CoversClass;
+use RemoteMerge\Esewa\Concerns\Validation;
 use RemoteMerge\Esewa\Exceptions\EsewaException;
-use RemoteMerge\Esewa\Utils\Validation;
+use Tests\ParentTestCase;
 
-/**
- * @covers \RemoteMerge\Esewa\Utils\Validation
- */
-final class ValidationTraitTest extends TestCase
+#[CoversClass(Validation::class)]
+final class ValidationTraitTest extends ParentTestCase
 {
     private ValidationTestClass $validationTestClass;
 

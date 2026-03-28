@@ -6,4 +6,4 @@ namespace RemoteMerge\Esewa\Exceptions;
 
 use Exception;
 
-class EsewaException extends Exception {}
+final class EsewaException extends Exception {}
