@@ -17,8 +17,8 @@ $config->setUsingCache(false)->setRiskyAllowed(true);
 return $config->setRules([
     '@PER-CS' => true,
     '@PER-CS:risky' => true,
-    '@PHP81Migration' => true,
-    '@PHPUnit100Migration:risky' => true,
+    '@PHP8x1Migration' => true,
+    '@PHPUnit10x0Migration:risky' => true,
 
     // Type Safety
     'declare_strict_types' => true,

@@ -30,6 +30,7 @@ return static function (RectorConfig $rectorConfig): void {
         // PHPUnit improvements
         PHPUnitSetList::PHPUNIT_100,
         PHPUnitSetList::PHPUNIT_CODE_QUALITY,
+        PHPUnitSetList::ANNOTATIONS_TO_ATTRIBUTES,
 
         // Code quality and style
         SetList::CODE_QUALITY,
@@ -41,7 +42,6 @@ return static function (RectorConfig $rectorConfig): void {
         SetList::INSTANCEOF,
         SetList::NAMING,
         SetList::PRIVATIZATION,
-        SetList::STRICT_BOOLEANS,
         SetList::TYPE_DECLARATION,
     ]);
 };
