@@ -32,11 +32,9 @@ abstract class AbstractPayment
     protected const BASE_URLS = [
         'test' => [
             'epay' => 'https://rc-epay.esewa.com.np',
-            'token' => 'https://uat.esewa.com.np',
         ],
         'production' => [
             'epay' => 'https://epay.esewa.com.np',
-            'token' => 'https://esewa.com.np',
         ],
     ];
 

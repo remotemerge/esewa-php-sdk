@@ -88,62 +88,6 @@ final class ValidationTraitTest extends TestCase
     /**
      * @throws EsewaException
      */
-    public function testValidateTransactionCodeWithValidCode(): void
-    {
-        $this->validationTestClass->testValidateTransactionCode('TXN123456');
-        $this->validationTestClass->testValidateTransactionCode('valid-code');
-        $this->validationTestClass->testValidateTransactionCode('CODE_123');
-
-        $this->assertTrue(true); // No exception means success
-    }
-
-    public function testValidateTransactionCodeWithEmptyCode(): void
-    {
-        $this->expectException(EsewaException::class);
-        $this->expectExceptionMessage('Transaction code cannot be empty.');
-
-        $this->validationTestClass->testValidateTransactionCode('');
-    }
-
-    public function testValidateTransactionCodeWithWhitespaceOnlyCode(): void
-    {
-        $this->expectException(EsewaException::class);
-        $this->expectExceptionMessage('Transaction code cannot be empty.');
-
-        $this->validationTestClass->testValidateTransactionCode('   ');
-    }
-
-    /**
-     * @throws EsewaException
-     */
-    public function testValidateRequestIdWithValidId(): void
-    {
-        $this->validationTestClass->testValidateRequestId('REQ123456');
-        $this->validationTestClass->testValidateRequestId('request-id-123');
-        $this->validationTestClass->testValidateRequestId('valid_request');
-
-        $this->assertTrue(true); // No exception means success
-    }
-
-    public function testValidateRequestIdWithEmptyId(): void
-    {
-        $this->expectException(EsewaException::class);
-        $this->expectExceptionMessage('Request ID cannot be empty.');
-
-        $this->validationTestClass->testValidateRequestId('');
-    }
-
-    public function testValidateRequestIdWithWhitespaceOnlyId(): void
-    {
-        $this->expectException(EsewaException::class);
-        $this->expectExceptionMessage('Request ID cannot be empty.');
-
-        $this->validationTestClass->testValidateRequestId('   ');
-    }
-
-    /**
-     * @throws EsewaException
-     */
     public function testValidateEnvironmentWithValidEnvironments(): void
     {
         $this->validationTestClass->testValidateEnvironment('test');
@@ -311,91 +255,6 @@ final class ValidationTraitTest extends TestCase
         $this->assertTrue(true);
     }
 
-    /**
-     * @throws EsewaException
-     */
-    public function testValidateTokenPayTransactionDataWithValidData(): void
-    {
-        $data = [
-            'request_id' => 'REQ123456',
-            'amount' => 100.50,
-            'transaction_code' => 'TXN789',
-        ];
-
-        $this->validationTestClass->testValidateTokenPayTransactionData($data);
-
-        $this->assertTrue(true); // No exception means success
-    }
-
-    public function testValidateTokenPayTransactionDataWithMissingRequestId(): void
-    {
-        $data = [
-            'amount' => 100.50,
-            'transaction_code' => 'TXN789',
-        ];
-
-        $this->expectException(EsewaException::class);
-        $this->expectExceptionMessage('Request ID is required.');
-
-        $this->validationTestClass->testValidateTokenPayTransactionData($data);
-    }
-
-    public function testValidateTokenPayTransactionDataWithInvalidAmount(): void
-    {
-        $data = [
-            'request_id' => 'REQ123456',
-            'amount' => -10.0,
-            'transaction_code' => 'TXN789',
-        ];
-
-        $this->expectException(EsewaException::class);
-        $this->expectExceptionMessage('Amount must be greater than 0.');
-
-        $this->validationTestClass->testValidateTokenPayTransactionData($data);
-    }
-
-    public function testValidateTokenPayTransactionDataWithMissingTransactionCode(): void
-    {
-        $data = [
-            'request_id' => 'REQ123456',
-            'amount' => 100.50,
-        ];
-
-        $this->expectException(EsewaException::class);
-        $this->expectExceptionMessage('Transaction code is required.');
-
-        $this->validationTestClass->testValidateTokenPayTransactionData($data);
-    }
-
-    /**
-     * @throws EsewaException
-     */
-    public function testValidateTokenPayTransactionDataWithStringAmount(): void
-    {
-        $data = [
-            'request_id' => 'REQ123456',
-            'amount' => '100.50',
-            'transaction_code' => 'TXN789',
-        ];
-
-        $this->validationTestClass->testValidateTokenPayTransactionData($data);
-
-        $this->assertTrue(true); // Should work with string amounts that can be cast to float
-    }
-
-    public function testValidateTokenPayTransactionDataWithZeroAmount(): void
-    {
-        $data = [
-            'request_id' => 'REQ123456',
-            'amount' => 0,
-            'transaction_code' => 'TXN789',
-        ];
-
-        $this->expectException(EsewaException::class);
-        $this->expectExceptionMessage('Amount must be greater than 0.');
-
-        $this->validationTestClass->testValidateTokenPayTransactionData($data);
-    }
 }
 
 class ValidationTestClass
@@ -416,22 +275,6 @@ class ValidationTestClass
     public function testValidateTransactionUuid(string $uuid): void
     {
         $this->validateTransactionUuid($uuid);
-    }
-
-    /**
-     * @throws EsewaException
-     */
-    public function testValidateTransactionCode(string $code): void
-    {
-        $this->validateTransactionCode($code);
-    }
-
-    /**
-     * @throws EsewaException
-     */
-    public function testValidateRequestId(string $requestId): void
-    {
-        $this->validateRequestId($requestId);
     }
 
     /**
@@ -472,13 +315,5 @@ class ValidationTestClass
     public function testValidateApiResponse(array $resData): void
     {
         $this->validateApiResponse($resData);
-    }
-
-    /**
-     * @throws EsewaException
-     */
-    public function testValidateTokenPayTransactionData(array $data): void
-    {
-        $this->validateTokenPayTransactionData($data);
     }
 }
