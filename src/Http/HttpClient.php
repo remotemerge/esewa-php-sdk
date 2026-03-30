@@ -16,9 +16,6 @@ final class HttpClient implements HttpClientInterface
     public function get(string $url, array $headers = []): string
     {
         $ch = curl_init($url);
-        if ($ch === false) {
-            throw new EsewaException('Failed to initialize cURL', 0);
-        }
 
         curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
         curl_setopt($ch, CURLOPT_TIMEOUT, 30);
@@ -57,9 +54,6 @@ final class HttpClient implements HttpClientInterface
     public function post(string $url, array $data, array $headers = []): string
     {
         $ch = curl_init($url);
-        if ($ch === false) {
-            throw new EsewaException('Failed to initialize cURL', 0);
-        }
 
         $isJson = isset($headers['Content-Type']) && $headers['Content-Type'] === 'application/json';
         $postData = $isJson ? json_encode($data) : http_build_query($data);
