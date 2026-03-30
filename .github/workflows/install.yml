@@ -3,8 +3,10 @@ name: Install
 on:
   # Run the workflow on new releases
   release:
-    types: [ published ]
-    branches: [ main ]
+    types: [published]
+  # Run the workflow on pushes to the main branch
+  push:
+    branches: [main]
 
 jobs:
   install:
@@ -13,8 +15,8 @@ jobs:
     strategy:
       matrix:
         # Define the OS and PHP versions to test
-        os: [ ubuntu-24.04, windows-2025, macos-15 ]
-        php: [ "8.1", "8.2", "8.3", "8.4", "8.5" ]
+        os: [ubuntu-24.04, windows-latest, macos-latest]
+        php: ['8.1', '8.2', '8.3', '8.4', '8.5']
 
     steps:
       - name: "Install PHP"
@@ -25,8 +27,8 @@ jobs:
       - name: "Display PHP and Composer version information"
         run: php --version && composer --version
 
-      - name: "Install dependencies"
-        run: composer install --no-interaction --no-progress --optimize-autoloader --prefer-dist
+      - name: "Initialize Composer"
+        run: composer init --no-interaction --stability=stable
 
       - name: "Install dependencies"
         run: composer require remotemerge/esewa-php-sdk
