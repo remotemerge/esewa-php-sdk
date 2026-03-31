@@ -1,9 +1,12 @@
 # **eSewa PHP SDK: Payment Gateway Integration for PHP**
 
-[![PHP Version](https://img.shields.io/packagist/php-v/remotemerge/esewa-php-sdk?style=flat)](https://packagist.org/packages/remotemerge/esewa-php-sdk)
+[![PHP Version](https://img.shields.io/packagist/php-v/remotemerge/esewa-php-sdk?logo=php&style=flat)](https://packagist.org/packages/remotemerge/esewa-php-sdk)
+[![Tests](https://img.shields.io/github/actions/workflow/status/remotemerge/esewa-php-sdk/test.yml?style=flat&logo=counterstrike&label=test)](https://github.com/remotemerge/esewa-php-sdk/actions)
 [![Build](https://img.shields.io/github/actions/workflow/status/remotemerge/esewa-php-sdk/install.yml?style=flat&logo=github)](https://github.com/remotemerge/esewa-php-sdk/actions)
-[![Downloads](https://img.shields.io/packagist/dt/remotemerge/esewa-php-sdk.svg?style=flat&label=Downloads)](https://packagist.org/packages/remotemerge/esewa-php-sdk)
-[![License](https://img.shields.io/github/license/remotemerge/esewa-php-sdk?style=flat)](https://github.com/remotemerge/esewa-php-sdk/blob/main/LICENSE)
+[![Sonar Quality](https://img.shields.io/sonar/quality_gate/esewa-php-sdk/main?server=https%3A%2F%2Fsonarcloud.io&style=flat&logo=sonarqubecloud&logoColor=126ED3&label=quality)](https://sonarcloud.io/summary/overall?id=esewa-php-sdk&branch=main)
+[![Sonar Coverage](https://img.shields.io/sonar/coverage/esewa-php-sdk/main?server=https%3A%2F%2Fsonarcloud.io&style=flat&logo=sonarqubeserver&logoColor=126ED3)](https://sonarcloud.io/summary/overall?id=esewa-php-sdk&branch=main)
+[![Downloads](https://img.shields.io/packagist/dt/remotemerge/esewa-php-sdk.svg?style=flat&label=downloads)](https://packagist.org/packages/remotemerge/esewa-php-sdk)
+[![License](https://img.shields.io/github/license/remotemerge/esewa-php-sdk)](https://github.com/remotemerge/esewa-php-sdk?tab=MIT-1-ov-file)
 
 A production-ready PHP SDK for integrating [eSewa] payment gateway into any PHP application. The SDK implements the eSewa ePay v2 API with HMAC-SHA256 signature verification, full sandbox support, and a clean developer API. It works with any PHP framework or without one and handles the entire payment lifecycle from initiation through cryptographic verification.
 
