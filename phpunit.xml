@@ -16,7 +16,6 @@
     </include>
     <exclude>
       <directory>src/Contracts</directory>
-      <directory>src/Concerns</directory>
     </exclude>
   </source>
   <coverage>
