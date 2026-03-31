@@ -8,6 +8,7 @@ use PHPUnit\Framework\Attributes\CoversClass;
 use RemoteMerge\Esewa\Contracts\HttpClientInterface;
 use RemoteMerge\Esewa\Exceptions\EsewaException;
 use RemoteMerge\Esewa\Http\HttpClient;
+use RuntimeException;
 use Tests\ParentTestCase;
 
 #[CoversClass(HttpClient::class)]
@@ -25,31 +26,37 @@ final class HttpClientTest extends ParentTestCase
         self::$baseUrl = 'http://127.0.0.1:' . $port;
 
         $serverScript = __DIR__ . '/../Fixtures/server.php';
+
+        // Start the built-in PHP server in the background
         $command = sprintf(
             'php -S 127.0.0.1:%d %s > /dev/null 2>&1 & echo $!',
             $port,
             escapeshellarg($serverScript),
         );
 
-        $pid = (int) shell_exec($command);
-        self::$serverPid = $pid;
+        $output = shell_exec($command);
+        self::$serverPid = $output !== null ? (int) trim($output) : 0;
 
-        // Wait for server to be ready
+        // Wait for server to be ready (up to 5 seconds)
         $maxAttempts = 50;
         for ($i = 0; $i < $maxAttempts; $i++) {
             $connection = @fsockopen('127.0.0.1', $port, $errno, $errstr, 0.1);
             if ($connection !== false) {
                 fclose($connection);
-                break;
+                return;
             }
 
             usleep(100000); // 100ms
         }
+
+        throw new RuntimeException(
+            sprintf('Failed to start test server on port %d after %d attempts.', $port, $maxAttempts),
+        );
     }
 
     public static function tearDownAfterClass(): void
     {
-        if (isset(self::$serverPid) && self::$serverPid > 0) {
+        if (isset(self::$serverPid) && self::$serverPid > 0 && function_exists('posix_kill')) {
             posix_kill(self::$serverPid, SIGTERM);
         }
     }
