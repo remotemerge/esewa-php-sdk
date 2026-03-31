@@ -27,18 +27,30 @@ final class HttpClientTest extends ParentTestCase
 
         $serverScript = __DIR__ . '/../Fixtures/server.php';
 
-        // Start the built-in PHP server in the background
-        $command = sprintf(
-            'php -S 127.0.0.1:%d %s > /dev/null 2>&1 & echo $!',
-            $port,
-            escapeshellarg($serverScript),
-        );
+        // Start the built-in PHP server in the background (cross-platform)
+        if (strtoupper(substr(PHP_OS, 0, 3)) === 'WIN') {
+            // Windows: use start command
+            $command = sprintf(
+                'start /B php -S 127.0.0.1:%d %s',
+                $port,
+                escapeshellarg($serverScript),
+            );
+            exec($command);
+            // Give Windows extra time to start
+            usleep(500000);
+        } else {
+            // Unix/Linux/macOS: use & with PID capture
+            $command = sprintf(
+                'php -S 127.0.0.1:%d %s > /dev/null 2>&1 & echo $!',
+                $port,
+                escapeshellarg($serverScript),
+            );
+            $output = shell_exec($command);
+            self::$serverPid = $output !== null ? (int) trim($output) : 0;
+        }
 
-        $output = shell_exec($command);
-        self::$serverPid = $output !== null ? (int) trim($output) : 0;
-
-        // Wait for server to be ready (up to 5 seconds)
-        $maxAttempts = 50;
+        // Wait for server to be ready (up to 10 seconds)
+        $maxAttempts = 100;
         for ($i = 0; $i < $maxAttempts; $i++) {
             $connection = @fsockopen('127.0.0.1', $port, $errno, $errstr, 0.1);
             if ($connection !== false) {
@@ -56,7 +68,11 @@ final class HttpClientTest extends ParentTestCase
 
     public static function tearDownAfterClass(): void
     {
-        if (isset(self::$serverPid) && self::$serverPid > 0 && function_exists('posix_kill')) {
+        if (strtoupper(substr(PHP_OS, 0, 3)) === 'WIN') {
+            // Windows: kill PHP process by pattern
+            exec('taskkill /F /FI "WINDOWTITLE eq php*" 2>nul');
+        } elseif (isset(self::$serverPid) && self::$serverPid > 0 && function_exists('posix_kill')) {
+            // Unix/Linux/macOS: kill by PID
             posix_kill(self::$serverPid, SIGTERM);
         }
     }
