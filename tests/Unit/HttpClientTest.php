@@ -36,14 +36,16 @@ final class HttpClientTest extends ParentTestCase
 
         // Wait up to 15 seconds for the server to accept connections; cold CI runners can be slow to boot.
         for ($i = 0; $i < 150; $i++) {
-            // Fail fast with the server's stderr if it died, e.g., the port could not be bound.
-            $status = proc_get_status(self::$serverProcess);
-            if (!$status['running']) {
-                throw new RuntimeException('Test server process exited: ' . trim(stream_get_contents($pipes[2])));
-            }
-
+            // A successful connection means the server is ready.
             if (@fsockopen('127.0.0.1', $port, $errno, $errstr, 0.1)) {
                 return;
+            }
+
+            // Fail fast only if the server died, e.g., the port could not be bound. A running child
+            // reports exitcode -1, so check for a real exit code to avoid aborting while it boots.
+            $status = proc_get_status(self::$serverProcess);
+            if (!$status['running'] && $status['exitcode'] > 0) {
+                throw new RuntimeException('Test server process exited: ' . trim(stream_get_contents($pipes[2])));
             }
 
             usleep(100000);
