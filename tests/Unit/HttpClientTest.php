@@ -41,14 +41,18 @@ final class HttpClientTest extends ParentTestCase
      */
     private static function startServer(int $port, string &$error): bool
     {
-        // Capture stderr to a temp file; pipes can buffer or block unpredictably on macOS.
+        // Drain stdout/stderr to temp files: unread pipes can fill and stall the server, and temp files
+        // are portable, unlike /dev/null which proc_open cannot open on Windows.
+        $stdout = tmpfile();
         $stderr = tmpfile();
-        $command = ['php', '-S', '127.0.0.1:' . $port, __DIR__ . '/../Fixtures/server.php'];
-        $descriptors = [['pipe', 'r'], ['file', '/dev/null', 'w'], $stderr];
+        // Disable JIT for the subprocess: under coverage it only emits a noisy, harmless startup warning.
+        $command = ['php', '-d', 'opcache.jit=disable', '-S', '127.0.0.1:' . $port, __DIR__ . '/../Fixtures/server.php'];
+        $descriptors = [['pipe', 'r'], $stdout, $stderr];
         $process = proc_open($command, $descriptors, $pipes);
 
         if (!is_resource($process)) {
             $error = 'proc_open() failed';
+            fclose($stdout);
             fclose($stderr);
 
             return false;
@@ -59,6 +63,7 @@ final class HttpClientTest extends ParentTestCase
             // Confirm our fixture is answering, not a foreign listener that grabbed the port.
             if (self::pingFixture($port)) {
                 self::$serverProcess = $process;
+                fclose($stdout);
                 fclose($stderr);
 
                 return true;
@@ -67,9 +72,9 @@ final class HttpClientTest extends ParentTestCase
             // A dead process means the bind failed; let the caller retry on a different port.
             $status = proc_get_status($process);
             if (!$status['running']) {
-                rewind($stderr);
-                $error = trim((string) stream_get_contents($stderr));
+                $error = self::readError($stderr);
                 proc_close($process);
+                fclose($stdout);
                 fclose($stderr);
 
                 return false;
@@ -81,11 +86,27 @@ final class HttpClientTest extends ParentTestCase
         // Running but unreachable after the timeout: tear it down and let the caller retry.
         proc_terminate($process);
         proc_close($process);
-        rewind($stderr);
-        $error = trim((string) stream_get_contents($stderr)) ?: 'server not reachable after timeout';
+        $error = self::readError($stderr);
+        fclose($stdout);
         fclose($stderr);
 
         return false;
+    }
+
+    /**
+     * Extracts the meaningful failure line from the server's stderr, ignoring the startup banner and the
+     * harmless JIT warning emitted under coverage.
+     */
+    private static function readError($stderr): string
+    {
+        rewind($stderr);
+        foreach (explode("\n", (string) stream_get_contents($stderr)) as $line) {
+            if (stripos($line, 'Failed to listen') !== false) {
+                return trim($line);
+            }
+        }
+
+        return 'server not reachable';
     }
 
     /**
