@@ -22,28 +22,110 @@ final class HttpClientTest extends ParentTestCase
 
     public static function setUpBeforeClass(): void
     {
-        $port = 18923;
-        self::$baseUrl = 'http://127.0.0.1:' . $port;
-
-        // Start PHP built-in server using proc_open (cross-platform)
-        $command = ['php', '-S', '127.0.0.1:' . $port, __DIR__ . '/../Fixtures/server.php'];
-        $descriptors = [['pipe', 'r'], ['pipe', 'w'], ['pipe', 'w']];
-        self::$serverProcess = proc_open($command, $descriptors, $pipes);
-
-        if (self::$serverProcess === false) {
-            throw new RuntimeException('Failed to start test server');
+        // Let the server bind the port and retry on a fresh one if it fails, avoiding the probe-and-release race.
+        $lastError = '';
+        for ($attempt = 0; $attempt < 10; $attempt++) {
+            $port = random_int(20000, 65000);
+            if (self::startServer($port, $lastError)) {
+                self::$baseUrl = 'http://127.0.0.1:' . $port;
+                return;
+            }
         }
 
-        // Wait for server to be ready (up to 5 seconds)
+        throw new RuntimeException('Test server failed to start: ' . $lastError);
+    }
+
+    /**
+     * Starts the built-in server on the given port and waits until it accepts connections.
+     * Returns false on failure, writing the reason to $error so the caller can retry another port.
+     */
+    private static function startServer(int $port, string &$error): bool
+    {
+        // Drain stdout/stderr to temp files: unread pipes can fill and stall the server, and temp files
+        // are portable, unlike /dev/null which proc_open cannot open on Windows.
+        $stdout = tmpfile();
+        $stderr = tmpfile();
+        // Disable JIT for the subprocess: under coverage it only emits a noisy, harmless startup warning.
+        $command = ['php', '-d', 'opcache.jit=disable', '-S', '127.0.0.1:' . $port, __DIR__ . '/../Fixtures/server.php'];
+        $descriptors = [['pipe', 'r'], $stdout, $stderr];
+        $process = proc_open($command, $descriptors, $pipes);
+
+        if (!is_resource($process)) {
+            $error = 'proc_open() failed';
+            fclose($stdout);
+            fclose($stderr);
+
+            return false;
+        }
+
+        // Wait up to ~5 seconds for the server to accept connections; cold CI runners can be slow to boot.
         for ($i = 0; $i < 50; $i++) {
-            if (@fsockopen('127.0.0.1', $port, $errno, $errstr, 0.1)) {
-                return;
+            // Confirm our fixture is answering, not a foreign listener that grabbed the port.
+            if (self::pingFixture($port)) {
+                self::$serverProcess = $process;
+                fclose($stdout);
+                fclose($stderr);
+
+                return true;
+            }
+
+            // A dead process means the bind failed; let the caller retry on a different port.
+            $status = proc_get_status($process);
+            if (!$status['running']) {
+                $error = self::readError($stderr);
+                proc_close($process);
+                fclose($stdout);
+                fclose($stderr);
+
+                return false;
             }
 
             usleep(100000);
         }
 
-        throw new RuntimeException('Test server failed to start');
+        // Running but unreachable after the timeout: tear it down and let the caller retry.
+        proc_terminate($process);
+        proc_close($process);
+        $error = self::readError($stderr);
+        fclose($stdout);
+        fclose($stderr);
+
+        return false;
+    }
+
+    /**
+     * Extracts the meaningful failure line from the server's stderr, ignoring the startup banner and the
+     * harmless JIT warning emitted under coverage.
+     */
+    private static function readError($stderr): string
+    {
+        rewind($stderr);
+        foreach (explode("\n", (string) stream_get_contents($stderr)) as $line) {
+            if (stripos($line, 'Failed to listen') !== false) {
+                return trim($line);
+            }
+        }
+
+        return 'server not reachable';
+    }
+
+    /**
+     * Returns true only when the fixture server answers its /ok route, proving it is ours and ready.
+     */
+    private static function pingFixture(int $port): bool
+    {
+        $socket = @fsockopen('127.0.0.1', $port, $errno, $errstr, 0.1);
+        if ($socket === false) {
+            return false;
+        }
+
+        $request = "GET /ok HTTP/1.1\r\nHost: 127.0.0.1\r\nConnection: close\r\n\r\n";
+        fwrite($socket, $request);
+        stream_set_timeout($socket, 1);
+        $response = stream_get_contents($socket);
+        fclose($socket);
+
+        return is_string($response) && str_contains($response, '{"success":true}');
     }
 
     public static function tearDownAfterClass(): void
