@@ -22,17 +22,22 @@ final class HttpClientTest extends ParentTestCase
 
     public static function setUpBeforeClass(): void
     {
-        $port = self::findFreePort();
-        self::$baseUrl = 'http://127.0.0.1:' . $port;
-
-        // Start PHP built-in server using proc_open (cross-platform)
-        $command = ['php', '-S', '127.0.0.1:' . $port, __DIR__ . '/../Fixtures/server.php'];
+        // Bind to port 0 so the server picks a free port atomically; this avoids the race of probing a
+        // port, releasing it, then hoping it is still free when the server binds on a busy CI runner.
+        $command = ['php', '-S', '127.0.0.1:0', __DIR__ . '/../Fixtures/server.php'];
         $descriptors = [['pipe', 'r'], ['pipe', 'w'], ['pipe', 'w']];
         self::$serverProcess = proc_open($command, $descriptors, $pipes);
 
         if (self::$serverProcess === false) {
             throw new RuntimeException('Failed to start test server');
         }
+
+        // Read stderr without blocking, so a server that never reports a port cannot hang the suite.
+        stream_set_blocking($pipes[2], false);
+
+        // The server announces its bound address on stderr, e.g. "(http://127.0.0.1:39767) started".
+        $port = self::readBoundPort($pipes[2]);
+        self::$baseUrl = 'http://127.0.0.1:' . $port;
 
         // Wait up to 15 seconds for the server to accept connections; cold CI runners can be slow to boot.
         for ($i = 0; $i < 150; $i++) {
@@ -41,11 +46,10 @@ final class HttpClientTest extends ParentTestCase
                 return;
             }
 
-            // Fail fast only if the server died, e.g., the port could not be bound. A running child
-            // reports exitcode -1, so check for a real exit code to avoid aborting while it boots.
+            // Fail fast if the server died after binding, e.g., it crashed while handling startup.
             $status = proc_get_status(self::$serverProcess);
-            if (!$status['running'] && $status['exitcode'] > 0) {
-                throw new RuntimeException('Test server process exited: ' . trim(stream_get_contents($pipes[2])));
+            if (!$status['running']) {
+                throw new RuntimeException('Test server process exited: ' . trim((string) fgets($pipes[2])));
             }
 
             usleep(100000);
@@ -55,19 +59,23 @@ final class HttpClientTest extends ParentTestCase
     }
 
     /**
-     * Returns an available loopback port, allocated by the OS to avoid collisions on shared runners.
+     * Reads the port the built-in server bound to from its startup banner on stderr.
      */
-    private static function findFreePort(): int
+    private static function readBoundPort($stderr): int
     {
-        $socket = @stream_socket_server('tcp://127.0.0.1:0', $errno, $errstr);
-        if ($socket === false) {
-            throw new RuntimeException('Failed to allocate a free port: ' . $errstr);
+        // The banner may be preceded by other startup lines (e.g. the JIT warning under coverage),
+        // so scan until the "started" line appears or the server gives up booting.
+        $deadline = microtime(true) + 15.0;
+        while (microtime(true) < $deadline) {
+            $line = fgets($stderr);
+            if ($line !== false && preg_match('#http://127\.0\.0\.1:(\d+)#', $line, $matches) === 1) {
+                return (int) $matches[1];
+            }
+
+            usleep(50000);
         }
 
-        $name = stream_socket_get_name($socket, false);
-        fclose($socket);
-
-        return (int) substr((string) $name, strrpos((string) $name, ':') + 1);
+        throw new RuntimeException('Test server did not report a bound port');
     }
 
     public static function tearDownAfterClass(): void
