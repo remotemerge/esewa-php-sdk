@@ -22,60 +22,89 @@ final class HttpClientTest extends ParentTestCase
 
     public static function setUpBeforeClass(): void
     {
-        // Bind to port 0 so the server picks a free port atomically; this avoids the race of probing a
-        // port, releasing it, then hoping it is still free when the server binds on a busy CI runner.
-        $command = ['php', '-S', '127.0.0.1:0', __DIR__ . '/../Fixtures/server.php'];
-        $descriptors = [['pipe', 'r'], ['pipe', 'w'], ['pipe', 'w']];
-        self::$serverProcess = proc_open($command, $descriptors, $pipes);
-
-        if (self::$serverProcess === false) {
-            throw new RuntimeException('Failed to start test server');
-        }
-
-        // Read stderr without blocking, so a server that never reports a port cannot hang the suite.
-        stream_set_blocking($pipes[2], false);
-
-        // The server announces its bound address on stderr, e.g. "(http://127.0.0.1:39767) started".
-        $port = self::readBoundPort($pipes[2]);
-        self::$baseUrl = 'http://127.0.0.1:' . $port;
-
-        // Wait up to 15 seconds for the server to accept connections; cold CI runners can be slow to boot.
-        for ($i = 0; $i < 150; $i++) {
-            // A successful connection means the server is ready.
-            if (@fsockopen('127.0.0.1', $port, $errno, $errstr, 0.1)) {
+        // Let the server bind the port and retry on a fresh one if it fails, avoiding the probe-and-release race.
+        $lastError = '';
+        for ($attempt = 0; $attempt < 10; $attempt++) {
+            $port = random_int(20000, 65000);
+            if (self::startServer($port, $lastError)) {
+                self::$baseUrl = 'http://127.0.0.1:' . $port;
                 return;
             }
+        }
 
-            // Fail fast if the server died after binding, e.g., it crashed while handling startup.
-            $status = proc_get_status(self::$serverProcess);
+        throw new RuntimeException('Test server failed to start: ' . $lastError);
+    }
+
+    /**
+     * Starts the built-in server on the given port and waits until it accepts connections.
+     * Returns false (and the captured stderr in $error) if the port could not be bound.
+     */
+    private static function startServer(int $port, string &$error): bool
+    {
+        // Capture stderr to a temp file; pipes can buffer or block unpredictably on macOS.
+        $stderr = tmpfile();
+        $command = ['php', '-S', '127.0.0.1:' . $port, __DIR__ . '/../Fixtures/server.php'];
+        $descriptors = [['pipe', 'r'], ['file', '/dev/null', 'w'], $stderr];
+        $process = proc_open($command, $descriptors, $pipes);
+
+        if (!is_resource($process)) {
+            $error = 'proc_open() failed';
+            fclose($stderr);
+
+            return false;
+        }
+
+        // Wait up to ~5 seconds for the server to accept connections; cold CI runners can be slow to boot.
+        for ($i = 0; $i < 50; $i++) {
+            // Confirm our fixture is answering, not a foreign listener that grabbed the port.
+            if (self::pingFixture($port)) {
+                self::$serverProcess = $process;
+                fclose($stderr);
+
+                return true;
+            }
+
+            // A dead process means the bind failed; let the caller retry on a different port.
+            $status = proc_get_status($process);
             if (!$status['running']) {
-                throw new RuntimeException('Test server process exited: ' . trim((string) fgets($pipes[2])));
+                rewind($stderr);
+                $error = trim((string) stream_get_contents($stderr));
+                proc_close($process);
+                fclose($stderr);
+
+                return false;
             }
 
             usleep(100000);
         }
 
-        throw new RuntimeException('Test server failed to start');
+        // Running but unreachable after the timeout: tear it down and let the caller retry.
+        proc_terminate($process);
+        proc_close($process);
+        rewind($stderr);
+        $error = trim((string) stream_get_contents($stderr)) ?: 'server not reachable after timeout';
+        fclose($stderr);
+
+        return false;
     }
 
     /**
-     * Reads the port the built-in server bound to from its startup banner on stderr.
+     * Returns true only when the fixture server answers its /ok route, proving it is ours and ready.
      */
-    private static function readBoundPort($stderr): int
+    private static function pingFixture(int $port): bool
     {
-        // The banner may be preceded by other startup lines (e.g. the JIT warning under coverage),
-        // so scan until the "started" line appears or the server gives up booting.
-        $deadline = microtime(true) + 15.0;
-        while (microtime(true) < $deadline) {
-            $line = fgets($stderr);
-            if ($line !== false && preg_match('#http://127\.0\.0\.1:(\d+)#', $line, $matches) === 1) {
-                return (int) $matches[1];
-            }
-
-            usleep(50000);
+        $socket = @fsockopen('127.0.0.1', $port, $errno, $errstr, 0.1);
+        if ($socket === false) {
+            return false;
         }
 
-        throw new RuntimeException('Test server did not report a bound port');
+        $request = "GET /ok HTTP/1.1\r\nHost: 127.0.0.1\r\nConnection: close\r\n\r\n";
+        fwrite($socket, $request);
+        stream_set_timeout($socket, 1);
+        $response = stream_get_contents($socket);
+        fclose($socket);
+
+        return is_string($response) && str_contains($response, '{"success":true}');
     }
 
     public static function tearDownAfterClass(): void
