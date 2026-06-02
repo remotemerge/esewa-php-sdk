@@ -37,7 +37,7 @@ final class HttpClientTest extends ParentTestCase
 
     /**
      * Starts the built-in server on the given port and waits until it accepts connections.
-     * Returns false (and the captured stderr in $error) if the port could not be bound.
+     * Returns false on failure, writing the reason to $error so the caller can retry another port.
      */
     private static function startServer(int $port, string &$error): bool
     {
