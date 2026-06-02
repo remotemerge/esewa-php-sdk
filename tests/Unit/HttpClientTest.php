@@ -22,7 +22,7 @@ final class HttpClientTest extends ParentTestCase
 
     public static function setUpBeforeClass(): void
     {
-        $port = 18923;
+        $port = self::findFreePort();
         self::$baseUrl = 'http://127.0.0.1:' . $port;
 
         // Start PHP built-in server using proc_open (cross-platform)
@@ -34,8 +34,14 @@ final class HttpClientTest extends ParentTestCase
             throw new RuntimeException('Failed to start test server');
         }
 
-        // Wait for server to be ready (up to 5 seconds)
-        for ($i = 0; $i < 50; $i++) {
+        // Wait up to 15 seconds for the server to accept connections; cold CI runners can be slow to boot.
+        for ($i = 0; $i < 150; $i++) {
+            // Fail fast with the server's stderr if it died, e.g., the port could not be bound.
+            $status = proc_get_status(self::$serverProcess);
+            if (!$status['running']) {
+                throw new RuntimeException('Test server process exited: ' . trim(stream_get_contents($pipes[2])));
+            }
+
             if (@fsockopen('127.0.0.1', $port, $errno, $errstr, 0.1)) {
                 return;
             }
@@ -44,6 +50,22 @@ final class HttpClientTest extends ParentTestCase
         }
 
         throw new RuntimeException('Test server failed to start');
+    }
+
+    /**
+     * Returns an available loopback port, allocated by the OS to avoid collisions on shared runners.
+     */
+    private static function findFreePort(): int
+    {
+        $socket = @stream_socket_server('tcp://127.0.0.1:0', $errno, $errstr);
+        if ($socket === false) {
+            throw new RuntimeException('Failed to allocate a free port: ' . $errstr);
+        }
+
+        $name = stream_socket_get_name($socket, false);
+        fclose($socket);
+
+        return (int) substr((string) $name, strrpos((string) $name, ':') + 1);
     }
 
     public static function tearDownAfterClass(): void
