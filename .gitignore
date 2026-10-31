@@ -2,10 +2,8 @@
 /vendor/
 
 ## Build directories
-/build/
-/bundle/
+/.pw-data/
 /coverage/
-/dist/
 
 ### JetBrains
 /.idea/*
