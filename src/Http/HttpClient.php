@@ -39,14 +39,16 @@ final class HttpClient implements HttpClientInterface
         $postData = $isJson ? json_encode($data) : http_build_query($data);
 
         $this->setDefaultOptions($ch);
-        curl_setopt($ch, CURLOPT_POST, true);
-        curl_setopt($ch, CURLOPT_POSTFIELDS, $postData);
 
         if (!$isJson && !isset($headers['Content-Type'])) {
             $headers['Content-Type'] = 'application/x-www-form-urlencoded';
         }
 
-        curl_setopt($ch, CURLOPT_HTTPHEADER, $this->formatHeaders($headers));
+        curl_setopt_array($ch, [
+            CURLOPT_POST => true,
+            CURLOPT_POSTFIELDS => $postData,
+            CURLOPT_HTTPHEADER => $this->formatHeaders($headers),
+        ]);
 
         return $this->execute($ch);
     }
@@ -58,10 +60,12 @@ final class HttpClient implements HttpClientInterface
      */
     private function setDefaultOptions(CurlHandle $curlHandle): void
     {
-        curl_setopt($curlHandle, CURLOPT_RETURNTRANSFER, true);
-        curl_setopt($curlHandle, CURLOPT_TIMEOUT, 30);
-        curl_setopt($curlHandle, CURLOPT_SSL_VERIFYPEER, true);
-        curl_setopt($curlHandle, CURLOPT_SSL_VERIFYHOST, 2);
+        curl_setopt_array($curlHandle, [
+            CURLOPT_RETURNTRANSFER => true,
+            CURLOPT_TIMEOUT => 30,
+            CURLOPT_SSL_VERIFYPEER => true,
+            CURLOPT_SSL_VERIFYHOST => 2,
+        ]);
     }
 
     /**
@@ -81,7 +85,7 @@ final class HttpClient implements HttpClientInterface
     }
 
     /**
-     * Executes the request, handling errors and closing the handle.
+     * Executes the request and handles errors. The handle is released when it goes out of scope.
      *
      * @param CurlHandle $curlHandle The configured cURL handle.
      * @throws EsewaException If the request fails or returns an error status.
@@ -92,7 +96,6 @@ final class HttpClient implements HttpClientInterface
         $response = curl_exec($curlHandle);
         $error = curl_error($curlHandle);
         $statusCode = curl_getinfo($curlHandle, CURLINFO_HTTP_CODE);
-        curl_close($curlHandle);
 
         if ($response === false) {
             throw new EsewaException('cURL Error: ' . $error, 0);

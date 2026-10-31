@@ -76,10 +76,10 @@ final class Epay extends AbstractPayment implements EpayInterface
     public function createPayment(array $paymentData): array
     {
         $this->validateRequiredField($paymentData, 'amount', 'Amount');
-        $this->validateAmount((float) $paymentData['amount']);
+        $amount = (float) $paymentData['amount'];
+        $this->validateAmount($amount);
         $this->validateRequiredField($paymentData, 'transaction_uuid', 'Transaction UUID');
 
-        $amount = (float) $paymentData['amount'];
         $taxAmount = (float) ($paymentData['tax_amount'] ?? 0);
         $serviceCharge = (float) ($paymentData['product_service_charge'] ?? 0);
         $deliveryCharge = (float) ($paymentData['product_delivery_charge'] ?? 0);
