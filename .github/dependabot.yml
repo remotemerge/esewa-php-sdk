@@ -1,29 +1,29 @@
 # Please see the documentation for all configuration options:
 # https://docs.github.com/en/code-security/dependabot/working-with-dependabot/dependabot-options-reference
+# Keep PHP 8.1 for the minimum compatibility requirement
 
 version: 2
 updates:
-
   - package-ecosystem: "github-actions"
-    target-branch: "main"
     directory: "/"
     schedule:
-      interval: "daily"
+      interval: "weekly"
+      day: "saturday"
 
   - package-ecosystem: "docker"
-    target-branch: "main"
     directory: "/.docker/"
     schedule:
-      interval: "daily"
+      interval: "weekly"
+      day: "saturday"
 
   - package-ecosystem: "docker-compose"
-    target-branch: "main"
     directory: "/"
     schedule:
-      interval: "daily"
+      interval: "weekly"
+      day: "saturday"
 
   - package-ecosystem: "composer"
-    target-branch: "main"
     directory: "/"
     schedule:
-      interval: "daily"
+      interval: "weekly"
+      day: "saturday"
