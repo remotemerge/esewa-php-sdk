@@ -380,6 +380,19 @@ final class EpayTest extends ParentTestCase
     /**
      * @throws EsewaException
      */
+    public function testVerifyPaymentThrowsExceptionForNonObjectPayload(): void
+    {
+        $this->epay->configure($this->validConfiguration);
+
+        $this->expectException(EsewaException::class);
+        $this->expectExceptionMessage('Invalid JSON in response: expected an object.');
+
+        $this->epay->verifyPayment(base64_encode('null'));
+    }
+
+    /**
+     * @throws EsewaException
+     */
     public function testCheckStatusWithValidResponse(): void
     {
         $this->epay->configure($this->validConfiguration);
@@ -441,6 +454,24 @@ final class EpayTest extends ParentTestCase
 
         $this->expectException(EsewaException::class);
         $this->expectExceptionMessage('API Error: Transaction not found');
+
+        $this->epay->checkStatus('test-uuid-12345', 100.00);
+    }
+
+    /**
+     * @throws EsewaException
+     */
+    public function testCheckStatusThrowsExceptionForNonObjectJson(): void
+    {
+        $this->epay->configure($this->validConfiguration);
+
+        $this->httpClientMock
+            ->expects($this->once())
+            ->method('get')
+            ->willReturn('"COMPLETE"');
+
+        $this->expectException(EsewaException::class);
+        $this->expectExceptionMessage('Invalid JSON response: expected an object.');
 
         $this->epay->checkStatus('test-uuid-12345', 100.00);
     }

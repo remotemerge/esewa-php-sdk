@@ -167,6 +167,10 @@ final class Epay extends AbstractPayment implements EpayInterface
             throw new EsewaException('Invalid JSON response: ' . json_last_error_msg());
         }
 
+        if (!is_array($data)) {
+            throw new EsewaException('Invalid JSON response: expected an object.');
+        }
+
         $this->validateResponse($data);
 
         return $data;
