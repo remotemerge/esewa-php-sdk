@@ -144,9 +144,9 @@ final class Epay extends AbstractPayment implements EpayInterface
         $url = sprintf(
             '%s/api/epay/transaction/status/?product_code=%s&total_amount=%s&transaction_uuid=%s',
             $this->getBaseUrl('epay'),
-            $this->productCode,
-            $totalAmount,
-            $transactionUuid
+            rawurlencode($this->productCode),
+            rawurlencode((string) $totalAmount),
+            rawurlencode($transactionUuid)
         );
 
         $response = $this->httpClient->get($url);

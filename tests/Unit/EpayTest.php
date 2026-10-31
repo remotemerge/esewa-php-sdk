@@ -500,6 +500,38 @@ final class EpayTest extends ParentTestCase
     /**
      * @throws EsewaException
      */
+    public function testCheckStatusRequestsExpectedUrl(): void
+    {
+        $this->epay->configure($this->validConfiguration);
+
+        $this->httpClientMock
+            ->expects($this->once())
+            ->method('get')
+            ->with('https://rc-epay.esewa.com.np/api/epay/transaction/status/?product_code=EPAYTEST&total_amount=100.5&transaction_uuid=test-uuid-12345')
+            ->willReturn('{"status":"COMPLETE"}');
+
+        $this->epay->checkStatus('test-uuid-12345', 100.50);
+    }
+
+    /**
+     * @throws EsewaException
+     */
+    public function testCheckStatusEncodesQueryParameters(): void
+    {
+        $this->epay->configure($this->validConfiguration);
+
+        $this->httpClientMock
+            ->expects($this->once())
+            ->method('get')
+            ->with('https://rc-epay.esewa.com.np/api/epay/transaction/status/?product_code=EPAYTEST&total_amount=100&transaction_uuid=a%26product_code%3DOTHER%20b')
+            ->willReturn('{"status":"COMPLETE"}');
+
+        $this->epay->checkStatus('a&product_code=OTHER b', 100.00);
+    }
+
+    /**
+     * @throws EsewaException
+     */
     public function testGetFormActionUrlForTestEnvironment(): void
     {
         $options = $this->validConfiguration;
