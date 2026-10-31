@@ -4,7 +4,9 @@ declare(strict_types=1);
 
 namespace Tests\Unit;
 
+use Iterator;
 use PHPUnit\Framework\Attributes\CoversClass;
+use PHPUnit\Framework\Attributes\DataProvider;
 use RemoteMerge\Esewa\AbstractPayment;
 use RemoteMerge\Esewa\Exceptions\EsewaException;
 use Tests\ParentTestCase;
@@ -252,6 +254,26 @@ final class AbstractPaymentTest extends ParentTestCase
         $this->expectExceptionMessageMatches('/Invalid JSON in response:/');
 
         $this->paymentTestClass->testDecodeResponse('');
+    }
+
+    #[DataProvider('nonArrayJsonProvider')]
+    public function testDecodeResponseWithNonArrayJson(string $json): void
+    {
+        $this->expectException(EsewaException::class);
+        $this->expectExceptionMessage('Invalid JSON in response: expected an object.');
+
+        $this->paymentTestClass->testDecodeResponse(base64_encode($json));
+    }
+
+    /**
+     * @return Iterator<string, array{string}>
+     */
+    public static function nonArrayJsonProvider(): Iterator
+    {
+        yield 'null' => ['null'];
+        yield 'string' => ['"COMPLETE"'];
+        yield 'integer' => ['123'];
+        yield 'boolean' => ['true'];
     }
 
     /**

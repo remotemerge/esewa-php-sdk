@@ -113,6 +113,10 @@ abstract class AbstractPayment
             throw new EsewaException('Invalid JSON in response: ' . json_last_error_msg());
         }
 
+        if (!is_array($data)) {
+            throw new EsewaException('Invalid JSON in response: expected an object.');
+        }
+
         return $data;
     }
 

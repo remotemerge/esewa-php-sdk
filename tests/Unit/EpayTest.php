@@ -6,10 +6,12 @@ namespace Tests\Unit;
 
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\MockObject\MockObject;
+use ReflectionProperty;
 use RemoteMerge\Esewa\Contracts\EpayInterface;
 use RemoteMerge\Esewa\Contracts\HttpClientInterface;
 use RemoteMerge\Esewa\Epay;
 use RemoteMerge\Esewa\Exceptions\EsewaException;
+use RemoteMerge\Esewa\Http\HttpClient;
 use Tests\ParentTestCase;
 
 #[CoversClass(Epay::class)]
@@ -44,6 +46,16 @@ final class EpayTest extends ParentTestCase
     {
         $epay = new Epay();
         $this->assertInstanceOf(Epay::class, $epay);
+    }
+
+    public function testConstructorFallsBackToDefaultHttpClientWhenNullGiven(): void
+    {
+        $epay = new Epay(null);
+
+        // Inspected directly because exercising the client would require a live call to eSewa.
+        $httpClient = (new ReflectionProperty(Epay::class, 'httpClient'))->getValue($epay);
+
+        $this->assertInstanceOf(HttpClient::class, $httpClient);
     }
 
     /**
@@ -368,6 +380,40 @@ final class EpayTest extends ParentTestCase
     /**
      * @throws EsewaException
      */
+    public function testVerifyPaymentThrowsExceptionForNonObjectPayload(): void
+    {
+        $this->epay->configure($this->validConfiguration);
+
+        $this->expectException(EsewaException::class);
+        $this->expectExceptionMessage('Invalid JSON in response: expected an object.');
+
+        $this->epay->verifyPayment(base64_encode('null'));
+    }
+
+    /**
+     * @throws EsewaException
+     */
+    public function testVerifyPaymentThrowsExceptionForNonStringSignature(): void
+    {
+        $this->epay->configure($this->validConfiguration);
+
+        $responseData = [
+            'transaction_code' => 'TXN12345',
+            'signed_field_names' => 'transaction_code',
+            'signature' => 12345,
+        ];
+
+        $encodedResponse = base64_encode(json_encode($responseData));
+
+        $this->expectException(EsewaException::class);
+        $this->expectExceptionMessage('Invalid signature in response.');
+
+        $this->epay->verifyPayment($encodedResponse);
+    }
+
+    /**
+     * @throws EsewaException
+     */
     public function testCheckStatusWithValidResponse(): void
     {
         $this->epay->configure($this->validConfiguration);
@@ -431,6 +477,56 @@ final class EpayTest extends ParentTestCase
         $this->expectExceptionMessage('API Error: Transaction not found');
 
         $this->epay->checkStatus('test-uuid-12345', 100.00);
+    }
+
+    /**
+     * @throws EsewaException
+     */
+    public function testCheckStatusThrowsExceptionForNonObjectJson(): void
+    {
+        $this->epay->configure($this->validConfiguration);
+
+        $this->httpClientMock
+            ->expects($this->once())
+            ->method('get')
+            ->willReturn('"COMPLETE"');
+
+        $this->expectException(EsewaException::class);
+        $this->expectExceptionMessage('Invalid JSON response: expected an object.');
+
+        $this->epay->checkStatus('test-uuid-12345', 100.00);
+    }
+
+    /**
+     * @throws EsewaException
+     */
+    public function testCheckStatusRequestsExpectedUrl(): void
+    {
+        $this->epay->configure($this->validConfiguration);
+
+        $this->httpClientMock
+            ->expects($this->once())
+            ->method('get')
+            ->with('https://rc-epay.esewa.com.np/api/epay/transaction/status/?product_code=EPAYTEST&total_amount=100.5&transaction_uuid=test-uuid-12345')
+            ->willReturn('{"status":"COMPLETE"}');
+
+        $this->epay->checkStatus('test-uuid-12345', 100.50);
+    }
+
+    /**
+     * @throws EsewaException
+     */
+    public function testCheckStatusEncodesQueryParameters(): void
+    {
+        $this->epay->configure($this->validConfiguration);
+
+        $this->httpClientMock
+            ->expects($this->once())
+            ->method('get')
+            ->with('https://rc-epay.esewa.com.np/api/epay/transaction/status/?product_code=EPAYTEST&total_amount=100&transaction_uuid=a%26product_code%3DOTHER%20b')
+            ->willReturn('{"status":"COMPLETE"}');
+
+        $this->epay->checkStatus('a&product_code=OTHER b', 100.00);
     }
 
     /**

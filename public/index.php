@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 require_once __DIR__ . '/../vendor/autoload.php';
 
-use Ramsey\Uuid\Uuid;
 use RemoteMerge\Esewa\EsewaFactory;
 
 session_start();
@@ -38,18 +37,18 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['product_id'])) {
         }
 
         $product = $productData[$productId];
-        $transactionUuid = Uuid::uuid4()->toString();
+        $transactionId = bin2hex(random_bytes(16));
 
         $paymentData = [
             'amount' => $product['price'],
             'tax_amount' => $product['price'] * 0.13,
             'product_service_charge' => 0,
             'product_delivery_charge' => 100,
-            'transaction_uuid' => $transactionUuid,
+            'transaction_uuid' => $transactionId,
         ];
 
         $paymentForm = $epay->createPayment($paymentData);
-        $_SESSION['transaction_uuid'] = $transactionUuid;
+        $_SESSION['transaction_uuid'] = $transactionId;
         $_SESSION['product_name'] = $product['name'];
         $_SESSION['amount'] = $product['price'];
 

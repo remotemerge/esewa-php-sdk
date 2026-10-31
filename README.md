@@ -141,10 +141,9 @@ The eSewa ePay v2 payment flow has three steps: **initiate → redirect → veri
 
 ### **Initiate a Payment**
 
-Call `createPayment()` with order details. The SDK computes the `total_amount` and generates the HMAC-SHA256 signature automatically. The `transaction_uuid` should be a unique identifier per order. UUID v4 is recommended.
+Call `createPayment()` with order details. The SDK computes the `total_amount` and generates the HMAC-SHA256 signature automatically. The `transaction_uuid` should be a unique identifier per order. UUID is recommended.
 
 ```php
-use Ramsey\Uuid\Uuid;
 use RemoteMerge\Esewa\EsewaFactory;
 use RemoteMerge\Esewa\Exceptions\EsewaException;
 
@@ -162,7 +161,7 @@ try {
         'tax_amount'               => 65.00,
         'product_service_charge'   => 0,
         'product_delivery_charge'  => 100,
-        'transaction_uuid'         => Uuid::uuid4()->toString(),
+        'transaction_uuid'         => bin2hex(random_bytes(16)),
     ]);
 } catch (EsewaException $e) {
     echo $e->getMessage();
