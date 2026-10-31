@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Tests\Unit;
 
+use Iterator;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\DataProvider;
 use RemoteMerge\Esewa\AbstractPayment;
@@ -265,16 +266,14 @@ final class AbstractPaymentTest extends ParentTestCase
     }
 
     /**
-     * @return array<string, array{string}>
+     * @return Iterator<string, array{string}>
      */
-    public static function nonArrayJsonProvider(): array
+    public static function nonArrayJsonProvider(): Iterator
     {
-        return [
-            'null' => ['null'],
-            'string' => ['"COMPLETE"'],
-            'integer' => ['123'],
-            'boolean' => ['true'],
-        ];
+        yield 'null' => ['null'];
+        yield 'string' => ['"COMPLETE"'];
+        yield 'integer' => ['123'];
+        yield 'boolean' => ['true'];
     }
 
     /**
