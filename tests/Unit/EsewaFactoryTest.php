@@ -5,10 +5,12 @@ declare(strict_types=1);
 namespace Tests\Unit;
 
 use PHPUnit\Framework\Attributes\CoversClass;
+use ReflectionProperty;
 use RemoteMerge\Esewa\Contracts\EpayInterface;
 use RemoteMerge\Esewa\Contracts\HttpClientInterface;
 use RemoteMerge\Esewa\EsewaFactory;
 use RemoteMerge\Esewa\Exceptions\EsewaException;
+use RemoteMerge\Esewa\Http\HttpClient;
 use Tests\ParentTestCase;
 
 #[CoversClass(EsewaFactory::class)]
@@ -35,6 +37,19 @@ final class EsewaFactoryTest extends ParentTestCase
         $epay = EsewaFactory::createEpay($this->validEpayOptions);
 
         $this->assertInstanceOf(EpayInterface::class, $epay);
+    }
+
+    /**
+     * @throws EsewaException
+     */
+    public function testCreateEpayWithoutHttpClientUsesDefaultClient(): void
+    {
+        $epay = EsewaFactory::createEpay($this->validEpayOptions);
+
+        // Inspected directly because exercising the client would require a live call to eSewa.
+        $httpClient = (new ReflectionProperty($epay, 'httpClient'))->getValue($epay);
+
+        $this->assertInstanceOf(HttpClient::class, $httpClient);
     }
 
     /**

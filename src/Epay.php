@@ -21,9 +21,15 @@ final class Epay extends AbstractPayment implements EpayInterface
      */
     private string $failureUrl;
 
-    public function __construct(private readonly ?HttpClientInterface $httpClient = new HttpClient())
+    /**
+     * The HTTP client used for server-to-server requests.
+     */
+    private readonly HttpClientInterface $httpClient;
+
+    public function __construct(?HttpClientInterface $httpClient = new HttpClient())
     {
-        //
+        // An explicit null, as passed by EsewaFactory when no client is given, still needs a working client.
+        $this->httpClient = $httpClient ?? new HttpClient();
     }
 
     /**

@@ -6,10 +6,12 @@ namespace Tests\Unit;
 
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\MockObject\MockObject;
+use ReflectionProperty;
 use RemoteMerge\Esewa\Contracts\EpayInterface;
 use RemoteMerge\Esewa\Contracts\HttpClientInterface;
 use RemoteMerge\Esewa\Epay;
 use RemoteMerge\Esewa\Exceptions\EsewaException;
+use RemoteMerge\Esewa\Http\HttpClient;
 use Tests\ParentTestCase;
 
 #[CoversClass(Epay::class)]
@@ -44,6 +46,16 @@ final class EpayTest extends ParentTestCase
     {
         $epay = new Epay();
         $this->assertInstanceOf(Epay::class, $epay);
+    }
+
+    public function testConstructorFallsBackToDefaultHttpClientWhenNullGiven(): void
+    {
+        $epay = new Epay(null);
+
+        // Inspected directly because exercising the client would require a live call to eSewa.
+        $httpClient = (new ReflectionProperty(Epay::class, 'httpClient'))->getValue($epay);
+
+        $this->assertInstanceOf(HttpClient::class, $httpClient);
     }
 
     /**
