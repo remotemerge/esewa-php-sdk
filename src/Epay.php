@@ -125,21 +125,10 @@ final class Epay extends AbstractPayment implements EpayInterface
             throw new EsewaException('Invalid response: missing signature or signed fields.');
         }
 
-        // Verify signature
-        $signedFields = explode(',', (string) $response['signed_field_names']);
-        $dataToVerify = [];
-        foreach ($signedFields as $signedField) {
-            if (!isset($response[$signedField])) {
-                throw new EsewaException('Missing signed field: ' . $signedField);
-            }
+        $expectedSignature = $this->generateSignature($this->buildSignedMessage($response));
 
-            $dataToVerify[] = sprintf('%s=%s', $signedField, $response[$signedField]);
-        }
-
-        $dataString = implode(',', $dataToVerify);
-        $expectedSignature = $this->generateSignature($dataString);
-
-        if (!hash_equals($expectedSignature, $response['signature'])) {
+        // The payload is caller-supplied, so a non-string signature must be rejected rather than reach hash_equals().
+        if (!is_string($response['signature']) || !hash_equals($expectedSignature, $response['signature'])) {
             throw new EsewaException('Invalid signature in response.');
         }
 
@@ -193,19 +182,33 @@ final class Epay extends AbstractPayment implements EpayInterface
             return false;
         }
 
-        $signedFields = explode(',', (string) $data['signed_field_names']);
-        $dataToVerify = [];
-        foreach ($signedFields as $signedField) {
-            if (!isset($data[$signedField])) {
-                return false;
-            }
-
-            $dataToVerify[] = sprintf('%s=%s', $signedField, $data[$signedField]);
+        try {
+            $message = $this->buildSignedMessage($data);
+        } catch (EsewaException) {
+            return false;
         }
 
-        $dataString = implode(',', $dataToVerify);
-        $expectedSignature = $this->generateSignature($dataString);
+        return hash_equals($this->generateSignature($message), $signature);
+    }
 
-        return hash_equals($expectedSignature, $signature);
+    /**
+     * Builds the "field=value" message eSewa signs, joined by commas in signed_field_names order.
+     *
+     * @param array<string, mixed> $data The payload holding signed_field_names and each listed field.
+     * @throws EsewaException If a listed field is missing from the payload.
+     * @return string The message to sign.
+     */
+    private function buildSignedMessage(array $data): string
+    {
+        $pairs = [];
+        foreach (explode(',', (string) $data['signed_field_names']) as $signedField) {
+            if (!isset($data[$signedField])) {
+                throw new EsewaException('Missing signed field: ' . $signedField);
+            }
+
+            $pairs[] = $signedField . '=' . $data[$signedField];
+        }
+
+        return implode(',', $pairs);
     }
 }

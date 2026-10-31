@@ -393,6 +393,27 @@ final class EpayTest extends ParentTestCase
     /**
      * @throws EsewaException
      */
+    public function testVerifyPaymentThrowsExceptionForNonStringSignature(): void
+    {
+        $this->epay->configure($this->validConfiguration);
+
+        $responseData = [
+            'transaction_code' => 'TXN12345',
+            'signed_field_names' => 'transaction_code',
+            'signature' => 12345,
+        ];
+
+        $encodedResponse = base64_encode(json_encode($responseData));
+
+        $this->expectException(EsewaException::class);
+        $this->expectExceptionMessage('Invalid signature in response.');
+
+        $this->epay->verifyPayment($encodedResponse);
+    }
+
+    /**
+     * @throws EsewaException
+     */
     public function testCheckStatusWithValidResponse(): void
     {
         $this->epay->configure($this->validConfiguration);
