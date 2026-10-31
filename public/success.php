@@ -75,7 +75,7 @@ if ($encodedResponse === null) {
             </svg>
         </div>
         <h1 class="text-3xl font-bold text-gray-900 mb-2">Verification Failed</h1>
-        <p class="text-gray-500 mb-6"><?= htmlspecialchars((string) $error) ?></p>
+        <p class="text-gray-500 mb-6"><?= htmlspecialchars($error) ?></p>
     <?php endif; ?>
     <a href="/" class="inline-block bg-blue-600 text-white px-8 py-3 rounded-xl hover:bg-blue-700 transition-colors font-semibold">
         Back to Store
