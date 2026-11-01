@@ -12,6 +12,11 @@ use RemoteMerge\Esewa\Http\HttpClient;
 final class Epay extends AbstractPayment implements EpayInterface
 {
     /**
+     * Maximum number of optional custom properties eSewa accepts per payment.
+     */
+    private const MAX_PROPERTIES = 3;
+
+    /**
      * The success URL for redirecting after a successful payment.
      */
     private string $successUrl;
@@ -88,6 +93,8 @@ final class Epay extends AbstractPayment implements EpayInterface
         $transactionUuid = $paymentData['transaction_uuid'];
         $this->validateTransactionUuid($transactionUuid);
 
+        $propertyFields = $this->buildPropertyFields($paymentData['properties'] ?? []);
+
         // Generate signature
         $signedFieldNames = 'total_amount,transaction_uuid,product_code';
         $dataToSign = sprintf(
@@ -110,7 +117,7 @@ final class Epay extends AbstractPayment implements EpayInterface
             'failure_url' => $this->failureUrl,
             'signed_field_names' => $signedFieldNames,
             'signature' => $signature,
-        ];
+        ] + $propertyFields;
     }
 
     /**
@@ -189,6 +196,40 @@ final class Epay extends AbstractPayment implements EpayInterface
         }
 
         return hash_equals($this->generateSignature($message), $signature);
+    }
+
+    /**
+     * Converts optional custom properties into eSewa's "properties[name]" form fields.
+     *
+     * @param mixed $properties The caller-supplied properties map.
+     * @throws EsewaException If the map or any of its entries is invalid.
+     * @return array<string, string> The form fields to append to the payment form.
+     */
+    private function buildPropertyFields(mixed $properties): array
+    {
+        if (!is_array($properties)) {
+            throw new EsewaException('Properties must be an array.');
+        }
+
+        if (count($properties) > self::MAX_PROPERTIES) {
+            throw new EsewaException(sprintf('Properties cannot contain more than %d entries.', self::MAX_PROPERTIES));
+        }
+
+        $fields = [];
+        foreach ($properties as $name => $value) {
+            // Brackets would change the field name eSewa parses from "properties[name]".
+            if (!is_string($name) || $name === '' || strpbrk($name, '[]') !== false) {
+                throw new EsewaException('Property names must be non-empty strings without square brackets.');
+            }
+
+            if (!is_string($value) && !is_int($value) && !is_float($value)) {
+                throw new EsewaException('Property values must be strings or numbers: ' . $name);
+            }
+
+            $fields['properties[' . $name . ']'] = (string) $value;
+        }
+
+        return $fields;
     }
 
     /**

@@ -14,6 +14,7 @@ use RemoteMerge\Esewa\Contracts\HttpClientInterface;
 use RemoteMerge\Esewa\Epay;
 use RemoteMerge\Esewa\Exceptions\EsewaException;
 use RemoteMerge\Esewa\Http\HttpClient;
+use stdClass;
 use Tests\ParentTestCase;
 
 #[CoversClass(Epay::class)]
@@ -272,6 +273,263 @@ final class EpayTest extends ParentTestCase
 
         $this->assertNotEmpty($result['signature']);
         $this->assertEquals('total_amount,transaction_uuid,product_code', $result['signed_field_names']);
+    }
+
+    /**
+     * @throws EsewaException
+     */
+    public function testCreatePaymentSignsDocumentedFieldsInOrder(): void
+    {
+        $this->epay->configure($this->validConfiguration);
+
+        $result = $this->epay->createPayment([
+            'amount' => 100,
+            'transaction_uuid' => 'test-uuid-12345',
+        ]);
+
+        $expectedSignature = base64_encode(hash_hmac(
+            'sha256',
+            'total_amount=100,transaction_uuid=test-uuid-12345,product_code=EPAYTEST',
+            (string) $this->validConfiguration['secret_key'],
+            true,
+        ));
+
+        $this->assertSame($expectedSignature, $result['signature']);
+    }
+
+    /**
+     * @throws EsewaException
+     */
+    public function testCreatePaymentDefaultsOptionalChargesToZero(): void
+    {
+        $this->epay->configure($this->validConfiguration);
+
+        $result = $this->epay->createPayment([
+            'amount' => 100,
+            'transaction_uuid' => 'test-uuid-12345',
+        ]);
+
+        $this->assertEqualsWithDelta(0.0, $result['tax_amount'], PHP_FLOAT_EPSILON);
+        $this->assertEqualsWithDelta(0.0, $result['product_service_charge'], PHP_FLOAT_EPSILON);
+        $this->assertEqualsWithDelta(0.0, $result['product_delivery_charge'], PHP_FLOAT_EPSILON);
+        $this->assertEqualsWithDelta(100.0, $result['total_amount'], PHP_FLOAT_EPSILON);
+    }
+
+    /**
+     * @throws EsewaException
+     */
+    public function testCreatePaymentWithoutPropertiesReturnsOnlyStandardFields(): void
+    {
+        $this->epay->configure($this->validConfiguration);
+
+        $result = $this->epay->createPayment([
+            'amount' => 100,
+            'transaction_uuid' => 'test-uuid-12345',
+        ]);
+
+        $this->assertSame([
+            'amount',
+            'tax_amount',
+            'total_amount',
+            'transaction_uuid',
+            'product_code',
+            'product_service_charge',
+            'product_delivery_charge',
+            'success_url',
+            'failure_url',
+            'signed_field_names',
+            'signature',
+        ], array_keys($result));
+    }
+
+    /**
+     * @throws EsewaException
+     */
+    public function testCreatePaymentWithEmptyPropertiesMatchesOutputWithoutProperties(): void
+    {
+        $this->epay->configure($this->validConfiguration);
+
+        $paymentData = [
+            'amount' => 100,
+            'transaction_uuid' => 'test-uuid-12345',
+        ];
+
+        $this->assertSame(
+            $this->epay->createPayment($paymentData),
+            $this->epay->createPayment($paymentData + ['properties' => []]),
+        );
+    }
+
+    /**
+     * @throws EsewaException
+     */
+    public function testCreatePaymentAddsPropertyFields(): void
+    {
+        $this->epay->configure($this->validConfiguration);
+
+        $result = $this->epay->createPayment([
+            'amount' => 100,
+            'transaction_uuid' => 'order-123',
+            'properties' => [
+                'customer_name' => 'Example Customer',
+                'customer_id' => 11,
+                'invoice_number' => 'INV-123',
+            ],
+        ]);
+
+        $this->assertSame('Example Customer', $result['properties[customer_name]']);
+        $this->assertSame('11', $result['properties[customer_id]']);
+        $this->assertSame('INV-123', $result['properties[invoice_number]']);
+    }
+
+    /**
+     * @throws EsewaException
+     */
+    public function testCreatePaymentWithSingleProperty(): void
+    {
+        $this->epay->configure($this->validConfiguration);
+
+        $result = $this->epay->createPayment([
+            'amount' => 100,
+            'transaction_uuid' => 'order-123',
+            'properties' => ['invoice_number' => 'INV-123'],
+        ]);
+
+        $this->assertSame(['properties[invoice_number]' => 'INV-123'], array_slice($result, -1, 1, true));
+        $this->assertCount(12, $result);
+    }
+
+    /**
+     * @throws EsewaException
+     */
+    public function testCreatePaymentCastsNumericPropertyValuesToString(): void
+    {
+        $this->epay->configure($this->validConfiguration);
+
+        $result = $this->epay->createPayment([
+            'amount' => 100,
+            'transaction_uuid' => 'order-123',
+            'properties' => ['customer_id' => 11, 'discount_rate' => 1.5],
+        ]);
+
+        $this->assertSame('11', $result['properties[customer_id]']);
+        $this->assertSame('1.5', $result['properties[discount_rate]']);
+    }
+
+    /**
+     * @throws EsewaException
+     */
+    public function testCreatePaymentPropertiesDoNotChangeSignature(): void
+    {
+        $this->epay->configure($this->validConfiguration);
+
+        $paymentData = [
+            'amount' => 100,
+            'transaction_uuid' => 'order-123',
+        ];
+
+        $withoutProperties = $this->epay->createPayment($paymentData);
+        $withProperties = $this->epay->createPayment($paymentData + ['properties' => ['invoice_number' => 'INV-123']]);
+
+        $this->assertSame($withoutProperties['signature'], $withProperties['signature']);
+        $this->assertSame($withoutProperties['signed_field_names'], $withProperties['signed_field_names']);
+    }
+
+    /**
+     * @throws EsewaException
+     */
+    public function testCreatePaymentRejectsMoreThanThreeProperties(): void
+    {
+        $this->epay->configure($this->validConfiguration);
+
+        $this->expectException(EsewaException::class);
+        $this->expectExceptionMessage('Properties cannot contain more than 3 entries.');
+
+        $this->epay->createPayment([
+            'amount' => 100,
+            'transaction_uuid' => 'order-123',
+            'properties' => ['a' => '1', 'b' => '2', 'c' => '3', 'd' => '4'],
+        ]);
+    }
+
+    /**
+     * @throws EsewaException
+     */
+    #[DataProvider('nonArrayPropertiesProvider')]
+    public function testCreatePaymentRejectsNonArrayProperties(mixed $properties): void
+    {
+        $this->epay->configure($this->validConfiguration);
+
+        $this->expectException(EsewaException::class);
+        $this->expectExceptionMessage('Properties must be an array.');
+
+        $this->epay->createPayment([
+            'amount' => 100,
+            'transaction_uuid' => 'order-123',
+            'properties' => $properties,
+        ]);
+    }
+
+    public static function nonArrayPropertiesProvider(): Iterator
+    {
+        yield 'string' => ['customer_name=Example'];
+        yield 'integer' => [5];
+        yield 'object' => [new stdClass()];
+    }
+
+    /**
+     * @param array<array-key, mixed> $properties
+     * @throws EsewaException
+     */
+    #[DataProvider('invalidPropertyNameProvider')]
+    public function testCreatePaymentRejectsInvalidPropertyName(array $properties): void
+    {
+        $this->epay->configure($this->validConfiguration);
+
+        $this->expectException(EsewaException::class);
+        $this->expectExceptionMessage('Property names must be non-empty strings without square brackets.');
+
+        $this->epay->createPayment([
+            'amount' => 100,
+            'transaction_uuid' => 'order-123',
+            'properties' => $properties,
+        ]);
+    }
+
+    public static function invalidPropertyNameProvider(): Iterator
+    {
+        yield 'empty name' => [['' => 'value']];
+        yield 'opening bracket' => [['customer[name' => 'value']];
+        yield 'closing bracket' => [['customer]name' => 'value']];
+        yield 'nested field name' => [['customer][name' => 'value']];
+        yield 'list without names' => [['value']];
+    }
+
+    /**
+     * @throws EsewaException
+     */
+    #[DataProvider('invalidPropertyValueProvider')]
+    public function testCreatePaymentRejectsInvalidPropertyValue(mixed $value): void
+    {
+        $this->epay->configure($this->validConfiguration);
+
+        $this->expectException(EsewaException::class);
+        $this->expectExceptionMessage('Property values must be strings or numbers: customer_name');
+
+        $this->epay->createPayment([
+            'amount' => 100,
+            'transaction_uuid' => 'order-123',
+            'properties' => ['customer_name' => $value],
+        ]);
+    }
+
+    public static function invalidPropertyValueProvider(): Iterator
+    {
+        yield 'true' => [true];
+        yield 'false' => [false];
+        yield 'null' => [null];
+        yield 'array' => [['Example Customer']];
+        yield 'object' => [new stdClass()];
     }
 
     /**

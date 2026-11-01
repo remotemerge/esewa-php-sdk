@@ -9,6 +9,10 @@ interface EpayInterface extends PaymentInterface
     /**
      * Creates payment form data for eSewa ePay.
      *
+     * The optional "properties" entry maps up to three custom field names (non-empty strings without square
+     * brackets) to string, int or float values. Each one is returned as a "properties[name]" form field holding
+     * the value cast to string. The signature does not cover properties.
+     *
      * @param array<string, mixed> $paymentData Payment details.
      * @return array<string, mixed> Form data to be submitted.
      */
