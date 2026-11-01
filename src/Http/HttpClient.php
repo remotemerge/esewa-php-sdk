@@ -35,14 +35,11 @@ final class HttpClient implements HttpClientInterface
     {
         $ch = curl_init($url);
 
-        $isJson = isset($headers['Content-Type']) && $headers['Content-Type'] === 'application/json';
+        $isJson = ($headers['Content-Type'] ?? null) === 'application/json';
         $postData = $isJson ? json_encode($data) : http_build_query($data);
+        $headers['Content-Type'] ??= 'application/x-www-form-urlencoded';
 
         $this->setDefaultOptions($ch);
-
-        if (!$isJson && !isset($headers['Content-Type'])) {
-            $headers['Content-Type'] = 'application/x-www-form-urlencoded';
-        }
 
         curl_setopt_array($ch, [
             CURLOPT_POST => true,
@@ -85,7 +82,7 @@ final class HttpClient implements HttpClientInterface
     }
 
     /**
-     * Executes the request and handles errors. The handle is released when it goes out of scope.
+     * Executes the request and handles errors. PHP releases the handle when it goes out of scope.
      *
      * @param CurlHandle $curlHandle The configured cURL handle.
      * @throws EsewaException If the request fails or returns an error status.
@@ -94,13 +91,11 @@ final class HttpClient implements HttpClientInterface
     private function execute(CurlHandle $curlHandle): string
     {
         $response = curl_exec($curlHandle);
-        $error = curl_error($curlHandle);
-        $statusCode = curl_getinfo($curlHandle, CURLINFO_HTTP_CODE);
-
         if ($response === false) {
-            throw new EsewaException('cURL Error: ' . $error, 0);
+            throw new EsewaException('cURL Error: ' . curl_error($curlHandle), 0);
         }
 
+        $statusCode = curl_getinfo($curlHandle, CURLINFO_HTTP_CODE);
         if ($statusCode >= 400) {
             throw new EsewaException('HTTP Error: ' . $statusCode, $statusCode);
         }

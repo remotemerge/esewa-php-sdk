@@ -31,6 +31,14 @@ switch ($uri) {
         echo file_get_contents('php://input');
         break;
 
+    case '/echo-request':
+        header('Content-Type: application/json');
+        echo json_encode([
+            'content_type' => $_SERVER['CONTENT_TYPE'] ?? null,
+            'body' => file_get_contents('php://input'),
+        ]);
+        break;
+
     case '/headers':
         header('Content-Type: application/json');
         $headers = [];

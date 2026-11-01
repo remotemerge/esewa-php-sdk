@@ -51,6 +51,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['product_id'])) {
         $_SESSION['transaction_uuid'] = $transactionId;
         $_SESSION['product_name'] = $product['name'];
         $_SESSION['amount'] = $product['price'];
+        // The payable total is what the callback and status check must match before the order counts as paid.
+        $_SESSION['total_amount'] = $paymentForm['total_amount'];
 
     } catch (Exception $e) {
         $error = $e->getMessage();

@@ -4,7 +4,9 @@ declare(strict_types=1);
 
 namespace Tests\Unit;
 
+use Iterator;
 use PHPUnit\Framework\Attributes\CoversClass;
+use PHPUnit\Framework\Attributes\DataProvider;
 use RemoteMerge\Esewa\Concerns\Validation;
 use RemoteMerge\Esewa\Exceptions\EsewaException;
 use Tests\ParentTestCase;
@@ -252,6 +254,56 @@ final class ValidationTraitTest extends ParentTestCase
         $this->validationTestClass->testValidateApiResponse($responseData);
 
         $this->assertTrue(true);
+    }
+
+    /**
+     * @param array<string, mixed> $responseData
+     */
+    #[DataProvider('errorMessageResponseProvider')]
+    public function testValidateApiResponseWithErrorMessage(array $responseData): void
+    {
+        $this->expectException(EsewaException::class);
+        $this->expectExceptionMessage('API Error: Service is currently unavailable');
+
+        $this->validationTestClass->testValidateApiResponse($responseData);
+    }
+
+    public static function errorMessageResponseProvider(): Iterator
+    {
+        yield 'zero code' => [['code' => 0, 'error_message' => 'Service is currently unavailable']];
+        yield 'missing code' => [['error_message' => 'Service is currently unavailable']];
+        yield 'non-zero code' => [['code' => 1, 'error_message' => 'Service is currently unavailable']];
+        yield 'non-zero code with message' => [['code' => 1, 'message' => 'Failed', 'error_message' => 'Service is currently unavailable']];
+    }
+
+    /**
+     * @throws EsewaException
+     */
+    #[DataProvider('flatStatusResponseProvider')]
+    public function testValidateApiResponseWithFlatStatusResponse(string $status): void
+    {
+        $responseData = [
+            'product_code' => 'EPAYTEST',
+            'transaction_uuid' => '123',
+            'total_amount' => 100.0,
+            'status' => $status,
+            'ref_id' => null,
+        ];
+
+        $this->validationTestClass->testValidateApiResponse($responseData);
+
+        $this->assertTrue(true); // No exception means success
+    }
+
+    public static function flatStatusResponseProvider(): Iterator
+    {
+        yield 'PENDING' => ['PENDING'];
+        yield 'COMPLETE' => ['COMPLETE'];
+        yield 'FULL_REFUND' => ['FULL_REFUND'];
+        yield 'PARTIAL_REFUND' => ['PARTIAL_REFUND'];
+        yield 'AMBIGUOUS' => ['AMBIGUOUS'];
+        yield 'NOT_FOUND' => ['NOT_FOUND'];
+        yield 'CANCELED' => ['CANCELED'];
     }
 
 }
