@@ -1,98 +1,52 @@
-# **eSewa PHP SDK: Payment Gateway Integration for PHP**
+# eSewa PHP SDK
 
-[![PHP Version](https://img.shields.io/packagist/php-v/remotemerge/esewa-php-sdk?logo=php&style=flat)](https://packagist.org/packages/remotemerge/esewa-php-sdk)
-[![Tests](https://img.shields.io/github/actions/workflow/status/remotemerge/esewa-php-sdk/test.yml?style=flat&logo=counterstrike&label=test)](https://github.com/remotemerge/esewa-php-sdk/actions)
-[![Build](https://img.shields.io/github/actions/workflow/status/remotemerge/esewa-php-sdk/install.yml?style=flat&logo=github)](https://github.com/remotemerge/esewa-php-sdk/actions)
+[![PHP Version](https://img.shields.io/packagist/php-v/remotemerge/esewa-php-sdk?style=flat&logo=php&label=php)](https://packagist.org/packages/remotemerge/esewa-php-sdk)
+[![Packagist](https://img.shields.io/packagist/v/remotemerge/esewa-php-sdk?style=flat&logo=packagist&label=packagist)](https://packagist.org/packages/remotemerge/esewa-php-sdk)
 [![Sonar Quality](https://img.shields.io/sonar/quality_gate/esewa-php-sdk/main?server=https%3A%2F%2Fsonarcloud.io&style=flat&logo=sonarqubecloud&logoColor=126ED3&label=quality)](https://sonarcloud.io/summary/overall?id=esewa-php-sdk&branch=main)
-[![Sonar Coverage](https://img.shields.io/sonar/coverage/esewa-php-sdk/main?server=https%3A%2F%2Fsonarcloud.io&style=flat&logo=sonarqubeserver&logoColor=126ED3)](https://sonarcloud.io/summary/overall?id=esewa-php-sdk&branch=main)
-[![Downloads](https://img.shields.io/packagist/dt/remotemerge/esewa-php-sdk.svg?style=flat&label=downloads)](https://packagist.org/packages/remotemerge/esewa-php-sdk)
-[![License](https://img.shields.io/github/license/remotemerge/esewa-php-sdk)](https://github.com/remotemerge/esewa-php-sdk?tab=MIT-1-ov-file)
+[![Sonar Coverage](https://img.shields.io/sonar/coverage/esewa-php-sdk/main?server=https%3A%2F%2Fsonarcloud.io&style=flat&logo=sonarqubecloud&logoColor=126ED3&label=coverage)](https://sonarcloud.io/summary/overall?id=esewa-php-sdk&branch=main)
+[![Downloads](https://img.shields.io/packagist/dt/remotemerge/esewa-php-sdk?style=flat&logo=packagist&label=downloads)](https://packagist.org/packages/remotemerge/esewa-php-sdk)
+[![License](https://img.shields.io/github/license/remotemerge/esewa-php-sdk?style=flat&label=license&logo=opensourceinitiative&logoColor=fff)](LICENSE)
 
-A production-ready PHP SDK for integrating [eSewa] payment gateway into any PHP application. The SDK implements the eSewa ePay v2 API with HMAC-SHA256 signature verification, full sandbox support, and a clean developer API. It works with any PHP framework or without one and handles the entire payment lifecycle from initiation through cryptographic verification.
+Accept [eSewa] payments in PHP. This library implements the eSewa ePay v2 API. It signs the checkout request, verifies the signed callback eSewa sends after a payment, and confirms the transaction with the eSewa status API.
 
-> For official eSewa API reference, see the [eSewa Developer Portal].
+```php
+use RemoteMerge\Esewa\EsewaFactory;
 
-## **Table of Contents**
+$epay = EsewaFactory::createEpay([
+    'environment'  => 'test',
+    'product_code' => 'EPAYTEST',
+    'secret_key'   => '8gBm/:&EnhH.1/q',
+    'success_url'  => 'https://example.com/success.php',
+    'failure_url'  => 'https://example.com/failed.php',
+]);
 
-| #  | Title                                             | Description                                                             |
-|----|---------------------------------------------------|-------------------------------------------------------------------------|
-| 1  | [Why eSewa PHP SDK?](#why-esewa-php-sdk)          | What makes this SDK a good choice for eSewa payment integration.        |
-| 2  | [Key Features](#key-features)                     | Signing, verification, status checks, validation, and extensibility.    |
-| 3  | [Compatibility](#compatibility)                   | PHP version, required extensions, and supported frameworks.             |
-| 4  | [Get Started in Minutes](#get-started-in-minutes) | Install via Composer and verify the setup with a quick test.            |
-| 5  | [Configuration](#configuration)                   | Sandbox and production environment setup with all available options.    |
-| 6  | [Basic Usage](#basic-usage)                       | Initiate payments, verify responses, and check transaction status.      |
-| 7  | [Advanced Usage](#advanced-usage)                 | Manual signature verification, custom HTTP clients, and helper methods. |
-| 8  | [Error Handling](#error-handling)                 | Exception categories, messages, and recommended handling patterns.      |
-| 9  | [Security](#security)                             | How HMAC-SHA256 signing works and best practices for production.        |
-| 10 | [Try with Docker](#try-with-docker)               | Run the included demo store locally in a Docker container.              |
-| 11 | [Getting Help](#getting-help)                     | Where to report bugs, request features, and find support.               |
-| 12 | [Contributing](#contributing)                     | Coding standards, testing, and pull request guidelines.                 |
+$form = $epay->createPayment(['amount' => 100, 'transaction_uuid' => 'order-123']); // signed form fields
+$payment = $epay->verifyPayment($_GET['data'] ?? ''); // on the success_url page
+$status = $epay->checkStatus('order-123', 100.0); // ['status' => 'COMPLETE', ...] once paid
+```
 
-## **Why eSewa PHP SDK?**
+- Signs checkout requests with HMAC-SHA256 and calculates `total_amount` from its parts.
+- Verifies callbacks with timing-safe `hash_equals()`, requires the payment result fields to be signed, and checks the product code.
+- Confirms transactions server to server with the eSewa status API.
+- Validates configuration and payment input, and throws `EsewaException` with a specific message for each failure.
+- Supports the eSewa test and production environments, and accepts a custom HTTP client.
+- Needs no framework and has no runtime dependencies beyond `ext-curl` and `ext-json`.
 
-eSewa PHP SDK is a focused, well-tested library that handles the full eSewa ePay v2 payment flow in PHP. It takes care of HMAC-SHA256 signature generation, response verification with timing-safe comparison, and transaction status checks so that developers can focus on their application logic instead of cryptographic plumbing. The SDK runs on PHP 8.1+, installs through Composer with PSR-4 autoloading, and works equally well in Laravel, Symfony, CodeIgniter, or plain PHP without any framework dependency.
+## Installation
 
----
-
-## **Key Features**
-
-✅ **ePay v2 Payment Initiation**
-Creates signed payment forms with auto-calculated totals, ready to submit to the eSewa checkout page.
-
-✅ **HMAC-SHA256 Signature Generation**
-Automatically signs all outgoing payment requests using your secret key, following the eSewa ePay v2 specification.
-
-✅ **Cryptographic Response Verification**
-Decodes base64-encoded eSewa responses, requires the payment result fields to be signed, and verifies the signature using timing-safe `hash_equals()`.
-
-✅ **Transaction Status API**
-Provides a server-to-server method for querying payment status directly from the eSewa API, independent of the redirect flow.
-
-✅ **Sandbox Environment**
-Full sandbox support with eSewa-provided test credentials for development and testing without real transactions.
-
-✅ **Input Validation**
-Validates all payment parameters, configuration options, and API responses with clear, actionable error messages.
-
-✅ **Custom HTTP Client**
-Accepts an injectable HTTP client via `HttpClientInterface` for proxy configuration, custom timeouts, or request logging.
-
----
-
-## **Compatibility**
-
-| Requirement | Version | Notes                                       |
-|-------------|---------|---------------------------------------------|
-| PHP         | >= 8.1  | Requires `ext-curl` and `ext-json`          |
-| Composer    | >= 2.0  | For package installation and autoloading    |
-| Frameworks  | Any     | Laravel, Symfony, CodeIgniter, or plain PHP |
-
----
-
-## **Get Started in Minutes**
-
-Adding eSewa PHP SDK to a project is quick. The library requires **PHP 8.1** or higher.
-
-### **Installation**
-
-Install the library via Composer:
-
-```bash
+```sh
 composer require remotemerge/esewa-php-sdk
 ```
 
-Composer handles autoloading automatically. No manual file includes or bootstrapping required.
+The package requires PHP 8.1 or later with the `curl` and `json` extensions.
 
----
+## Usage
 
-## **Configuration**
+A payment has four steps: create a signed form, send the customer to eSewa, verify the callback, and confirm the transaction with eSewa before fulfilling the order.
 
-All SDK features are accessed through `EsewaFactory::createEpay()`. This factory method validates the provided configuration and returns a fully wired `EpayInterface` instance ready for use.
+### Configuration
 
-### **Sandbox (Test) Environment**
-
-eSewa provides fixed sandbox credentials for development and testing. No real money moves in `test` mode, so these credentials can be used freely during development.
+Create an instance with `EsewaFactory::createEpay()`. It validates the options and returns an `EpayInterface`. eSewa publishes fixed credentials for the `test` environment, where no real money moves:
 
 ```php
 use RemoteMerge\Esewa\EsewaFactory;
@@ -106,82 +60,46 @@ $epay = EsewaFactory::createEpay([
 ]);
 ```
 
-> **Sandbox credentials:** eSewa ID `9806800001` – `9806800005`, password `Nepal@123`, MPIN `1122`, OTP `123456`.
-> Full test credentials at [eSewa Developer Portal].
+To pay at the eSewa test checkout, use eSewa ID `9806800001` to `9806800005`, password `Nepal@123`, MPIN `1122`, and OTP `123456`. See the [eSewa test credentials] for the full list.
 
-### **Production Environment**
+| Option         | Required | Default | Description                                        |
+| -------------- | -------- | ------- | -------------------------------------------------- |
+| `environment`  | No       | `test`  | `test` or `production`                             |
+| `product_code` | Yes      | -       | Merchant product code assigned by eSewa            |
+| `secret_key`   | Yes      | -       | Secret key used to generate HMAC-SHA256 signatures |
+| `success_url`  | Yes      | -       | Redirect URL after a successful payment            |
+| `failure_url`  | Yes      | -       | Redirect URL after a failed or cancelled payment   |
 
-For production, retrieve the live `product_code` and `secret_key` from the [eSewa Merchant Dashboard] and swap them in. Everything else stays the same.
+### Creating a payment
 
-```php
-use RemoteMerge\Esewa\EsewaFactory;
-
-$epay = EsewaFactory::createEpay([
-    'environment'  => 'production',
-    'product_code' => 'YOUR_PRODUCT_CODE',
-    'secret_key'   => 'YOUR_SECRET_KEY',
-    'success_url'  => 'https://example.com/success.php',
-    'failure_url'  => 'https://example.com/failed.php',
-]);
-```
-
-### **Configuration Reference**
-
-| Option         | Required | Default | Type     | Description                                        |
-|----------------|----------|---------|----------|----------------------------------------------------|
-| `environment`  | No       | `test`  | `string` | `test` for sandbox, `production` for live          |
-| `product_code` | Yes      | -       | `string` | Merchant product code assigned by eSewa            |
-| `secret_key`   | Yes      | -       | `string` | Secret key used to generate HMAC-SHA256 signatures |
-| `success_url`  | Yes      | -       | `string` | Redirect URL on successful payment                 |
-| `failure_url`  | Yes      | -       | `string` | Redirect URL on failed or cancelled payment        |
-
-## **Basic Usage**
-
-The eSewa ePay v2 payment flow has four steps: **initiate → redirect → verify → confirm**. The SDK handles cryptographic signing, callback verification and the status request, so the integration code stays simple.
-
-### **Initiate a Payment**
-
-Call `createPayment()` with order details. The SDK computes the `total_amount` and generates the HMAC-SHA256 signature automatically. The `transaction_uuid` should be a unique identifier per order. UUID is recommended.
+Call `createPayment()` with the order details. It calculates `total_amount` as `amount + tax_amount + product_service_charge + product_delivery_charge` and signs the request. Use a unique `transaction_uuid` for every order.
 
 ```php
-use RemoteMerge\Esewa\EsewaFactory;
 use RemoteMerge\Esewa\Exceptions\EsewaException;
-
-$epay = EsewaFactory::createEpay([
-    'environment'  => 'test',
-    'product_code' => 'EPAYTEST',
-    'secret_key'   => '8gBm/:&EnhH.1/q',
-    'success_url'  => 'https://example.com/success.php',
-    'failure_url'  => 'https://example.com/failed.php',
-]);
 
 try {
     $paymentData = $epay->createPayment([
-        'amount'                   => 500.00,
-        'tax_amount'               => 65.00,
-        'product_service_charge'   => 0,
-        'product_delivery_charge'  => 100,
-        'transaction_uuid'         => bin2hex(random_bytes(16)),
+        'amount'                  => 500.00,
+        'tax_amount'              => 65.00,
+        'product_service_charge'  => 0,
+        'product_delivery_charge' => 100,
+        'transaction_uuid'        => bin2hex(random_bytes(16)),
     ]);
 } catch (EsewaException $e) {
     echo $e->getMessage();
 }
 ```
 
-**Payment Parameters:**
+| Field                     | Required | Description                                     |
+| ------------------------- | -------- | ----------------------------------------------- |
+| `amount`                  | Yes      | Base price, greater than 0                      |
+| `transaction_uuid`        | Yes      | Unique order ID of letters, digits, and hyphens |
+| `tax_amount`              | No       | Tax on the order (default `0`)                  |
+| `product_service_charge`  | No       | Service charge (default `0`)                    |
+| `product_delivery_charge` | No       | Delivery charge (default `0`)                   |
+| `properties`              | No       | Up to three custom fields, described below      |
 
-| Field                     | Required | Type     | Description                                         |
-|---------------------------|----------|----------|-----------------------------------------------------|
-| `amount`                  | Yes      | `float`  | Base product or service price                       |
-| `transaction_uuid`        | Yes      | `string` | Unique order identifier (alphanumeric + hyphens)    |
-| `tax_amount`              | No       | `float`  | VAT or tax on the order (default: `0`)              |
-| `product_service_charge`  | No       | `float`  | Service fee, if applicable (default: `0`)           |
-| `product_delivery_charge` | No       | `float`  | Delivery/shipping fee, if applicable (default: `0`) |
-| `properties`              | No       | `array`  | Up to three custom fields (see below)               |
-
-The `total_amount` is calculated automatically as `amount + tax_amount + product_service_charge + product_delivery_charge`.
-
-### **Custom Properties**
+### Custom properties
 
 eSewa accepts up to three optional custom fields per payment. Pass them as a `properties` map, and `createPayment()` returns each one as a `properties[name]` form field:
 
@@ -202,14 +120,14 @@ $paymentData = $epay->createPayment([
 // 'properties[invoice_number]' => 'INV-123'
 ```
 
-- At most three entries. Names must be non-empty strings without `[` or `]`.
-- Values may be `string`, `int` or `float` and are cast to string. `bool`, `null`, arrays and objects throw `EsewaException`.
-- Properties are not signed, so the signature and `signed_field_names` are the same with or without them.
+- Names must be non-empty strings without `[` or `]`.
+- Values may be `string`, `int`, or `float`, and `createPayment()` casts them to string. `bool`, `null`, arrays, and objects throw `EsewaException`.
+- `createPayment()` does not sign properties, so the signature and `signed_field_names` are the same with or without them.
 - eSewa does not document whether properties are returned in the callback, so do not rely on reading them back.
 
-### **Render the Payment Form**
+### Rendering the payment form
 
-Render the signed fields as a hidden HTML form and submit it to `getFormActionUrl()`. eSewa handles the checkout UI on their end and redirects users back to the configured URLs when the payment completes or fails.
+Render the returned fields as hidden inputs and submit the form to `getFormActionUrl()`. eSewa shows its checkout page and then redirects the customer to `success_url` or `failure_url`.
 
 ```php
 <form action="<?= $epay->getFormActionUrl() ?>" method="POST">
@@ -222,20 +140,19 @@ Render the signed fields as a hidden HTML form and submit it to `getFormActionUr
 </form>
 ```
 
-### **Verify and Confirm a Payment**
+### Verifying and confirming a payment
 
-After a payment, eSewa redirects to the `success_url` with a `data` query parameter containing a base64-encoded JSON payload signed by eSewa. A valid signature proves the payload came from eSewa, but it is **not** enough to mark the order paid. eSewa requires merchants to confirm the transaction with a status request, and to stop delivery when the confirmed amount differs from the requested amount.
+After a payment, eSewa redirects to `success_url` with a `data` query parameter. It holds a base64-encoded JSON payload that eSewa signs. A valid signature proves the payload came from eSewa, but it is not enough to mark the order paid. eSewa requires merchants to confirm the transaction with a status request, and to stop delivery when the confirmed amount differs from the requested amount.
 
 Mark an order paid only after all of these steps succeed:
 
 1. **Verify** the callback with `verifyPayment()`.
-2. **Match** `transaction_uuid` and `total_amount` against your own order record. eSewa may format the amount (for example `"1,000.0"`), so strip the formatting only after verification and compare exact values, such as integer paisa, rather than floats.
+2. **Match** `transaction_uuid` and `total_amount` against your own order record. eSewa may format the amount, for example as `"1,000.0"`, so strip the formatting only after verification and compare exact values, such as integer paisa, rather than floats.
 3. **Confirm** with `checkStatus()`, using the UUID and total from your order record.
-4. **Accept** only the `COMPLETE` status. Treat `PENDING`, `AMBIGUOUS`, any other status, a mismatch or an exception as unconfirmed, and keep the UUID so you can check it again later.
-5. **Fulfil once.** Make the paid transition atomic and idempotent, so refreshes, repeated callbacks or repeated status checks cannot fulfil the same order twice. For example, run `UPDATE orders SET status = 'paid' WHERE uuid = ? AND status = 'pending'` and fulfil only when it changes one row.
+4. **Accept** only the `COMPLETE` status. Treat `PENDING`, `AMBIGUOUS`, any other status, a mismatch, or an exception as unconfirmed, and keep the UUID so you can check it again later.
+5. **Fulfil** the order once. Make the paid transition atomic and idempotent, so refreshes, repeated callbacks, or repeated status checks cannot fulfil the same order twice. For example, run `UPDATE orders SET status = 'paid' WHERE uuid = ? AND status = 'pending'` and fulfil only when it changes one row.
 
 ```php
-use RemoteMerge\Esewa\EsewaFactory;
 use RemoteMerge\Esewa\Exceptions\EsewaException;
 
 function toPaisa(string|int|float $amount): int
@@ -243,139 +160,62 @@ function toPaisa(string|int|float $amount): int
     return (int) round((float) str_replace(',', '', (string) $amount) * 100);
 }
 
-$epay = EsewaFactory::createEpay([/* config */]);
-
 $encodedResponse = $_GET['data'] ?? null;
 if ($encodedResponse === null) {
     exit('No eSewa response');
 }
 
 try {
-    // 1. Verify: the payload is signed by eSewa for this merchant
+    // 1. Verify that eSewa signed the payload for this merchant
     $payment = $epay->verifyPayment($encodedResponse);
 
-    // 2. Match: compare with your own order record
+    // 2. Match the payload against your own order record
     $order = findOrderByUuid($payment['transaction_uuid']); // Your own lookup
     if ($order === null || toPaisa($payment['total_amount']) !== toPaisa($order['total_amount'])) {
         exit('Payment does not match the order'); // Do NOT fulfil
     }
 
-    // 3. Confirm: ask eSewa, using your own UUID and total
+    // 3. Confirm with eSewa, using your own UUID and total
     $status = $epay->checkStatus($order['uuid'], $order['total_amount']);
 
     // 4. Accept only COMPLETE, and 5. fulfil once
     if (($status['status'] ?? null) === 'COMPLETE') {
         markOrderPaidOnce($order['uuid']); // Your own atomic, idempotent update
     } else {
-        // Not confirmed yet: keep the order unpaid and check the UUID again later
+        // Not confirmed yet. Keep the order unpaid and check the UUID again later
     }
 } catch (EsewaException $e) {
-    // Invalid callback or failed status check: do NOT fulfil the order
+    // Invalid callback or failed status check. Do NOT fulfil the order
     error_log($e->getMessage());
 }
 ```
 
-`verifyPayment()` decodes the base64 response and checks that:
+### Checking transaction status
 
-- `signed_field_names` lists `transaction_code`, `status`, `total_amount`, `transaction_uuid` and `product_code`. The list may also include `signed_field_names` itself.
-- The HMAC-SHA256 signature, rebuilt from the received values in the listed order, matches. The comparison uses timing-safe `hash_equals()`.
-- `product_code` matches the configured product code.
-
-It throws `EsewaException` if any of these checks fails. It does **not** check the `status` value, look up your order, or make a network request. Your application handles those steps as shown above.
-
-### **Check Transaction Status**
-
-`checkStatus()` asks eSewa for the transaction status, server to server. Use it to confirm every payment before fulfilment, and for background jobs or reconciliation that re-check payments left `PENDING` or `AMBIGUOUS`.
-
-Status requests go to `https://rc.esewa.com.np` (test) and `https://esewa.com.np` (production). These hosts differ from the checkout form hosts returned by `getFormActionUrl()`.
+`checkStatus()` asks eSewa for the status of a transaction, server to server. Use it to confirm every payment before fulfilment, and in background jobs that re-check payments left `PENDING` or `AMBIGUOUS`.
 
 ```php
-use RemoteMerge\Esewa\EsewaFactory;
-use RemoteMerge\Esewa\Exceptions\EsewaException;
+$status = $epay->checkStatus(
+    transactionUuid: 'your-order-uuid',
+    totalAmount: 665.00,
+);
 
-$epay = EsewaFactory::createEpay([/* config */]);
-
-try {
-    $status = $epay->checkStatus(
-        transactionUuid: 'your-order-uuid',
-        totalAmount: 665.00,
-    );
-
-    echo $status['status']; // "COMPLETE", "PENDING", "AMBIGUOUS", etc. (see the table below)
-} catch (EsewaException $e) {
-    echo $e->getMessage();
-}
+echo $status['status']; // 'COMPLETE', 'PENDING', 'AMBIGUOUS', ...
 ```
 
-`checkStatus()` throws `EsewaException` when eSewa reports an error instead of a status. This includes a non-zero `code`, and any response with an `error_message`, such as `{"code": 0, "error_message": "Service is currently unavailable"}`.
-
-**Transaction Status Values:**
-
-| Status           | Description                                   |
-|------------------|-----------------------------------------------|
+| Status           | Meaning                                       |
+| ---------------- | --------------------------------------------- |
 | `COMPLETE`       | Payment completed successfully                |
 | `PENDING`        | Payment initiated but not yet completed       |
-| `FULL_REFUND`    | Complete refund has been issued               |
-| `PARTIAL_REFUND` | Partial refund has been issued                |
+| `FULL_REFUND`    | eSewa issued a full refund                    |
+| `PARTIAL_REFUND` | eSewa issued a partial refund                 |
 | `AMBIGUOUS`      | Payment is in a halt state                    |
 | `NOT_FOUND`      | Transaction session expired or does not exist |
-| `CANCELED`       | Payment was reversed by eSewa                 |
+| `CANCELED`       | eSewa reversed the payment                    |
 
----
+### Handling errors
 
-## **Advanced Usage**
-
-### **Manual Signature Verification**
-
-`verifySignature()` checks a signature over the fields listed in a payload's `signed_field_names`, for example to check outgoing form data or a payload you stored. It returns a boolean and does not throw exceptions. Unlike `verifyPayment()`, it does not require the payment result fields to be signed or check the product code, so use `verifyPayment()` for eSewa callbacks.
-
-```php
-$isValid = $epay->verifySignature($responseData, $responseData['signature']);
-
-if ($isValid) {
-    // Payload is authentic
-}
-```
-
-### **Custom HTTP Client**
-
-The SDK accepts a custom HTTP client for cases where you need proxy configuration, custom timeouts, or request logging. Implement the `HttpClientInterface` and pass it as the second argument to the factory.
-
-```php
-use RemoteMerge\Esewa\Contracts\HttpClientInterface;
-use RemoteMerge\Esewa\EsewaFactory;
-
-class CustomHttpClient implements HttpClientInterface
-{
-    public function get(string $url, array $headers = []): string
-    {
-        // Your custom implementation
-    }
-
-    public function post(string $url, array $data, array $headers = []): string
-    {
-        // Your custom implementation
-    }
-}
-
-$epay = EsewaFactory::createEpay([/* config */], new CustomHttpClient());
-```
-
-### **Accessing Environment Details**
-
-The SDK exposes a few helper methods for inspecting the current configuration:
-
-```php
-$epay->getEnvironment();    // "test" or "production"
-$epay->getProductCode();    // Your configured product code
-$epay->getFormActionUrl();  // eSewa form submission URL for current environment
-```
-
----
-
-## **Error Handling**
-
-All SDK methods throw `EsewaException` on failure. Wrap every call that interacts with eSewa in a `try/catch` block. A successful `verifyPayment()` call alone does not confirm a payment. Fulfil an order only after the full [verify and confirm](#verify-and-confirm-a-payment) flow returns `COMPLETE`.
+Every method except `verifySignature()` and the getters throws `EsewaException` on failure. Wrap calls that touch eSewa data in a `try` block, and never mark an order paid from the `catch` branch:
 
 ```php
 use RemoteMerge\Esewa\Exceptions\EsewaException;
@@ -385,131 +225,187 @@ try {
     $status = $epay->checkStatus($order['uuid'], $order['total_amount']);
 } catch (EsewaException $e) {
     error_log($e->getMessage());
-    // Do NOT mark the order paid, show a user-friendly error instead
+    // Do NOT mark the order paid; show a friendly error instead
 }
 ```
 
-### **Common Exceptions**
+For HTTP errors, `$e->getCode()` holds the HTTP status code. See [Errors](#errors) for every message.
 
-**Configuration Errors:**
+## API
 
-| Message                                              | Cause                            |
-|------------------------------------------------------|----------------------------------|
-| `Product code is required.`                          | Missing `product_code` in config |
-| `Product code cannot be empty.`                      | Empty `product_code` string      |
-| `Secret key is required.`                            | Missing `secret_key` in config   |
-| `Secret key cannot be empty.`                        | Empty `secret_key` string        |
-| `Success URL is required.`                           | Missing `success_url` in config  |
-| `Failure URL is required.`                           | Missing `failure_url` in config  |
-| `Environment must be either "test" or "production".` | Invalid environment value        |
+### `EsewaFactory::createEpay(array $options, ?HttpClientInterface $httpClient = null): EpayInterface`
 
-**Payment Errors:**
+Validates `$options` (see [Configuration](#configuration)) and returns a configured instance. Pass `$httpClient` to replace the built-in cURL client.
 
-| Message                                                               | Cause                              |
-|-----------------------------------------------------------------------|------------------------------------|
-| `Amount must be greater than 0.`                                      | Payment amount is zero or negative |
-| `Transaction UUID must be alphanumeric and may contain hyphens only.` | UUID contains invalid characters   |
-| `Properties must be an array.`                                        | `properties` is not an array       |
-| `Properties cannot contain more than 3 entries.`                      | More than three custom properties  |
-| `Property names must be non-empty strings without square brackets.`   | Invalid property name              |
-| `Property values must be strings or numbers: {name}`                  | Invalid property value             |
+Throws if a required option is missing or empty, or `environment` is not `test` or `production`.
 
-**Verification Errors:**
+### `createPayment(array $paymentData): array`
 
-| Message                                                                         | Cause                                               |
-|---------------------------------------------------------------------------------|-----------------------------------------------------|
-| `Invalid signature in response.`                                                | Signature mismatch, possible tampering              |
-| `Failed to decode response data.`                                               | `data` parameter is not valid base64                |
-| `Invalid response: missing signature or signed fields.`                         | Malformed eSewa response payload                    |
-| `Invalid response: unsigned payment fields: {field_names}`                      | Payment result fields are not covered by signature  |
-| `Invalid response: signed field names must be a comma-separated string.`        | Malformed `signed_field_names`                      |
-| `Invalid response: signed field names contain an empty entry.`                  | Malformed `signed_field_names`                      |
-| `Invalid response: product code does not match the configured product code.`    | Payload belongs to a different merchant             |
-| `Missing signed field: {field_name}`                                            | A listed signed field is absent                     |
-| `Invalid signed field value: {field_name}`                                      | A signed field holds an array or object             |
+Returns the form fields to submit to eSewa: `amount`, `tax_amount`, `total_amount`, `transaction_uuid`, `product_code`, `product_service_charge`, `product_delivery_charge`, `success_url`, `failure_url`, `signed_field_names`, `signature`, and any `properties[name]` fields.
 
-**API and HTTP Errors:**
+Throws if `amount` is missing or not greater than 0, `transaction_uuid` is missing or contains characters other than letters, digits, and hyphens, or `properties` is invalid.
 
-| Message                     | Cause                                                               |
-|-----------------------------|---------------------------------------------------------------------|
-| `API Error: {message}`      | Status response has an `error_message` or a non-zero `code`         |
-| `HTTP Error: {status_code}` | eSewa API returned HTTP 4xx/5xx                                     |
-| `cURL Error: {error}`       | Network or connection failure                                       |
+### `verifyPayment(string $encodedResponse): array`
 
----
+Decodes the `data` parameter from the eSewa callback and returns the payload. It checks that:
 
-## **Security**
+- `signed_field_names` lists `transaction_code`, `status`, `total_amount`, `transaction_uuid`, and `product_code`. The list may also include `signed_field_names` itself.
+- The HMAC-SHA256 signature, rebuilt from the received values in the listed order, matches. The comparison uses timing-safe `hash_equals()`.
+- `product_code` matches the configured product code.
 
-### **HMAC-SHA256 Signature Flow**
+Throws if any check fails. It does not check the `status` value, look up your order, or make a network request. Your application handles those steps as shown in [Verifying and confirming a payment](#verifying-and-confirming-a-payment).
 
-The SDK uses RFC 2104 HMAC with SHA256 for all cryptographic operations:
+### `checkStatus(string $transactionUuid, float $totalAmount): array`
 
-1. **Outgoing requests**: `createPayment()` signs `total_amount`, `transaction_uuid`, and `product_code` as a comma-separated `field=value` string and encodes the resulting hash in base64.
-2. **Incoming responses**: `verifyPayment()` requires the payment result fields (`transaction_code`, `status`, `total_amount`, `transaction_uuid`, `product_code`) to be listed in `signed_field_names`, reconstructs the signed string from the received values, computes the expected signature, and compares it using timing-safe `hash_equals()` to prevent timing attacks. Requiring these fields stops the checkout request signature, which the customer can read from the form, from being replayed as a payment result.
+Requests the transaction status from eSewa and returns the decoded JSON response.
 
-### **Best Practices**
+Throws on a network failure, an HTTP status of 400 or higher, or a response that is not a JSON object. It also throws when the response has an `error_message`, such as `{"code": 0, "error_message": "Service is currently unavailable"}`, or a non-zero `code`.
 
-- **Never skip verification.** Always call `verifyPayment()` on your `success_url` handler.
-- **Confirm before fulfilling.** Fulfil an order only after `checkStatus()` returns `COMPLETE` for your own UUID and total.
-- **Protect your secret key.** Store it in environment variables or a secrets manager, never commit it to source code.
-- **Use HTTPS in production.** Ensure `success_url` and `failure_url` use HTTPS to prevent response interception.
-- **Validate amounts server-side.** Cross-check the `total_amount` from eSewa against your own order records to prevent amount manipulation.
-- **Fulfil once.** Make the paid transition atomic and idempotent, because callbacks, refreshes and status checks can repeat.
+### `verifySignature(array $data, string $signature): bool`
 
----
+Checks a signature over the fields listed in `$data['signed_field_names']`, for example to check outgoing form data or a payload you stored. It returns `false` instead of throwing. Unlike `verifyPayment()`, it does not require the payment result fields to be signed or check the product code, so use `verifyPayment()` for eSewa callbacks.
 
-## **Try with Docker**
+### `getFormActionUrl()`, `getEnvironment()`, `getProductCode()`
 
-The repository includes a demo store that can be run locally using Docker. This is the fastest way to see the SDK in action with eSewa sandbox credentials.
+```php
+$epay->getFormActionUrl(); // eSewa checkout form URL for the current environment
+$epay->getEnvironment(); // 'test' or 'production'
+$epay->getProductCode(); // the configured product code
+```
 
-1. Clone the repository:
+### `HttpClientInterface`
 
-   ```bash
-   git clone git@github.com:remotemerge/esewa-php-sdk.git
-   cd esewa-php-sdk
-   ```
+Implement this interface to add a proxy, custom timeouts, or request logging, and pass the client to `createEpay()`. Throw `EsewaException` when a request fails.
 
-2. Start the Docker container:
+```php
+use RemoteMerge\Esewa\Contracts\HttpClientInterface;
+use RemoteMerge\Esewa\EsewaFactory;
 
-   ```bash
-   docker compose up -d
-   ```
+final class CustomHttpClient implements HttpClientInterface
+{
+    public function get(string $url, array $headers = []): string
+    {
+        // Your implementation
+    }
 
-3. Access the demo store at `http://localhost:8080`.
+    public function post(string $url, array $data, array $headers = []): string
+    {
+        // Your implementation
+    }
+}
 
-The demo store displays sample products and walks through the complete eSewa checkout flow using sandbox credentials. Its success page verifies the callback, matches it against the order in the session, and confirms it with `checkStatus()` before showing the payment as successful. The demo has no order database, so its protection against fulfilling an order twice is illustrative only.
+$epay = EsewaFactory::createEpay([/* config */], new CustomHttpClient());
+```
 
----
+The built-in client verifies TLS certificates and times out after 30 seconds.
 
-## **Getting Help**
+### Errors
 
-Bugs and feature requests are tracked using GitHub issues.
+Configuration errors:
 
-- **Bug Reports**
-  Issues can be reported by [opening an issue](https://github.com/remotemerge/esewa-php-sdk/issues/new) on GitHub.
+| Message                                              | Cause                  |
+| ---------------------------------------------------- | ---------------------- |
+| `Product code is required.`                          | Missing `product_code` |
+| `Product code cannot be empty.`                      | Empty `product_code`   |
+| `Secret key is required.`                            | Missing `secret_key`   |
+| `Secret key cannot be empty.`                        | Empty `secret_key`     |
+| `Success URL is required.`                           | Missing `success_url`  |
+| `Failure URL is required.`                           | Missing `failure_url`  |
+| `Environment must be either "test" or "production".` | Invalid `environment`  |
 
-- **eSewa Account or Merchant Issues**
-  For questions about eSewa accounts, merchant setup, or the eSewa API itself, contact [eSewa] directly.
+Payment errors:
 
-- **API Reference**
-  The official eSewa API documentation is available at the [eSewa Developer Portal].
+| Message                                                               | Cause                             |
+| --------------------------------------------------------------------- | --------------------------------- |
+| `Amount is required.`                                                 | Missing `amount`                  |
+| `Amount must be greater than 0.`                                      | Amount is zero or negative        |
+| `Transaction UUID is required.`                                       | Missing `transaction_uuid`        |
+| `Transaction UUID must be alphanumeric and may contain hyphens only.` | UUID contains invalid characters  |
+| `Properties must be an array.`                                        | `properties` is not an array      |
+| `Properties cannot contain more than 3 entries.`                      | More than three custom properties |
+| `Property names must be non-empty strings without square brackets.`   | Invalid property name             |
+| `Property values must be strings or numbers: {name}`                  | Invalid property value            |
 
----
+Verification errors:
 
-## **Contributing**
+| Message                                                                      | Cause                                   |
+| ---------------------------------------------------------------------------- | --------------------------------------- |
+| `Failed to decode response data.`                                            | `data` is not valid base64              |
+| `Invalid JSON in response: {error}`                                          | Decoded `data` is not valid JSON        |
+| `Invalid JSON in response: expected an object.`                              | Decoded `data` is not a JSON object     |
+| `Invalid response: missing signature or signed fields.`                      | Malformed payload                       |
+| `Invalid response: signed field names must be a comma-separated string.`     | Malformed `signed_field_names`          |
+| `Invalid response: signed field names contain an empty entry.`               | Malformed `signed_field_names`          |
+| `Invalid response: unsigned payment fields: {field_names}`                   | Payment result fields are not signed    |
+| `Missing signed field: {field_name}`                                         | A listed signed field is absent         |
+| `Invalid signed field value: {field_name}`                                   | A signed field holds an array or object |
+| `Invalid signature in response.`                                             | Signature mismatch, possible tampering  |
+| `Invalid response: product code does not match the configured product code.` | Payload belongs to a different merchant |
 
-Contributions from the open source community are welcome and appreciated. To maintain quality across the codebase, please follow these guidelines:
+Status and HTTP errors:
 
-- **Coding Standards**: Code must adhere to [PER Coding Style 3.0] standards. Run `vendor/bin/php-cs-fixer fix` before submitting.
-- **Testing**: All submitted code must pass the full test suite. Run `vendor/bin/phpunit` to verify.
-- **Pull Requests**: Keep pull requests focused on a single change and submit against the `main` branch.
+| Message                                      | Cause                                                |
+| -------------------------------------------- | ---------------------------------------------------- |
+| `API Error: {message}`                       | Response has an `error_message` or a non-zero `code` |
+| `Invalid JSON response: {error}`             | Response is not valid JSON                           |
+| `Invalid JSON response: expected an object.` | Response is not a JSON object                        |
+| `HTTP Error: {status_code}`                  | eSewa returned HTTP 400 or higher                    |
+| `cURL Error: {error}`                        | Network or connection failure                        |
+
+## Environments
+
+| Environment  | Checkout form                  | Status API                |
+| ------------ | ------------------------------ | ------------------------- |
+| `test`       | `https://rc-epay.esewa.com.np` | `https://rc.esewa.com.np` |
+| `production` | `https://epay.esewa.com.np`    | `https://esewa.com.np`    |
+
+For production, get the live `product_code` and `secret_key` from the [eSewa Merchant Dashboard] and set `environment` to `production`. Everything else stays the same. For questions about eSewa accounts, merchant setup, or the eSewa API itself, contact [eSewa] directly.
+
+The library implements eSewa ePay v2 only. It does not store orders, track fulfilment, or retry status checks; your application handles those.
+
+## How signing works
+
+The library uses HMAC-SHA256 (RFC 2104) with your secret key and encodes each signature in base64.
+
+- **Checkout requests.** `createPayment()` signs `total_amount`, `transaction_uuid`, and `product_code` as the comma-separated string `total_amount=...,transaction_uuid=...,product_code=...`.
+- **Callbacks.** `verifyPayment()` rebuilds the same kind of string from the fields listed in `signed_field_names` and compares signatures with timing-safe `hash_equals()`. It also requires eSewa to sign the payment result fields. The customer can read the checkout request signature in the form, and this requirement stops anyone from replaying that signature as a payment result.
+
+In production:
+
+- Call `verifyPayment()` on every `success_url` request, and fulfil an order only after `checkStatus()` returns `COMPLETE` for your own UUID and total.
+- Keep the secret key in an environment variable or a secrets manager, never in source code.
+- Use HTTPS for `success_url` and `failure_url`.
+- Compare the amount eSewa reports with your own order record.
+- Make the paid transition atomic and idempotent, because callbacks, refreshes, and status checks can repeat.
+
+## Demo store
+
+The repository includes a demo store that runs the full checkout flow against the eSewa test environment. It requires Docker.
+
+```sh
+git clone git@github.com:remotemerge/esewa-php-sdk.git
+cd esewa-php-sdk
+bash start-docker.sh
+```
+
+Open `http://localhost:8080`. The success page verifies the callback, matches it against the order in the session, and confirms it with `checkStatus()` before showing the payment as successful. The demo has no order database, so its protection against fulfilling an order twice is illustrative only.
+
+## Security
+
+See [SECURITY](SECURITY.md) for supported versions and how to report vulnerabilities privately.
+
+## Contributing
+
+See [CONTRIBUTING](CONTRIBUTING.md) for setup instructions, required checks, and how to submit a pull request.
+
+## Code of conduct
+
+See [CODE OF CONDUCT](CODE_OF_CONDUCT.md) for community expectations and how to report concerns.
+
+## License
+
+eSewa PHP SDK is released under the MIT License. See [LICENSE](LICENSE).
 
 [eSewa]: https://esewa.com.np
-
-[remotemerge]: https://github.com/remotemerge
-
-[eSewa Developer Portal]: https://developer.esewa.com.np
-
+[eSewa test credentials]: https://developer.esewa.com.np/pages/Test-credentials
 [eSewa Merchant Dashboard]: https://merchant.esewa.com.np
-
-[PER Coding Style 3.0]: https://www.php-fig.org/per/coding-style/
