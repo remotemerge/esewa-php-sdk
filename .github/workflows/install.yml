@@ -61,6 +61,6 @@ jobs:
       - name: Display the installed version
         run: composer show remotemerge/esewa-php-sdk
 
-      # Installation alone proves nothing about the artifact actually working.
+      # A successful install does not show that the package works.
       - name: Run the smoke test
         run: php repo/.github/scripts/smoke-test.php
