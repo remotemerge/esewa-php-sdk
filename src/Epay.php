@@ -12,6 +12,12 @@ use RemoteMerge\Esewa\Http\HttpClient;
 final class Epay extends AbstractPayment implements EpayInterface
 {
     /**
+     * Payment result fields eSewa must sign in a callback. The customer can read the checkout request signature
+     * from the form, and requiring these fields stops a replay of that signature as a payment result.
+     */
+    private const RESPONSE_SIGNED_FIELDS = ['transaction_code', 'status', 'total_amount', 'transaction_uuid', 'product_code'];
+
+    /**
      * Maximum number of optional custom properties eSewa accepts per payment.
      */
     private const MAX_PROPERTIES = 3;
@@ -132,11 +138,22 @@ final class Epay extends AbstractPayment implements EpayInterface
             throw new EsewaException('Invalid response: missing signature or signed fields.');
         }
 
-        $expectedSignature = $this->generateSignature($this->buildSignedMessage($response));
+        $signedFields = $this->parseSignedFieldNames($response['signed_field_names']);
+
+        $unsignedFields = array_diff(self::RESPONSE_SIGNED_FIELDS, $signedFields);
+        if ($unsignedFields !== []) {
+            throw new EsewaException('Invalid response: unsigned payment fields: ' . implode(', ', $unsignedFields));
+        }
+
+        $expectedSignature = $this->generateSignature($this->buildSignedMessage($response, $signedFields));
 
         // The payload is caller-supplied, so a non-string signature must be rejected rather than reach hash_equals().
         if (!is_string($response['signature']) || !hash_equals($expectedSignature, $response['signature'])) {
             throw new EsewaException('Invalid signature in response.');
+        }
+
+        if ($response['product_code'] !== $this->productCode) {
+            throw new EsewaException('Invalid response: product code does not match the configured product code.');
         }
 
         return $response;
@@ -190,7 +207,7 @@ final class Epay extends AbstractPayment implements EpayInterface
         }
 
         try {
-            $message = $this->buildSignedMessage($data);
+            $message = $this->buildSignedMessage($data, $this->parseSignedFieldNames($data['signed_field_names']));
         } catch (EsewaException) {
             return false;
         }
@@ -233,18 +250,46 @@ final class Epay extends AbstractPayment implements EpayInterface
     }
 
     /**
+     * Splits signed_field_names into the ordered list of signed fields.
+     *
+     * @param mixed $signedFieldNames The signed_field_names value from the payload.
+     * @throws EsewaException If the value is not a comma-separated list of field names.
+     * @return list<string> The signed field names in signing order.
+     */
+    private function parseSignedFieldNames(mixed $signedFieldNames): array
+    {
+        if (!is_string($signedFieldNames)) {
+            throw new EsewaException('Invalid response: signed field names must be a comma-separated string.');
+        }
+
+        $signedFields = explode(',', $signedFieldNames);
+        if (in_array('', $signedFields, true)) {
+            throw new EsewaException('Invalid response: signed field names contain an empty entry.');
+        }
+
+        return $signedFields;
+    }
+
+    /**
      * Builds the "field=value" message eSewa signs, joined by commas in signed_field_names order.
      *
-     * @param array<string, mixed> $data The payload holding signed_field_names and each listed field.
-     * @throws EsewaException If a listed field is missing from the payload.
+     * The message uses each value exactly as received, so a formatted amount such as "1,000.0" keeps its comma.
+     *
+     * @param array<string, mixed> $data The payload holding each listed field.
+     * @param list<string> $signedFields The signed field names in signing order.
+     * @throws EsewaException If a listed field is missing from the payload or is not a scalar value.
      * @return string The message to sign.
      */
-    private function buildSignedMessage(array $data): string
+    private function buildSignedMessage(array $data, array $signedFields): string
     {
         $pairs = [];
-        foreach (explode(',', (string) $data['signed_field_names']) as $signedField) {
+        foreach ($signedFields as $signedField) {
             if (!isset($data[$signedField])) {
                 throw new EsewaException('Missing signed field: ' . $signedField);
+            }
+
+            if (!is_scalar($data[$signedField])) {
+                throw new EsewaException('Invalid signed field value: ' . $signedField);
             }
 
             $pairs[] = $signedField . '=' . $data[$signedField];

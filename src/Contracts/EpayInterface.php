@@ -21,6 +21,11 @@ interface EpayInterface extends PaymentInterface
     /**
      * Verifies the payment response from eSewa.
      *
+     * Confirms that the configured secret key signed the payload, that the signature covers transaction_code,
+     * status, total_amount, transaction_uuid and product_code, and that product_code matches the configured
+     * product code. It does not check the status value or make any network request. The caller must still match
+     * the order, check the amount and confirm the transaction with checkStatus().
+     *
      * @param string $encodedResponse The base64 encoded response.
      * @return array<string, mixed> The verified payment details.
      */

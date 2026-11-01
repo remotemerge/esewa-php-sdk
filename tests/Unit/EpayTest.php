@@ -601,12 +601,8 @@ final class EpayTest extends ParentTestCase
     {
         $this->epay->configure($this->validConfiguration);
 
-        $responseData = [
-            'transaction_code' => 'TXN12345',
-            'status' => 'COMPLETE',
-            'signed_field_names' => 'transaction_code,status',
-            'signature' => 'invalid-signature',
-        ];
+        $responseData = $this->signedCallback();
+        $responseData['signature'] = 'invalid-signature';
 
         $encodedResponse = base64_encode(json_encode($responseData));
 
@@ -623,11 +619,8 @@ final class EpayTest extends ParentTestCase
     {
         $this->epay->configure($this->validConfiguration);
 
-        $responseData = [
-            'transaction_code' => 'TXN12345',
-            'signed_field_names' => 'transaction_code,missing_field',
-            'signature' => 'some-signature',
-        ];
+        $responseData = $this->signedCallback();
+        $responseData['signed_field_names'] = 'transaction_code,status,total_amount,transaction_uuid,product_code,missing_field';
 
         $encodedResponse = base64_encode(json_encode($responseData));
 
@@ -635,6 +628,212 @@ final class EpayTest extends ParentTestCase
         $this->expectExceptionMessage('Missing signed field: missing_field');
 
         $this->epay->verifyPayment($encodedResponse);
+    }
+
+    /**
+     * @throws EsewaException
+     */
+    public function testVerifyPaymentThrowsExceptionForListedCoreFieldMissingFromPayload(): void
+    {
+        $this->epay->configure($this->validConfiguration);
+
+        $responseData = $this->signedCallback();
+        unset($responseData['status']);
+
+        $encodedResponse = base64_encode(json_encode($responseData));
+
+        $this->expectException(EsewaException::class);
+        $this->expectExceptionMessage('Missing signed field: status');
+
+        $this->epay->verifyPayment($encodedResponse);
+    }
+
+    /**
+     * @throws EsewaException
+     */
+    public function testVerifyPaymentAcceptsDocumentedCallbackShape(): void
+    {
+        $this->epay->configure($this->validConfiguration);
+
+        // Matches the documented callback, where signed_field_names lists itself and the amount is "1,000.0".
+        $responseData = $this->signedCallback();
+
+        $result = $this->epay->verifyPayment(base64_encode(json_encode($responseData)));
+
+        $this->assertSame($responseData, $result);
+    }
+
+    /**
+     * @throws EsewaException
+     */
+    #[DataProvider('documentedStatusProvider')]
+    public function testVerifyPaymentAcceptsEveryDocumentedStatus(string $status): void
+    {
+        $this->epay->configure($this->validConfiguration);
+
+        $responseData = $this->signedCallback(['status' => $status]);
+
+        $result = $this->epay->verifyPayment(base64_encode(json_encode($responseData)));
+
+        $this->assertSame($status, $result['status']);
+    }
+
+    /**
+     * @throws EsewaException
+     */
+    public function testVerifyPaymentRejectsReplayedRequestSignature(): void
+    {
+        $this->epay->configure($this->validConfiguration);
+
+        // The checkout form, including its signature, is visible to the customer in the browser.
+        $form = $this->epay->createPayment([
+            'amount' => 100,
+            'transaction_uuid' => 'test-uuid-12345',
+        ]);
+
+        $forgedResponse = [
+            'transaction_code' => 'FORGED1',
+            'status' => 'COMPLETE',
+            'total_amount' => $form['total_amount'],
+            'transaction_uuid' => $form['transaction_uuid'],
+            'product_code' => $form['product_code'],
+            'signed_field_names' => $form['signed_field_names'],
+            'signature' => $form['signature'],
+        ];
+
+        $this->expectException(EsewaException::class);
+        $this->expectExceptionMessage('Invalid response: unsigned payment fields: transaction_code, status');
+
+        $this->epay->verifyPayment(base64_encode(json_encode($forgedResponse)));
+    }
+
+    /**
+     * @throws EsewaException
+     */
+    #[DataProvider('coreResponseFieldProvider')]
+    public function testVerifyPaymentRejectsUnsignedCoreField(string $field): void
+    {
+        $this->epay->configure($this->validConfiguration);
+
+        $signedFields = array_diff(['transaction_code', 'status', 'total_amount', 'transaction_uuid', 'product_code'], [$field]);
+        $responseData = $this->signedCallback(['signed_field_names' => implode(',', $signedFields)]);
+
+        $this->expectException(EsewaException::class);
+        $this->expectExceptionMessage('Invalid response: unsigned payment fields: ' . $field);
+
+        $this->epay->verifyPayment(base64_encode(json_encode($responseData)));
+    }
+
+    public static function coreResponseFieldProvider(): Iterator
+    {
+        yield 'transaction_code' => ['transaction_code'];
+        yield 'status' => ['status'];
+        yield 'total_amount' => ['total_amount'];
+        yield 'transaction_uuid' => ['transaction_uuid'];
+        yield 'product_code' => ['product_code'];
+    }
+
+    /**
+     * @throws EsewaException
+     */
+    #[DataProvider('nonStringSignedFieldNamesProvider')]
+    public function testVerifyPaymentRejectsNonStringSignedFieldNames(mixed $signedFieldNames): void
+    {
+        $this->epay->configure($this->validConfiguration);
+
+        $responseData = $this->signedCallback();
+        $responseData['signed_field_names'] = $signedFieldNames;
+
+        $this->expectException(EsewaException::class);
+        $this->expectExceptionMessage('Invalid response: signed field names must be a comma-separated string.');
+
+        $this->epay->verifyPayment(base64_encode(json_encode($responseData)));
+    }
+
+    public static function nonStringSignedFieldNamesProvider(): Iterator
+    {
+        yield 'list' => [['transaction_code', 'status', 'total_amount', 'transaction_uuid', 'product_code']];
+        yield 'integer' => [12345];
+        yield 'boolean' => [true];
+    }
+
+    /**
+     * @throws EsewaException
+     */
+    #[DataProvider('emptySignedFieldEntryProvider')]
+    public function testVerifyPaymentRejectsEmptySignedFieldEntry(string $signedFieldNames): void
+    {
+        $this->epay->configure($this->validConfiguration);
+
+        $responseData = $this->signedCallback();
+        $responseData['signed_field_names'] = $signedFieldNames;
+
+        $this->expectException(EsewaException::class);
+        $this->expectExceptionMessage('Invalid response: signed field names contain an empty entry.');
+
+        $this->epay->verifyPayment(base64_encode(json_encode($responseData)));
+    }
+
+    public static function emptySignedFieldEntryProvider(): Iterator
+    {
+        yield 'empty string' => [''];
+        yield 'double comma' => ['transaction_code,,status,total_amount,transaction_uuid,product_code'];
+        yield 'trailing comma' => ['transaction_code,status,total_amount,transaction_uuid,product_code,'];
+    }
+
+    /**
+     * @throws EsewaException
+     */
+    #[DataProvider('nonScalarValueProvider')]
+    public function testVerifyPaymentRejectsNonScalarSignedValue(mixed $value): void
+    {
+        $this->epay->configure($this->validConfiguration);
+
+        $responseData = $this->signedCallback();
+        $responseData['transaction_code'] = $value;
+
+        $this->expectException(EsewaException::class);
+        $this->expectExceptionMessage('Invalid signed field value: transaction_code');
+
+        $this->epay->verifyPayment(base64_encode(json_encode($responseData)));
+    }
+
+    public static function nonScalarValueProvider(): Iterator
+    {
+        yield 'list' => [['0LD5CEH']];
+        yield 'object' => [['code' => '0LD5CEH']];
+    }
+
+    /**
+     * @throws EsewaException
+     */
+    public function testVerifyPaymentRejectsForeignProductCode(): void
+    {
+        $this->epay->configure($this->validConfiguration);
+
+        $responseData = $this->signedCallback(['product_code' => 'OTHER-MERCHANT']);
+
+        $this->expectException(EsewaException::class);
+        $this->expectExceptionMessage('Invalid response: product code does not match the configured product code.');
+
+        $this->epay->verifyPayment(base64_encode(json_encode($responseData)));
+    }
+
+    /**
+     * @throws EsewaException
+     */
+    public function testVerifyPaymentDoesNotNormaliseSignedValues(): void
+    {
+        $this->epay->configure($this->validConfiguration);
+
+        // Signed as "1,000.0"; the same amount written differently must not verify.
+        $responseData = $this->signedCallback();
+        $responseData['total_amount'] = '1000.0';
+
+        $this->expectException(EsewaException::class);
+        $this->expectExceptionMessage('Invalid signature in response.');
+
+        $this->epay->verifyPayment(base64_encode(json_encode($responseData)));
     }
 
     /**
@@ -657,11 +856,8 @@ final class EpayTest extends ParentTestCase
     {
         $this->epay->configure($this->validConfiguration);
 
-        $responseData = [
-            'transaction_code' => 'TXN12345',
-            'signed_field_names' => 'transaction_code',
-            'signature' => 12345,
-        ];
+        $responseData = $this->signedCallback();
+        $responseData['signature'] = 12345;
 
         $encodedResponse = base64_encode(json_encode($responseData));
 
@@ -957,6 +1153,36 @@ final class EpayTest extends ParentTestCase
     /**
      * @throws EsewaException
      */
+    public function testVerifySignatureAcceptsOutgoingPaymentForm(): void
+    {
+        $this->epay->configure($this->validConfiguration);
+
+        $form = $this->epay->createPayment([
+            'amount' => 100,
+            'transaction_uuid' => 'test-uuid-12345',
+        ]);
+
+        $this->assertTrue($this->epay->verifySignature($form, $form['signature']));
+    }
+
+    /**
+     * @throws EsewaException
+     */
+    public function testVerifySignatureReturnsFalseForNonStringSignedFieldNames(): void
+    {
+        $this->epay->configure($this->validConfiguration);
+
+        $data = [
+            'transaction_code' => 'TXN12345',
+            'signed_field_names' => ['transaction_code'],
+        ];
+
+        $this->assertFalse($this->epay->verifySignature($data, 'some-signature'));
+    }
+
+    /**
+     * @throws EsewaException
+     */
     public function testCreatePaymentWithStringAmounts(): void
     {
         $this->epay->configure($this->validConfiguration);
@@ -1073,5 +1299,32 @@ final class EpayTest extends ParentTestCase
         yield 'AMBIGUOUS' => ['AMBIGUOUS'];
         yield 'NOT_FOUND' => ['NOT_FOUND'];
         yield 'CANCELED' => ['CANCELED'];
+    }
+
+    /**
+     * Builds a callback payload of the documented ePay shape, signed with the test secret key.
+     *
+     * @param array<string, mixed> $fields Fields that replace the documented defaults before signing.
+     * @return array<string, mixed>
+     */
+    private function signedCallback(array $fields = []): array
+    {
+        $data = $fields + [
+            'transaction_code' => '0LD5CEH',
+            'status' => 'COMPLETE',
+            'total_amount' => '1,000.0',
+            'transaction_uuid' => '240613-134231',
+            'product_code' => 'EPAYTEST',
+            'signed_field_names' => 'transaction_code,status,total_amount,transaction_uuid,product_code,signed_field_names',
+        ];
+
+        $pairs = [];
+        foreach (explode(',', (string) $data['signed_field_names']) as $field) {
+            $pairs[] = $field . '=' . $data[$field];
+        }
+
+        $data['signature'] = base64_encode(hash_hmac('sha256', implode(',', $pairs), (string) $this->validConfiguration['secret_key'], true));
+
+        return $data;
     }
 }
