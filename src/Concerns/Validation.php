@@ -96,6 +96,11 @@ trait Validation
      */
     protected function validateApiResponse(array $resData): void
     {
+        // eSewa reports some failures, such as service unavailability, as an error_message alongside code 0.
+        if (isset($resData['error_message'])) {
+            throw new EsewaException('API Error: ' . $resData['error_message']);
+        }
+
         if (isset($resData['code']) && $resData['code'] !== 0) {
             throw new EsewaException('API Error: ' . ($resData['message'] ?? 'Unknown payment gateway error'));
         }
