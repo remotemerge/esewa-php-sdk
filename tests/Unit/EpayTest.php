@@ -4,7 +4,9 @@ declare(strict_types=1);
 
 namespace Tests\Unit;
 
+use Iterator;
 use PHPUnit\Framework\Attributes\CoversClass;
+use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\MockObject\MockObject;
 use ReflectionProperty;
 use RemoteMerge\Esewa\Contracts\EpayInterface;
@@ -507,10 +509,74 @@ final class EpayTest extends ParentTestCase
         $this->httpClientMock
             ->expects($this->once())
             ->method('get')
-            ->with('https://rc-epay.esewa.com.np/api/epay/transaction/status/?product_code=EPAYTEST&total_amount=100.5&transaction_uuid=test-uuid-12345')
+            ->with('https://rc.esewa.com.np/api/epay/transaction/status/?product_code=EPAYTEST&total_amount=100.5&transaction_uuid=test-uuid-12345')
             ->willReturn('{"status":"COMPLETE"}');
 
         $this->epay->checkStatus('test-uuid-12345', 100.50);
+    }
+
+    /**
+     * @throws EsewaException
+     */
+    public function testCheckStatusRequestsProductionStatusUrl(): void
+    {
+        $options = $this->validConfiguration;
+        $options['environment'] = 'production';
+        $this->epay->configure($options);
+
+        $this->httpClientMock
+            ->expects($this->once())
+            ->method('get')
+            ->with('https://esewa.com.np/api/epay/transaction/status/?product_code=EPAYTEST&total_amount=100.5&transaction_uuid=test-uuid-12345')
+            ->willReturn('{"status":"COMPLETE"}');
+
+        $this->epay->checkStatus('test-uuid-12345', 100.50);
+    }
+
+    /**
+     * @throws EsewaException
+     */
+    public function testCheckStatusThrowsExceptionForServiceUnavailableResponse(): void
+    {
+        $this->epay->configure($this->validConfiguration);
+
+        $this->httpClientMock
+            ->expects($this->once())
+            ->method('get')
+            ->willReturn('{"code":0,"error_message":"Service is currently unavailable"}');
+
+        $this->expectException(EsewaException::class);
+        $this->expectExceptionMessage('API Error: Service is currently unavailable');
+
+        $this->epay->checkStatus('test-uuid-12345', 100.00);
+    }
+
+    /**
+     * @throws EsewaException
+     */
+    #[DataProvider('documentedStatusProvider')]
+    public function testCheckStatusReturnsDocumentedFlatResponse(string $status): void
+    {
+        $this->epay->configure($this->validConfiguration);
+
+        // A literal JSON body keeps the documented 100.0 amount as a float after decoding.
+        $this->httpClientMock
+            ->expects($this->once())
+            ->method('get')
+            ->willReturn(sprintf(
+                '{"product_code":"EPAYTEST","transaction_uuid":"123","total_amount":100.0,"status":"%s","ref_id":null}',
+                $status,
+            ));
+
+        $result = $this->epay->checkStatus('123', 100.00);
+
+        $this->assertSame([
+            'product_code' => 'EPAYTEST',
+            'transaction_uuid' => '123',
+            'total_amount' => 100.0,
+            'status' => $status,
+            'ref_id' => null,
+        ], $result);
     }
 
     /**
@@ -523,7 +589,7 @@ final class EpayTest extends ParentTestCase
         $this->httpClientMock
             ->expects($this->once())
             ->method('get')
-            ->with('https://rc-epay.esewa.com.np/api/epay/transaction/status/?product_code=EPAYTEST&total_amount=100&transaction_uuid=a%26product_code%3DOTHER%20b')
+            ->with('https://rc.esewa.com.np/api/epay/transaction/status/?product_code=EPAYTEST&total_amount=100&transaction_uuid=a%26product_code%3DOTHER%20b')
             ->willReturn('{"status":"COMPLETE"}');
 
         $this->epay->checkStatus('a&product_code=OTHER b', 100.00);
@@ -738,5 +804,16 @@ final class EpayTest extends ParentTestCase
         $this->expectExceptionMessage('Transaction UUID must be alphanumeric and may contain hyphens only.');
 
         $this->epay->createPayment($paymentData);
+    }
+
+    public static function documentedStatusProvider(): Iterator
+    {
+        yield 'PENDING' => ['PENDING'];
+        yield 'COMPLETE' => ['COMPLETE'];
+        yield 'FULL_REFUND' => ['FULL_REFUND'];
+        yield 'PARTIAL_REFUND' => ['PARTIAL_REFUND'];
+        yield 'AMBIGUOUS' => ['AMBIGUOUS'];
+        yield 'NOT_FOUND' => ['NOT_FOUND'];
+        yield 'CANCELED' => ['CANCELED'];
     }
 }

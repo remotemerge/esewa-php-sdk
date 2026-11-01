@@ -215,6 +215,22 @@ final class AbstractPaymentTest extends ParentTestCase
         $this->assertSame('https://epay.esewa.com.np', $baseUrl);
     }
 
+    public function testGetBaseUrlForTestEpayStatus(): void
+    {
+        $this->paymentTestClass->setEnvironment('test');
+        $baseUrl = $this->paymentTestClass->testGetBaseUrl('epay_status');
+
+        $this->assertSame('https://rc.esewa.com.np', $baseUrl);
+    }
+
+    public function testGetBaseUrlForProductionEpayStatus(): void
+    {
+        $this->paymentTestClass->setEnvironment('production');
+        $baseUrl = $this->paymentTestClass->testGetBaseUrl('epay_status');
+
+        $this->assertSame('https://esewa.com.np', $baseUrl);
+    }
+
     /**
      * @throws EsewaException
      */

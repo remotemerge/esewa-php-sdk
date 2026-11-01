@@ -28,13 +28,17 @@ abstract class AbstractPayment
 
     /**
      * Base URLs for different environments.
+     *
+     * eSewa serves the ePay checkout form and the transaction status API from different hosts.
      */
     protected const BASE_URLS = [
         'test' => [
             'epay' => 'https://rc-epay.esewa.com.np',
+            'epay_status' => 'https://rc.esewa.com.np',
         ],
         'production' => [
             'epay' => 'https://epay.esewa.com.np',
+            'epay_status' => 'https://esewa.com.np',
         ],
     ];
 
@@ -86,7 +90,7 @@ abstract class AbstractPayment
     /**
      * Gets the base URL for the current environment.
      *
-     * @param string $type The type of API (epay or token).
+     * @param string $type The type of API (epay or epay_status).
      * @return string The base URL.
      */
     protected function getBaseUrl(string $type): string
