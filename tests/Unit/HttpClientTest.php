@@ -224,6 +224,43 @@ final class HttpClientTest extends ParentTestCase
         $this->assertSame('key=val', $result);
     }
 
+    /**
+     * @throws EsewaException
+     */
+    public function testPostSendsFormContentTypeByDefault(): void
+    {
+        $result = $this->httpClient->post(self::$baseUrl . '/echo-request', ['key' => 'val']);
+
+        $this->assertSame(
+            ['content_type' => 'application/x-www-form-urlencoded', 'body' => 'key=val'],
+            json_decode($result, true),
+        );
+    }
+
+    /**
+     * @throws EsewaException
+     */
+    public function testPostKeepsCustomContentTypeAndFormEncodesBody(): void
+    {
+        $headers = ['Content-Type' => 'text/plain'];
+
+        $result = $this->httpClient->post(self::$baseUrl . '/echo-request', ['key' => 'val'], $headers);
+
+        $this->assertSame(['content_type' => 'text/plain', 'body' => 'key=val'], json_decode($result, true));
+    }
+
+    /**
+     * @throws EsewaException
+     */
+    public function testPostSendsJsonContentType(): void
+    {
+        $headers = ['Content-Type' => 'application/json'];
+
+        $result = $this->httpClient->post(self::$baseUrl . '/echo-request', ['amount' => 100], $headers);
+
+        $this->assertSame(['content_type' => 'application/json', 'body' => '{"amount":100}'], json_decode($result, true));
+    }
+
     public function testPostThrowsOnHttpError(): void
     {
         $this->expectException(EsewaException::class);
